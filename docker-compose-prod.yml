@@ -1,0 +1,57 @@
+version: '3.7'
+services:
+
+  # With the use of this reverse proxy both the frontend and backend are accessable through port 80.
+  # In this way I expose an public api
+  # Backend adress: baseURL/api/
+  reverseproxy:
+    container_name: fit_reverseproxy
+    ports:
+      - 80:80
+    environment:
+      - PORT=80
+    restart: always
+    build:
+      context: ./reverse-proxy
+      dockerfile: Dockerfile
+    # Caution: if mounting this volume, changing the file with CMD sed (in the Dockerfile) won't work.
+    # The file is 'busy'. It is in use by the host system.
+    # volumes:
+    #   - './reverse-proxy/nginx.conf:/etc/nginx/nginx.conf'
+
+  frontend:
+    container_name: fit_frontend-prod
+    restart: always
+    depends_on: 
+      - reverseproxy
+      - database
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile-prod
+    environment:
+      - PORT=4200
+    
+  backend:
+    container_name: fit_backend-prod
+    restart: always
+    depends_on: 
+      - reverseproxy
+      - database
+    build:
+      context: ./backend
+      dockerfile: Dockerfile-prod
+
+  database:
+    container_name: fit_database
+    depends_on:
+     - reverseproxy
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    # This will make the data persistent  
+    # volumes:
+    #   - '${PWD}/volumes/database:/var/lib/postgresql/data'
+    # Not possible to move the database.env file to the /database folder because its a seperate container
+    env_file: './backend/database.env'    
+    ports:
+      - 5432:5432

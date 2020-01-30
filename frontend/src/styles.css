@@ -1,0 +1,6 @@
+/* You can add global styles to this file, and also import other style files */
+.row{margin: 0px;}
+.nofocus, button{
+    outline: none !important;
+    border: 0 !important;
+}

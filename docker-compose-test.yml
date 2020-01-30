@@ -1,0 +1,12 @@
+version: '3.7'
+services:
+
+  test:
+    container_name: fit_test
+    build:
+      context: ./test
+      dockerfile: Dockerfile
+    volumes:
+      - './test:/src'
+    network_mode: host
+    command: -d logs testsuites

@@ -1,0 +1,2 @@
+ #!/bin/bash
+docker run --rm -u ${EUID}:${EUID} -v ${PWD}:/src --network="host" kvk-test-suite:latest -d logs "$@"

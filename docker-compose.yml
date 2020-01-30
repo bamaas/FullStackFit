@@ -1,0 +1,24 @@
+version: '3.7'
+services:
+
+  # This file is only used 
+
+  reverseproxy:
+    container_name: fit_reverseproxy
+    build:
+      context: ./reverse-proxy
+
+  frontend:
+    container_name: fit_frontend-prod
+    build:
+      context: ./frontend
+    
+  backend:
+    container_name: fit_backend-prod
+    build:
+      context: ./backend
+
+  database:
+    container_name: fit_database
+    build:
+      context: ./database
