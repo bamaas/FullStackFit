@@ -1,4 +1,4 @@
-#!/Users/bamaas/Git/fullstackfit2/backend/env/bin/python3
+#!/Users/bamaas/Git/FullStackFit/backend/env/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

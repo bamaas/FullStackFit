@@ -1,5 +1,3 @@
-from logic import calculator
-
 class Person():
     def __init__(self, name='bas', age=20, gender='man', weight=80, activitylevel='Vigorously active', goal='Fat loss', length=180, level='Intermediate', body_fat_perc=15):
     # def __init__(self, name, age, gender, weight, activitylevel, goal, length, level, bodyfatPerc):
@@ -15,11 +13,12 @@ class Person():
         self.goal_factor = self.determine_goal_factor(self.goal)
         self.activitylevel_factor = self.determine_activitylevel_factor(self.activitylevel)
         # Calculations
-        self._bmr = calculator.calculate_bmr(self.gender, self.weight, self.length, self.age)
-        self._tdee = calculator.calculate_tdee(self.bmr, self.activitylevel_factor, self.goal_factor)
-        self.bmi = calculator.calculate_bmi(self.weight, self.length)
-        self.ffm = calculator.calculate_ffm(self.weight, self.body_fat_perc)
-        self.macros = calculator.calculate_macronutrients(self.weight, self.tdee)
+        calc = Calculator()
+        self._bmr = calc.calculate_bmr(self.gender, self.weight, self.length, self.age)
+        self._tdee = calc.calculate_tdee(self.bmr, self.activitylevel_factor, self.goal_factor)
+        self.bmi = calc.calculate_bmi(self.weight, self.length)
+        self.ffm = calc.calculate_ffm(self.weight, self.body_fat_perc)
+        self.macros = calc.calculate_macronutrients(self.weight, self.tdee)
     
     # TOOD create getters and setters for BMI, VVM, FFMI
 
@@ -83,3 +82,46 @@ class Person():
             'Vigorously active':2.25
         }
         return switcher.get(activitylevel, "Invalid activity level")
+    
+
+class Calculator():
+    def calculate_bmr(self, gender, weight, length, age):
+        if gender.lower() == 'man':
+            bmr = 66.5 + ( 13.75 * weight ) + ( 5.003 * length ) - ( 6.755 * age )
+        elif gender.lower() == 'woman':
+            bmr = 665.1 + ( 9.563 * weight ) + ( 1.850 * length ) - ( 4.676 * age )
+        else:
+            raise Exception ("Error: expected gender to be 'woman' or 'man'. Actual: '{}'".format(gender))
+        return round(bmr)
+
+    def calculate_tdee(self, bmr, activity_level_factor, goal_factor):
+        tdee = (bmr * activity_level_factor) * goal_factor
+        return round(tdee)
+
+
+    def calculate_macronutrients(self, weight, tdee):
+        # Protein
+        protein_gr = round(weight * 2)
+        protein_kcal = round(protein_gr * 4)
+        protein_perc = round(100 * protein_kcal / tdee)
+        # Fat
+        fat_gram = round(weight)
+        fat_kcal = round(fat_gram * 9)
+        fat_perc = round(100 * fat_kcal / tdee)
+        # Carbs
+        carb_kcal = round(tdee - (protein_kcal + fat_kcal))
+        carb_gram = round(carb_kcal / 4)
+        carb_perc = round(100 * carb_kcal / tdee)
+        macronutrients = {'protein_gr':protein_gr, 'protein_kcal':protein_kcal, 'protein_perc':protein_perc, \
+                'fat_gram':fat_gram, 'fat_kcal':fat_kcal, 'fat_perc':fat_perc, \
+                'carb_kcal':carb_kcal, 'carb_gram':carb_gram, 'carb_perc':carb_perc}
+        return macronutrients
+
+    def calculate_bmi(self, weight, length):
+        bmi = weight/((length/100)*(length/100))
+        return round(bmi)
+
+    def calculate_ffm(self, weight, body_fat_perc):
+        percentage = (100-body_fat_perc)/100
+        ffm = weight-(weight*percentage)
+        return round(ffm)

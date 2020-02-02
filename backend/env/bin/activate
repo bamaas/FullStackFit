@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/Users/bamaas/Git/fullstackfit2/backend/env"
+VIRTUAL_ENV="/Users/bamaas/Git/FullStackFit/backend/env"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
