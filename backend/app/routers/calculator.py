@@ -26,6 +26,10 @@ class Calculate_TDEE(BaseModel):
     activity_level_factor: int
     goal_factor: int
 
+class Calculate_BMI(BaseModel):
+    length: int
+    weight: int
+
 @router.post('/calculate_all')
 async def calculate_all(request: Calculate_All):
     p = Person(name=request.name, age=request.age, gender=request.gender, weight=request.weight, \
@@ -40,6 +44,11 @@ async def calculate_all(request: Calculate_All):
 async def calculate_bmr(request: Calculate_BMR):
     p = Person(age=request.age, gender=request.gender, weight=request.weight, length=request.length)
     return p.bmr
+
+@router.post('/calculate_bmi')
+async def calculate_bmi(request: Calculate_BMI):
+    p = Person(weight=request.weight, length=request.length)
+    return p.bmi
 
 # @router.post('/calculate_tdee')
 # async def calculate_tdee(request: Calculate_TDEE):
