@@ -46,7 +46,7 @@ export class TDEEService implements OnInit{
 
     postjson(json_body){
       console.log("Post:", json_body)
-      this.http.post(this.apiURL + '/postjson', json_body)
+      this.http.post(this.apiURL + '/calculate_all', json_body)
       .subscribe(response => {
         console.log("Response:", response)
         this.tdeeCalculatorSubjectMacro.next(
