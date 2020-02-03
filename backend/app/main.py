@@ -7,8 +7,10 @@ app = FastAPI()
 app.include_router(calculator.router)
 
 origins = [
-    "http://localhost:4200",
+    "http://localhost",
+    "https://localhost"
     "https://localhost:4200"
+    "http://localhost:4200"
 ]
 
 app.add_middleware(
@@ -19,16 +21,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-###########################
-# OLD FLASK STUFF
-###########################
-# if __name__ == '__main__':
-#     port = int(os.environ.get('PORT', 5000))        # Bind to env variable PORT if defined, otherwise default to 5000.
-#     debug=os.environ.get('DEBUG', False)
-#     if debug == 'True':
-#         debug = True
-#     else:
-#         debug = False
-#     print('Port is:', port)
-#     print('Debug is:', debug)
-#     app.run(debug=debug, host='0.0.0.0', port=port)      # The defbug=fTrue causes the application to restart on changes
+if __name__ == "__main__":
+    import os
+    port = int(os.environ.get('PORT', 5000))        # Bind to env variable PORT if defined, otherwise default to 5000.
+    reload = os.environ.get('RELOAD', False)
+    print('Port is:', port)
+    print('Reload is:', reload)
+    # https://www.uvicorn.org/
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=port, log_level="info", reload=reload)

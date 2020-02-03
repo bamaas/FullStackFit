@@ -1,14 +1,13 @@
-FROM python:3.7
+FROM python:3.7.4-stretch
 
-EXPOSE 80
+WORKDIR /src
 
-COPY ./app /app
+# First install the dependencies. Docker will skip the RUN part if it detects that there are no changes on the COPY part
+COPY requirements.txt /src
+RUN pip install --upgrade pip \
+    && pip install -r ./requirements.txt
 
-COPY ./requirements.txt ./requirements.txt
-RUN pip install -r requirements.txt
+# With 'Make dev' we overwrite these copied folders with mounting a host volume to container.
+COPY ./app /src
 
-WORKDIR /app
-
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
-
-#https://fastapi.tiangolo.com/deployment/#raspberry-pi-and-other-architectures
+CMD ["python", "./app/main.py"]

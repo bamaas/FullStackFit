@@ -37,9 +37,12 @@ services:
     depends_on: 
       - reverseproxy
       - database
+    environment:
+      - RELOAD=False
+      - PORT=5000
     build:
       context: ./backend
-      dockerfile: Dockerfile-prod
+      dockerfile: Dockerfile
 
   database:
     container_name: fit_database

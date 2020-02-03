@@ -44,11 +44,12 @@ services:
       - database
     build:
       context: ./backend
-      dockerfile: Dockerfile-dev
+      dockerfile: Dockerfile
     volumes:
       - './backend:/src'
     environment:
-      - DEBUG=True
+      - RELOAD=True
+      - PORT=5000
     # Not needed anymore, handled by the reverse proxy. Just using it for dev/debug purpose.
     ports:
       - 5000:5000
