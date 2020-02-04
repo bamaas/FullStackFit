@@ -3,16 +3,18 @@ from routers import calculator
 from starlette.middleware.cors import CORSMiddleware
 
 # Run from /app folder: uvicorn main:app --reload 
-app = FastAPI()
+app = FastAPI(docs_url="/docs", redoc_url=None)
+
+# Routers
 app.include_router(calculator.router)
 
+# CORS
 origins = [
     "http://localhost",
     "https://localhost"
     "https://localhost:4200"
     "http://localhost:4200"
 ]
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
