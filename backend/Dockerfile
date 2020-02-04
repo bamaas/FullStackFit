@@ -8,6 +8,6 @@ RUN pip install --upgrade pip \
     && pip install -r ./requirements.txt
 
 # With 'Make dev' we overwrite these copied folders with mounting a host volume to container.
-COPY ./app /src
+COPY . /src
 
 CMD ["python", "./app/main.py"]
