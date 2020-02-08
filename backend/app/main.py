@@ -9,15 +9,15 @@ app = FastAPI(docs_url="/docs", redoc_url=None)
 app.include_router(calculator.router)
 
 # CORS
-origins = [
-    "http://localhost",
-    "https://localhost"
-    "https://localhost:4200"
-    "http://localhost:4200"
-]
+# origins = [
+#     "http://localhost",
+#     "https://localhost"
+#     "https://localhost:4200"
+#     "http://localhost:4200"
+# ]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],   # Allow all origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -25,8 +25,10 @@ app.add_middleware(
 
 if __name__ == "__main__":
     import os
-    port = int(os.environ.get('PORT', 5000))        # Bind to env variable PORT if defined, otherwise default to 5000.
-    reload = os.environ.get('RELOAD', False)
+    # Bind to env variable PORT if defined, otherwise default to 5000.
+    port = int(os.environ.get('PORT', 5000))        
+    # Set default value to True to enable hot reloading when running the app directly without Docker (python main.py)
+    reload = os.environ.get('RELOAD', True)         
     print('Port is:', port)
     print('Reload is:', reload)
     # https://www.uvicorn.org/
