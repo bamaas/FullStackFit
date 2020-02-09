@@ -8,16 +8,10 @@ services:
     container_name: fit_reverseproxy
     ports:
       - 80:80
-    environment:
-      - PORT=80
     restart: always
     build:
       context: ./reverse-proxy
       dockerfile: Dockerfile
-    # Caution: if mounting this volume, changing the file with CMD sed (in the Dockerfile) won't work.
-    # The file is 'busy'. It is in use by the host system.
-    # volumes:
-    #   - './reverse-proxy/nginx.conf:/etc/nginx/nginx.conf'
 
   frontend:
     container_name: fit_frontend-prod
