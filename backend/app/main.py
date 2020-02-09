@@ -1,9 +1,12 @@
 from fastapi import FastAPI
 from routers import calculator
 from starlette.middleware.cors import CORSMiddleware
+from starlette.responses import RedirectResponse
+
+DOCS_URL = "/docs"
 
 # Run from /app folder: uvicorn main:app --reload 
-app = FastAPI(docs_url="/docs", redoc_url=None)
+app = FastAPI(docs_url=DOCS_URL, redoc_url=None)
 
 # Routers
 app.include_router(calculator.router)
@@ -22,6 +25,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/")
+async def redirect_home_to_docs():
+    response = RedirectResponse(url=DOCS_URL)
+    return response
 
 if __name__ == "__main__":
     import os
