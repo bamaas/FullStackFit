@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.3'
 services:
 
   # With the use of this reverse proxy both the frontend and backend are accessable through port 80.
