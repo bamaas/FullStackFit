@@ -5,7 +5,7 @@ services:
   # In this way I expose an public api
   # Backend adress: baseURL/api/
   reverseproxy:
-    container_name: fit_reverseproxy
+    container_name: fit_reverseproxy-prod
     ports:
       - 80:80
     restart: always
