@@ -1,6 +1,7 @@
 #!/bin/sh
 # Reload the nginx service inside the Docker container on nginx.conf file change
 # File should be executed from root or project
+fswatch -o ./reverse-proxy/nginx.conf | xargs -n1 -I{} docker exec -it fit_reverseproxy-dev nginx -s reload
+# Without output in stdout:
 # fswatch -o ./reverse-proxy/nginx.conf | xargs -n1 -I{} make reload-nginx > fswatch_output &
-fswatch -o ./reverse-proxy/nginx.conf | xargs -n1 -I{} make reload-nginx
-#kill 18574 18575
+# To kill get PID and run: kill 18574 18575

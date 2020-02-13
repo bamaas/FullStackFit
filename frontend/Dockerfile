@@ -12,10 +12,15 @@ RUN npm install \
     && npm install -g @angular/cli@7.3.9
 
 COPY . ./
-RUN ng build --prod
+
+ARG config
+# Check for mandatory build arguments
+RUN : "${config:?Build argument needs to be set and non-empty.}"
+RUN ng build --configuration="$config"
 
 # Step 2: Use build output from 'builder'
 FROM nginx:stable-alpine
+
 LABEL version="1.0"
 
 COPY nginx.conf /etc/nginx/nginx.conf
@@ -23,11 +28,5 @@ COPY nginx.conf /etc/nginx/nginx.conf
 WORKDIR /usr/share/nginx/html
 COPY --from=builder /usr/src/app/dist/angu/ .
 
-# - Serve
 # Replace $PORT in nginx.conf with the environment variable $PORT
-# This is needed because Heroku sets the env var $PORT on runtime
 CMD sed -i -e 's/$PORT/'"$PORT"'/g' /etc/nginx/nginx.conf && nginx -g 'daemon off;'
-
-# How to use
-# 1. Build this image: docker image build -t my-angular-app .
-# 2. Running: docker run -p 80:80 -e PORT=80 --rm my-angular-app

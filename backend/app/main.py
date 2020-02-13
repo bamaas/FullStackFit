@@ -26,10 +26,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-async def redirect_home_to_docs():
-    response = RedirectResponse(url=DOCS_URL)
-    return response
+# @app.get("/")
+# async def redirect_home_to_docs():
+#     response = RedirectResponse(url=DOCS_URL)
+#     return response
 
 if __name__ == "__main__":
     import os

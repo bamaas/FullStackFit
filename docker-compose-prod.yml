@@ -11,17 +11,14 @@ services:
     restart: always
     build:
       context: ./reverse-proxy
-      dockerfile: Dockerfile
 
   frontend:
     container_name: fit_frontend-prod
-    restart: always
-    depends_on: 
-      - reverseproxy
-      - database
     build:
       context: ./frontend
-      dockerfile: Dockerfile-prod
+      dockerfile: Dockerfile
+      args:
+      - 'config=production'
     environment:
       - PORT=4200
     
@@ -39,16 +36,12 @@ services:
       dockerfile: Dockerfile
 
   database:
-    container_name: fit_database
+    container_name: fit_database-prod
     depends_on:
      - reverseproxy
     build:
       context: ./database
       dockerfile: Dockerfile
-    # This will make the data persistent  
-    # volumes:
-    #   - '${PWD}/volumes/database:/var/lib/postgresql/data'
-    # Not possible to move the database.env file to the /database folder because its a seperate container
     env_file: './backend/database.env'    
     ports:
       - 5432:5432
