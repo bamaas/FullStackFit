@@ -2,5 +2,9 @@ steps:
 - name: 'docker/compose:1.15.0'
   args: ['-f', 'docker-compose-prod.yml', 'up', '-d']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['tag', 'workspace_app:latest', 'gcr.io/$PROJECT_ID/fullstackfit:$COMMIT_SHA']
-images: ['gcr.io/$PROJECT_ID/fullstackfit:$COMMIT_SHA']
+  args: ['tag', 'fullstackfit_backend:latest', 'gcr.io/$PROJECT_ID/fullstackfit_backend:$COMMIT_SHA']
+images: ['gcr.io/$PROJECT_ID/fullstackfit_backend:$COMMIT_SHA']
+
+
+
+# https://github.com/GoogleCloudPlatform/cloud-builders/blob/master/docker/cloudbuild.yaml
