@@ -1,11 +1,12 @@
-steps:
-- name: 'docker/compose:1.15.0'
-  args: ['-f', 'docker-compose-prod.yml', 'build', 'backend']
+# steps:
+# - name: 'docker/compose:1.15.0'
+#   args: ['-f', 'docker-compose-prod.yml', 'up', '-d']
+#   tags: ['cloud-builders-community']
+# # - name: 'gcr.io/cloud-builders/docker'
+# #   args: ['tag', fit_reverseproxy-prod:latest', 'gcr.io/$PROJECT_ID/$REPO_NAME:$COMMIT_SHA']
+# # Push the container image to Container Registry
 # - name: 'gcr.io/cloud-builders/docker'
-#   args: ['tag', fit_reverseproxy-prod:latest', 'gcr.io/$PROJECT_ID/$REPO_NAME:$COMMIT_SHA']
-# Push the container image to Container Registry
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/$PROJECT_ID/fullstackfit_backend:latest']
+#   args: ['push', 'gcr.io/$PROJECT_ID/fullstackfit_backend:latest']
 #images: ['gcr.io/$PROJECT_ID/fullstackfit_backend:latest', 'gcr.io/$PROJECT_ID/fullstackfit_backend:latest', 'gcr.io/$PROJECT_ID/fullstackfit_reverseproxy:latest']
 # images:
 # - gcr.io/$PROJECT_ID/fullstackfit:latest
@@ -25,3 +26,11 @@ steps:
 
 
 # https://cloud.google.com/cloud-build/docs/deploying-builds/deploy-cloud-run
+
+#cloudbuild.yaml
+steps:
+- name: 'docker/compose:1.19.0'
+  args: ['-f', 'docker-compose-prod.yml', 'up', '-d']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['tag', 'workspace_app:latest', 'gcr.io/$PROJECT_ID/$REPO_NAME:$COMMIT_SHA']
+images: ['gcr.io/$PROJECT_ID/$REPO_NAME:$COMMIT_SHA']
