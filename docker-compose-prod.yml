@@ -25,6 +25,7 @@ services:
     
   backend:
     container_name: fit_backend-prod
+    image: fullstackfit_backend:latest
     restart: always
     depends_on: 
       - reverseproxy
