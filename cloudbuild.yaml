@@ -1,10 +1,15 @@
 steps:
 - name: 'docker/compose:1.15.0'
   args: ['-f', 'docker-compose-prod.yml', 'up', '-d']
+# Backend
 - name: 'gcr.io/cloud-builders/docker'
   args: ['tag', 'fullstackfit_backend:latest', 'gcr.io/$PROJECT_ID/fullstackfit_backend:$COMMIT_SHA']
-images: ['gcr.io/$PROJECT_ID/fullstackfit_backend:$COMMIT_SHA']
-
-
+# Frontend
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['tag', 'fullstackfit_frontend:latest', 'gcr.io/$PROJECT_ID/fullstackfit_frontend:$COMMIT_SHA']
+# Reverseproxy
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['tag', 'fullstackfit_reverseproxy:latest', 'gcr.io/$PROJECT_ID/fullstackfit_reverseproxy:$COMMIT_SHA']
+images: ['gcr.io/$PROJECT_ID/fullstackfit_backend:$COMMIT_SHA', 'gcr.io/$PROJECT_ID/fullstackfit_frontend:$COMMIT_SHA', 'gcr.io/$PROJECT_ID/fullstackfit_reverseproxy:$COMMIT_SHA']
 
 # https://github.com/GoogleCloudPlatform/cloud-builders/blob/master/docker/cloudbuild.yaml
