@@ -9,9 +9,9 @@ services:
     ports:
       - 80:80
     restart: always
+    image: fullstackfit_reverseproxy:latest
     build:
       context: ./reverse-proxy
-      #image: fullstackfit:prod
 
   frontend:
     container_name: fit_frontend-prod
