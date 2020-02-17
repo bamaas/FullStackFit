@@ -1,6 +1,8 @@
 steps:
-- name: 'docker/compose:1.15.0'
-  args: ['-f', 'docker-compose-prod.yml', 'build', 'backend']
+# - name: 'docker/compose:1.15.0'
+#   args: ['-f', 'docker-compose-prod.yml', 'build', 'backend']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'fullstackfit_backend:latest', '.']
 # - name: 'gcr.io/cloud-builders/docker'
 #   args: ['tag', fit_reverseproxy-prod:latest', 'gcr.io/$PROJECT_ID/$REPO_NAME:$COMMIT_SHA']
 # Push the container image to Container Registry
