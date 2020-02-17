@@ -15,6 +15,7 @@ services:
 
   frontend:
     container_name: fit_frontend-prod
+    image: fullstackfit_frontend:latest
     build:
       context: ./frontend
       dockerfile: Dockerfile
