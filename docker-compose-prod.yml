@@ -11,6 +11,7 @@ services:
     restart: always
     build:
       context: ./reverse-proxy
+      #image: fullstackfit:prod
 
   frontend:
     container_name: fit_frontend-prod

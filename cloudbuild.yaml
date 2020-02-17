@@ -3,4 +3,4 @@ steps:
   args: ['-f', 'docker-compose-prod.yml', 'up', '-d']
 # - name: 'gcr.io/cloud-builders/docker'
 #   args: ['tag', fit_reverseproxy-prod:latest', 'gcr.io/$PROJECT_ID/$REPO_NAME:$COMMIT_SHA']
-images: ['gcr.io/$PROJECT_ID/fullstackfit_backend:latest', 'gcr.io/$PROJECT_ID/fullstackfit_backend:frontend', 'gcr.io/$PROJECT_ID/fullstackfit_reverseproxy:latest']
+images: ['gcr.io/$PROJECT_ID/fullstackfit_backend:latest', 'gcr.io/$PROJECT_ID/fullstackfit_backend:latest', 'gcr.io/$PROJECT_ID/fullstackfit_reverseproxy:latest']
