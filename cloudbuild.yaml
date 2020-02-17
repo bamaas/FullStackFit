@@ -31,6 +31,8 @@
 steps:
 - name: 'docker/compose:1.19.0'
   args: ['-f', 'docker-compose-prod.yml', 'up', '-d']
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['tag', 'workspace_app:latest', 'gcr.io/$PROJECT_ID/$REPO_NAME:$COMMIT_SHA']
-images: ['gcr.io/$PROJECT_ID/$REPO_NAME:$COMMIT_SHA']
+# - name: 'gcr.io/cloud-builders/docker'
+#   args: ['tag', 'fullstackfit:latest', 'gcr.io/$PROJECT_ID/$REPO_NAME:$COMMIT_SHA']
+images: ['fullstackfit_backend:latest']
+
+#https://github.com/GoogleCloudPlatform/cloud-builders/tree/master/docker
