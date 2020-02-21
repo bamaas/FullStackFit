@@ -18,7 +18,7 @@ blocks:
       jobs:
         - name: Build & Up
           commands:
-            - ls
+            - checkout
             - make prod
   - name: Test
     task:
