@@ -12,7 +12,6 @@ blocks:
           commands:
             - checkout
             - sem-version python 3.7
-            - pip install pathlib
             - python ./backend/tests/tests.py
   - name: Build & Up
     task:
