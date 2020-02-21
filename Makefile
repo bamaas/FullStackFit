@@ -9,8 +9,7 @@ prod:
 	docker-compose -f docker-compose-prod.yml up -d
 
 test:
-	docker-compose -f docker-compose-test.yml build
-	docker-compose -f docker-compose-test.yml up -d
+	docker-compose -f docker-compose-test.yml up
 
 shutdown:
 	docker-compose down

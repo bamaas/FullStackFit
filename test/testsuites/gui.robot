@@ -17,3 +17,7 @@ Test Teardown      close browser if running remotely and report screenshot on fa
 *** Test Cases ***
 GUI test
     report screenshot
+
+Testbas
+    [Setup]
+    Open Browser        https://google.com/     Chrome

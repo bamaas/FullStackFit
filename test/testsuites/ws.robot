@@ -33,7 +33,7 @@ Send correct POST request and assert with JSONPath
     assert JSON         ${response}         $.proteinReqPerc    18        integer
     # Another way of asserting
     ${tdee}=                        get from json       ${response}         $.tdee
-    should be equal as integers     3478            ${tdee}
+    should be equal as integers     3478            ${tdeeZZZ}
 
 Send wrong POST request and assert the status
     [Documentation]                         Wrong gender given. Return status should be equal to 500
