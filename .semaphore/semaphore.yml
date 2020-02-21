@@ -18,8 +18,7 @@ blocks:
       jobs:
         - name: Build & Up
           commands:
-            - docker-compose -f docker-compose-prod.yml build
-            - docker-compose -f docker-compose-prod.yml up
+            - make prod
   - name: Test
     task:
       epilogue:
