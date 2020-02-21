@@ -11,6 +11,7 @@ blocks:
         - name: Nameless 1
           commands:
             - checkout
+            - python --version
             - pip install pathlib
             - python ./backend/tests/tests.py
   - name: Build & Up
