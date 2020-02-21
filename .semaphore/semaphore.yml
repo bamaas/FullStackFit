@@ -5,17 +5,12 @@ agent:
     type: e1-standard-2
     os_image: ubuntu1804
 blocks:
-  - name: Checkout
+  - name: Checkout & Unittest
     task:
       jobs:
-        - name: ''
+        - name: Nameless 1
           commands:
             - checkout
-  - name: Unittest
-    task:
-      jobs:
-        - name: Unittest backend
-          commands:
             - python ./backend/tests/tests.py
   - name: Build & Up
     task:
