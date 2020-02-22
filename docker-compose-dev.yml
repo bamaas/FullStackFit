@@ -1,6 +1,11 @@
 version: '3.3'
 services:
 
+  ######################################################################
+  # This compose file runs the containers with hot reloading enabled
+  # and exposing the ports of the specific services to the host
+  ######################################################################
+
   # With the use of this reverse proxy both the frontend and backend are accessable through port 80.
   # In this way I expose an public api for the TDEE calculations.
   # Backend adress: ip/api/

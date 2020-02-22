@@ -22,7 +22,7 @@ class BMRcalculations(unittest.TestCase):
         self.assertEqual(john.bmr, 1932)
     
     def test_02(self):
-        print("Test 01 - test TDEE calculation")
+        print("Test 02 - test TDEE calculation")
         name = 'john'
         age = 20
         weight = 80

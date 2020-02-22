@@ -38,10 +38,15 @@ reload-nginx:
 # TEST
 
 test:
-	docker-compose -f docker-compose-test.yml run --rm test -d logs testsuites
+	make test-unit
+	make test-ws
+	make test-e2e
 
-test-e2e:
-	docker-compose -f docker-compose-test.yml run --rm test -d logs testsuites/gui.robot
+test-unit:
+	python3 ./backend/tests/tests.py
 
 test-ws:
 	docker-compose -f docker-compose-test.yml run --rm test -d logs testsuites/ws.robot
+
+test-e2e:
+	docker-compose -f docker-compose-test.yml run --rm test -d logs testsuites/gui.robot
