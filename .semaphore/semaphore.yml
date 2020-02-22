@@ -26,7 +26,6 @@ blocks:
             - cache restore
             - make prod
             - make test-ws
-            - make test-e2e
             - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
             - 'docker tag fullstackfit_frontend:latest "$DOCKER_USERNAME"/fullstackfit_frontend:latest'
             - 'docker push "$DOCKER_USERNAME"/fullstackfit_frontend:latest'
@@ -42,6 +41,8 @@ blocks:
         always:
           commands:
             - make shutdown
+      secrets:
+        - name: Docker
     skip:
       when: branch != 'master'
     dependencies:
