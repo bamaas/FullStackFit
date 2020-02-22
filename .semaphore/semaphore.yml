@@ -23,13 +23,9 @@ blocks:
         - name: make prod
           commands:
             - make prod
-            - cache store
-        - name: make test-ws
-          commands:
             - make test-ws
-        - name: make test-e2e
-          commands:
             - make test-e2e
+            - 'docker tag fullstackfit_frontend:latest "bamaas"/fullstackfit_frontend:latest'
       prologue:
         commands:
           - checkout
