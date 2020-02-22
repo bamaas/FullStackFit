@@ -1,3 +1,4 @@
+# $SEMAPHORE_WORKFLOW_ID 
 version: v1.0
 name: Pipeline
 agent:
@@ -24,18 +25,20 @@ blocks:
             - docker tag bamaas/fullstackfit_database:latest fullstackfit_database:latest
             # Building
             - make build-prod
-            # Testing
-            - docker pull bamaas/fullstackfit_test:latest || true
-            - docker tag bamaas/fullstackfit_test:latest fullstackfit_test:latest
-            - make test
-            # Login to Dockerhub
-            - docker images
-            - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
-            # Tagging
+            # Tagging   
             - 'docker tag fullstackfit_frontend:latest "$DOCKER_USERNAME"/fullstackfit_frontend:latest'
             - 'docker tag fullstackfit_backend:latest "$DOCKER_USERNAME"/fullstackfit_backend:latest'
             - 'docker tag fullstackfit_database:latest "$DOCKER_USERNAME"/fullstackfit_database:latest'
             - 'docker tag fullstackfit_reverseproxy:latest "$DOCKER_USERNAME"/fullstackfit_reverseproxy:latest'
+            # Login to Dockerhub
+            - docker images
+            - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+            # Testing
+            - make shutdown
+            - make deploy-prod
+            - docker pull bamaas/fullstackfit_test:latest || true
+            - docker tag bamaas/fullstackfit_test:latest fullstackfit_test:latest
+            - make test
             - 'docker tag fullstackfit_test:latest "$DOCKER_USERNAME"/fullstackfit_test:latest'
             # Pushing to Dockerhub
             - 'docker push "$DOCKER_USERNAME"/fullstackfit_frontend:latest'
