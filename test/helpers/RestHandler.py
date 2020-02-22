@@ -51,14 +51,17 @@ class RestHandler(object):
             .format(expected_value, type(expected_value), actual_value, type(actual_value))
         print("Assertion passed for: {}".format(json_path))
 
-    def report_last_output_message(self):
-        try:
-            history = BuiltIn().get_variable_value("${output}")
-            history = json.dumps(history, indent=4, sort_keys=True)
-            test_name = BuiltIn().get_variable_value("${TEST_NAME}")
-            logger.warn("Last output message in test '{}': {}".format(test_name, history))
-        except:
-            logger.info("No output message to report")
+    def report_last_output_message_on_failure(self):
+        status = BuiltIn().get_variable_value("${TEST STATUS}")
+        if status == 'FAIL':
+            try:
+                history = BuiltIn().get_variable_value("${output}")
+                if history is not None:
+                    history = json.dumps(history, indent=4, sort_keys=True)
+                    test_name = BuiltIn().get_variable_value("${TEST_NAME}")
+                    logger.warn("Last output message in test '{}': {}".format(test_name, history))
+            except:
+                logger.info("No output message to report")
 
     def assert_dictionary(self, actual_dict, expected_json, msg=None):
         if isinstance(actual_dict, dict):

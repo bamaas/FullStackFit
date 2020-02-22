@@ -1,7 +1,6 @@
 version: '3.3'
 services:
 
-  # https://blog.pusher.com/full-stack-testing-docker-compose/
   test:
     container_name: fit_test
     build:

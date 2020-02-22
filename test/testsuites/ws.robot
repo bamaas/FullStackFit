@@ -1,16 +1,15 @@
 *** Settings ***
 Resource          ../keywords/all.robot
-Resource          ../config/${ENVIRONMENT}_environment.robot
 
 *** Variables ***
 # The value in 'environment' is used to load the config file containing variables for the specific environment, such as the GUI_URL.
-${ENVIRONMENT}                  dev
+${ENVIRONMENT}                  localhost
 
 *** Settings ***
-Test Teardown       run keyword if test failed       report last output message
+Test Teardown                   report last output message on failure
 
 *** Test Cases ***
-Send correct POST request and assert with JSONPath
+WS | Calculate TDEE
     # Create the body
     ${body}=            create dictionary   name=john   
     ...                                     age=20  
@@ -20,7 +19,7 @@ Send correct POST request and assert with JSONPath
     ...                                     activitylevel=Vigorously active    
     ...                                     gender=man
     # Sent the request & assert
-    ${response}=        send POST request   ${BACKEND_URL}/postjson       ${body}     200      # 200 is the expected status response
+    ${response}=        send POST request   ${BACKEND_URL}/calculate_all       ${body}     expected_status=200
     assert JSON         ${response}         $.bmr               1932      integer
     assert JSON         ${response}         $.carbReqGram       530       integer
     assert JSON         ${response}         $.carbReqKcal       2118      integer
@@ -31,11 +30,31 @@ Send correct POST request and assert with JSONPath
     assert JSON         ${response}         $.proteinReqGram    160       integer
     assert JSON         ${response}         $.proteinReqKcal    640       integer
     assert JSON         ${response}         $.proteinReqPerc    18        integer
-    # Another way of asserting
-    ${tdee}=                        get from json       ${response}         $.tdee
-    should be equal as integers     3478            ${tdeeZZZ}
+    assert dictionary   ${response}         {"tdee":3478}
 
-Send wrong POST request and assert the status
+WS | Calculate BMR
+    # Test Data
+    ${body}=                create dictionary   
+    ...                     age=20
+    ...                     gender=man
+    ...                     weight=80
+    ...                     length=180
+    # Test Script
+    ${response}=            Send POST request  ${BACKEND_URL}/calculate_bmr  ${body}  expected_status=200
+    should be equal         '${response}'       '1932'
+    ...                     Assertion failed. Expected the BMR response to be "1932". Actual: "${response}".
+
+WS | Calculate BMI
+    # Test Data
+    ${body}=                create dictionary   
+    ...                     weight=80
+    ...                     length=180
+    # Test Script
+    ${response}=            Send POST request  ${BACKEND_URL}/calculate_bmi  ${body}  expected_status=200
+    should be equal         '${response}'       '25'
+    ...                     Assertion failed. Expected the BMI response to be "25". Actual: "${response}".
+
+WS | Send wrong POST request and assert the status
     [Documentation]                         Wrong gender given. Return status should be equal to 500
     # Create the body
     ${body}=            create dictionary   name=john   
@@ -46,4 +65,4 @@ Send wrong POST request and assert the status
     ...                                     activitylevel=Vigorously active    
     ...                                     gender=nogender
     # Sent the request & assert
-    ${response}=        send POST request   ${BACKEND_URL}/postjson       ${body}     500      # 200 is the expected status response
+    ${response}=        send POST request   ${BACKEND_URL}/calculate_all       ${body}     expected_status=500

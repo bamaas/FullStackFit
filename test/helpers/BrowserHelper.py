@@ -2,80 +2,84 @@ from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
 import configparser
 import tempfile
+import SeleniumLibrary
 from selenium import webdriver
+#from selenium.webdriver.chrome.options import Options
 from copy import deepcopy
 import os
+import sys
+from SeleniumLibrary.utils import is_truthy
+import time
+import urllib3
+import json
+from selenium.webdriver.remote.command import Command
 
 
 class BrowserHelper(object):
     def __init__(self):
         pass
     
-    def setup_browser(self, instance_type, browser, remote_url, capabilities, setup_url):
-        remote_url = BuiltIn().get_variable_value("${}".format(remote_url))
-        if 'lambdatest' in remote_url:
+    def setup_browser(self, remote_webdriver, browser, remote_url, capabilities, setup_url, maximize_window, bs_local=True):
+        logger.info('remote_webdriver: {}'.format(remote_webdriver))
+        if remote_webdriver.lower() == 'true':
+            # Argument  validations...
+            try:
+                # Because you can't pass a dictionary through CLI you have to get it like this way....
+                capabilities = BuiltIn().get_variable_value("&{}".format(capabilities))
+                remote_url = BuiltIn().get_variable_value("${}".format(remote_url))
+            except:
+                raise Exception("Input error. The $CAPABILITIES or $REMOTE_URL variable is not allowed to be empty because $REMOTE_WEBDRIVER == true")
+            if browser != '':
+                raise Exception("""'$BROWSER' == '{}' | '$BROWSER' should not have a value if '$REMOTE_WEBDRIVER' is set to 'false', because the browser is set in the $CAPABILITIES.""".format(browser))
+            remote_url_log = remote_url   # Need 2 different vars. 1 for logging and 1 for actual execution.
+            if 'browserstack' in remote_url:
                 base_url = remote_url.partition('@')[2]
                 protocol_key = remote_url.partition('@')[0]
                 protocol = protocol_key.partition('//')[0] + '//'
                 key = protocol_key.partition('//')[2]
-                key_length = len(key)
-                key_secret = "*" * key_length
-                secret_remote_url = protocol + key_secret + base_url
-        logger.info('Instance type: {}'.format(instance_type))
-        if instance_type == 'local' and (remote_url != '' or capabilities != ''):
-            if 'lambdatest' in remote_url:
-                logger.info('Remote URL: {}'.format(secret_remote_url))
-            else:
-                logger.info('Remote URL: {}'.format(remote_url))
-            logger.info('Capabilities: {}'.format(capabilities))
-            raise Exception ("'remote_url' and 'capabilities' should not have a value if 'instance_type' is set to 'local'")
-        if instance_type == 'remote' and (browser != ''):
-            raise Exception("'browser' == '{}' | 'browser' should not have a value if 'instance type' is set to 'local', because the browser is set in the capabilities.".format(browser))
-        if instance_type == 'local':
-            logger.info('Browser: {}'.format(browser))
-            self.connect_to_browser(url=setup_url, browser=browser, alias='kvk')
-            selib = BuiltIn().get_library_instance('SeleniumLibrary')
-            selib.maximize_browser_window()
-        elif instance_type == 'remote':
-            if 'lambdatest' in remote_url:
-                logger.info('Remote URL: {}'.format(secret_remote_url))
-            else:
-                logger.info('Remote URL: {}'.format(remote_url))
-            capabilities = BuiltIn().get_variable_value("${}".format(capabilities))
-            logger.info('Capabilities: {}'.format(capabilities))
+                key_secret = "*" * len(key)
+                remote_url_log = protocol + key_secret + base_url
+                # From here on we create a connection between Browserstack and localhost
+                if bs_local == True:
+                    # TODO Idea: make a functionality to set bs_local to true if setup_url == localhost and remote_url == browserstack
+                    # This is required for Browserstack to be able to detect that a local connection has to be made
+                    capabilities['browserstack.local'] = 'true'
+                    self._connect_bs_local()
+            logger.info('Remote URL: {}'.format(remote_url_log))
             test_name = BuiltIn().get_variable_value("${TEST NAME}")
-            # Append test name to the capabilities. This value is used as test name in lamdatest
-            if 'name' in capabilities:
-                raise Exception("Please remove 'name' from the capabilites dictionary. As this key value is automatically set to the test case name.")
+            # if 'name' in capabilities:
+                #raise Exception("Please remove 'name' from the capabilites dictionary. As this key value is automatically set to the test case name.")
+            # Append test name to the capabilities. This value is used as test name in lamdatest                
             capabilities['name'] = test_name
+            logger.info('Capabilities: {}'.format(capabilities))
             selib = BuiltIn().get_library_instance('SeleniumLibrary')
             driver = webdriver.Remote(command_executor='{0}'.format(remote_url), desired_capabilities=capabilities)
+            if maximize_window.lower() == 'true':
+                driver.maximize_window()
+                driver.maximize_window()     # TODO this is a workaround. Somehow the browser doesn't get fully maximized the first time. (Chrome 76 and Chromedriver 76)
+                logger.info('Maximized browser window')
+            window_size = driver.get_window_size()
+            BuiltIn().set_tags('resolution: {}x{}'.format(window_size.get('width'), window_size.get('height')))
             driver.get(setup_url)
-            logger.info('Navigating to setup url: {}'.format(setup_url))
+            print('Navigating to setup url: {}'.format(setup_url))
             index = selib.register_driver(driver, 'kvk')
             selib._drivers.switch(index)
             return index
-        else:
-            raise Exception("{} is an incorrect value for 'instance_type'. Please choose between 'remote' or 'local'")
-
-
-    def get_value_from_radio_buttons(self, locator):
-        # this is actually a copy from a private keyword in SeLib, 'get value' from that
-        # library seems to always give the value of the first radiobutton and not from the selected one
-        try:
-            selib = BuiltIn().get_library_instance('Selenium2Library')
-        except:
+        elif remote_webdriver.lower() == 'false':
+            if remote_url != '' or capabilities != '':
+                raise Exception ("'$REMOTE_URL' and '$CAPABILITIES' should not have a value if '$REMOTE_WEBDRIVER' is set to 'false'")
+            # Here we create the actual browser (if needed)
+            logger.info('Browser: {}'.format(browser))
+            self.connect_to_browser(url=setup_url, browser=browser, alias='kvk')
             selib = BuiltIn().get_library_instance('SeleniumLibrary')
-        # when locating a radio button by id, it only gives one radiobutton
-        # but it is still useful as a locator, if used: find the radiobutton and then use the name to get the group
-        if locator[:3] == 'id=':
-            radio_button = selib.find_element(locator)
-            locator = 'name={}'.format(radio_button.get_attribute('name'))
-        radio_buttons = selib.find_elements(locator)
-        for element in radio_buttons:
-            if element.is_selected():
-                return element.get_attribute('value')
-        return None
+            if maximize_window.lower() == 'true':
+                selib.maximize_browser_window()
+                selib.maximize_browser_window()     # TODO this is a workaround. Somehow the browser doesn't get fully maximized the first time. (Chrome 76 and Chromedriver 76)
+                logger.info('Maximized browser window')
+            window_size = selib.get_window_size()
+            BuiltIn().set_tags('resolution: {}x{}'.format(window_size[0], window_size[1]))
+        else:
+            raise Exception("'{}' is an incorrect value for 'remote_webdriver'. Please choose between 'true' or 'false'".format(remote_webdriver))
 
     def report_screenshot(self, *locators):
         """Reports a screenshot to the report, optionally highlights element ``locator``."""
@@ -126,58 +130,88 @@ class BrowserHelper(object):
         else:
             logger.info('<img src="data:image/png;base64, {}" style="width: 75%">'.format(img), True)
 
-    def _try_reuse(self, executor_url, session_ID, alias):
-        selib = BuiltIn().get_library_instance('SeleniumLibrary')
+    def _driver_is_active(self, executor_url, session_id, timeout=10, max_retries=2, debug=False):
+        selenium_url = executor_url + '/session/' + session_id + '/title'
+        retries = urllib3.util.Retry(connect=max_retries, read=max_retries, redirect=max_retries, total=max_retries)
+        http = urllib3.PoolManager(retries=retries)
+        start_time = time.time()
+        driver_active = False
         try:
-            # temporary setting the loglevel of urllib3 to 'no warnings' to prevent warnings when selenium driver is not running
-            import logging
-            urllib3_log = logging.getLogger("urllib3")
-            current_log_level = urllib3_log.level
-            urllib3_log.setLevel(logging.CRITICAL)
-
-            # try opening a remote webdriver with the URL of from the last session
-            driver = webdriver.Remote(command_executor='{0}'.format(executor_url), desired_capabilities={})
-
-            # set the loglevel of urllib3 back to the original log level
-            urllib3_log.setLevel(current_log_level)
-
-            # copy the driver object to a new object so that we can still control the window that is opened
-            new_driver = deepcopy(driver)
-
-            # switch the driver to the previous session by setting the session_id
-            new_driver.session_id = session_ID
-
-            #                # new approach, based on a solution i found on the internet
-            #                # unfortunately, it fails when a new window is opened in a reused session
-            #                new_driver = self._create_driver_session(strSessionID, strExecutorURL)
-            # try to do a very simple action on the new driver, this will fail if the session does not exist
-            # when it fails, we stop executing this function
-            try:
-                title = new_driver.title
-            except:
-                driver.close()
-                return None
-
-            # add the new driver to the WebDriverCache of the SeleniumLibrary and switch to it
-            index = selib.register_driver(new_driver, alias)
-            logger.debug('cache index for the new driver: {}'.format(selib._drivers.current_index))
-            selib._drivers.switch(index)
-
-            # close the empty browser window that was opened when creating the remote webdriver
-            logger.debug('driver: {}, new_driver: {}'.format(driver.session_id, new_driver.session_id))
-            driver.close()
-            return index
+            response = http.request('GET', selenium_url, timeout=timeout)
+            if response.status == 200:
+                response_data = json.loads(response.data)
+                if 'status' in response_data:
+                    status = response_data['status']
+                    if debug: print(f'status in response: {status}')
+                    if status == 0: driver_active = True
+                else:
+                    driver_active = True
         except:
-            logger.debug('no selenium session')
+            pass
+        end_time = time.time()
+        if debug: print(f'duration: {end_time - start_time}')
+        return driver_active
+
+    def _try_reuse(self, executor_url, session_ID, alias):
+        is_active = self._driver_is_active(executor_url, session_ID, timeout=5, max_retries=3)
+        if is_active:
+            selib = BuiltIn().get_library_instance('SeleniumLibrary')
+            # using the fast approach (0.1 seconds)
+            new_driver = self._create_driver_session(session_ID, executor_url)
+            index = selib.register_driver(new_driver, alias)
+            return index
+
+        else:
+            return None
 
     def connect_to_browser(self, url, browser='firefox', alias=None,
                      remote_url=False, desired_capabilities=None,
                      ff_profile_dir=None, reuse=True):
+        """Opens a new browser instance to the given ``url`` or connects to a browser opened in a
+        previous run with the same index or alias.
+
+        If the argument ``reuse`` is False, this keyword behaves the same as *Open Browser* keyword from the SeleniumLibrary:
+        http://robotframework.org/SeleniumLibrary/SeleniumLibrary.html#Open%20Browser
+
+        If the argument ``reuse`` is not given or True, this keyword will try to connect a browser opened in an
+        earlier run. If it can connect, it will not navigate to the given URL. If it can not connect (for example because
+        the browser is closed), it will open a browser in the same way as the *Open Browser* keyword.
+        If the optional argument ``alias`` is given, it will try to connect to a browser opened with that same ``alias``,
+        this applies for browsers opened in a previous run or in a the current run.
+        If ``alias`` is not given, it will try to connect to a browser based on it's index (These indices start from 1
+        and are incremented when new browsers are opened), but only from a previous run. To connect to a browser opened in
+        the same run based on it's index, use the index returned by the keyword as the alias.
+
+        *Note*: when working with more than one browser, always define ``alias`` to be sure to connect the right browser.
+
+        Examples:
+        | `Connect To Browser` | http://example.com | Chrome  | alias=Example |
+        | Title Should Be | Example |
+        | Go To | http://another_example.com |
+        | Title Should Be | Another Example |
+        | `Connect To Browser` | http://example.com | Chrome  | alias=Example |
+        | Title Should Be | Another Example |
+        | ${index}= | `Connect To Browser` | http://example.com | Chrome  |
+        | `Connect To Browser` | http://example.com | Chrome  | alias=${index} |
+        *Note*: This example test will pass on the first run, but will fail the first ``Title Should be`` on the second run.
+        During the second run, the first ``Connect To Browser`` will not navigate to the given URL but just connect to the
+        browser which had navigated to the second URL in the first run.
+        """
+        reuse = is_truthy(reuse)
         selib = BuiltIn().get_library_instance('SeleniumLibrary')
+
         if reuse is True:
             if alias is None:
                 new_index_or_alias = str(len(selib._drivers.drivers) + 1)
             else:
+                # we have to see if there is a browser in the cache with that alias
+                existing_aliases = selib._drivers._aliases
+                logger.debug('existing aliases: {}'.format(existing_aliases))
+                # if so: connect to it and return the index
+                if alias in existing_aliases:
+                    index = existing_aliases[alias]
+                    selib._drivers.switch(index)
+                    return index
                 new_index_or_alias = alias
             config = configparser.ConfigParser()
             config.read(tempfile.gettempdir() + os.sep + 'se_session.ini')
@@ -186,12 +220,42 @@ class BrowserHelper(object):
                 executor_url = config[new_index_or_alias]['url']
                 session_ID = config[new_index_or_alias]['sessionid']
                 logger.debug('driver details from ini: url={}; sessionid={}'.format(executor_url, session_ID))
+                # check if there is a browser in the browser cache that has the same session id
+                driver_cache = selib._drivers.drivers
+                for driver in driver_cache:
+                    # if so: connect to it and return the index
+                    if driver.session_id == session_ID:
+                        index = driver_cache.index(driver) + 1
+                        selib._drivers.switch(index)
+                        return index
+                start_time = time.time()
                 index = self._try_reuse(executor_url, session_ID, alias)
+                end_time = time.time()
+                logger.debug(end_time - start_time)
                 if index is not None:
                     logger.debug('Successfully reconnected to existing session')
                     return index
                 else:
                     logger.debug('Failed to reconnect to existing session')
+        # replace the __init__ of Chrome to always use the options that allow xml downloads
+        from selenium import webdriver
+        def __init__(self, executable_path="chromedriver", port=0,
+                     options=None, service_args=None,
+                     desired_capabilities=None, service_log_path=None,
+                     chrome_options=None, keep_alive=True):
+            options = webdriver.ChromeOptions()
+            options.add_experimental_option('prefs', {'safebrowsing.enabled': True})
+            options.add_argument('--safebrowsing-disable-download-protection')
+            options.add_argument('--safebrowsing-disable-extension-blacklist')
+            # Allow multiple downloads
+            options.add_experimental_option("prefs", {'profile.default_content_setting_values.automatic_downloads': 1})
+            self.init(executable_path, port, options, service_args, desired_capabilities, service_log_path,
+                      chrome_options, keep_alive)
+
+        if 'init' not in dir(webdriver.Chrome):
+            webdriver.Chrome.init = webdriver.Chrome.__init__
+            webdriver.Chrome.__init__ = __init__
+
         index = selib.open_browser(url, browser, alias, remote_url, desired_capabilities, ff_profile_dir)
         if reuse is True:
             driver = selib._drivers.drivers[index-1]
@@ -226,4 +290,6 @@ class BrowserHelper(object):
         new_driver = webdriver.Remote(command_executor=executor_url, desired_capabilities={})
         new_driver.session_id = session_id
         RemoteWebDriver.execute = org_command_execute
+        # this is set when by the orig command and is needed to make the switch_to_window work
+        # new_driver.w3c = False
         return new_driver

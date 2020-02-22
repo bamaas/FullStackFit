@@ -12,7 +12,7 @@ services:
       context: ./frontend
     
   backend:
-    container_name: fit_backend§
+    container_name: fit_backend
     build:
       context: ./backend
 

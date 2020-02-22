@@ -1,4 +1,4 @@
-.PHONY: dev prod test shutdown restart dev-fe dev-be dev-db dev-proxy reload-nginx test
+.PHONY: dev prod test shutdown restart dev-fe dev-be dev-db dev-proxy reload-nginx test test-e2e test-ws
 
 dev:
 	docker-compose -f docker-compose-dev.yml build
@@ -7,9 +7,6 @@ dev:
 prod:
 	docker-compose -f docker-compose-prod.yml build
 	docker-compose -f docker-compose-prod.yml up -d
-
-test:
-	docker-compose -f docker-compose-test.yml up
 
 shutdown:
 	docker-compose down
@@ -37,3 +34,14 @@ dev-proxy:
 
 reload-nginx:
 	docker exec -it fit_reverseproxy-dev nginx -s reload
+
+# TEST
+
+test:
+	docker-compose -f docker-compose-test.yml run --rm test -d logs testsuites
+
+test-e2e:
+	docker-compose -f docker-compose-test.yml run --rm test -d logs testsuites/gui.robot
+
+test-ws:
+	docker-compose -f docker-compose-test.yml run --rm test -d logs testsuites/ws.robot
