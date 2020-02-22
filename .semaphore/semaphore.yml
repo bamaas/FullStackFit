@@ -17,15 +17,25 @@ blocks:
           - sem-version python 3.7
           - cache restore
     dependencies: []
-  - name: Build & Test
+  - name: Build & Test & Push
     task:
       jobs:
-        - name: make prod
+        - name: ''
           commands:
             - make prod
             - make test-ws
             - make test-e2e
-            - 'docker tag fullstackfit_frontend:latest "bamaas"/fullstackfit_frontend:latest'
+            - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+            - 'docker tag fullstackfit_frontend:latest "$DOCKER_USERNAME"/fullstackfit_frontend:latest'
+            - 'docker push "$DOCKER_USERNAME"/fullstackfit_frontend:latest'
+            - 'docker tag fullstackfit_backend:latest "$DOCKER_USERNAME"/fullstackfit_backend:latest'
+            - 'docker push "$DOCKER_USERNAME"/fullstackfit_backend:latest'
+            - 'docker tag fullstackfit_database:latest "$DOCKER_USERNAME"/fullstackfit_database:latest'
+            - 'docker push "$DOCKER_USERNAME"/fullstackfit_database:latest'
+            - 'docker tag fullstackfit_reverseproxy:latest "$DOCKER_USERNAME"/fullstackfit_reverseproxy:latest'
+            - 'docker push "$DOCKER_USERNAME"/fullstackfit_reverseproxy:latest'
+            - 'docker tag fullstackfit_test:latest "$DOCKER_USERNAME"/fullstackfit_test:latest'
+            - 'docker push "$DOCKER_USERNAME"/fullstackfit_test:latest'
       prologue:
         commands:
           - checkout
