@@ -10,16 +10,25 @@ blocks:
       jobs:
         - name: Nameless 1
           commands:
-            - checkout
-            - sem-version python 3.7
             - python ./backend/tests/tests.py
+      prologue:
+        commands:
+          - checkout
+          - sem-version python 3.7
+          - cache restore
   - name: Build & Up
     task:
       jobs:
         - name: Build & Up
           commands:
-            - checkout
             - make prod
+            - cache store
+      prologue:
+        commands:
+          - checkout
+          - cache restore
+    skip:
+      when: branch != 'master'
   - name: Test
     task:
       epilogue:
@@ -30,5 +39,9 @@ blocks:
         - name: Test
           commands:
             - Make test
+      prologue:
+        commands:
+          - checkout
+          - cache restore
 execution_time_limit:
   minutes: 30
