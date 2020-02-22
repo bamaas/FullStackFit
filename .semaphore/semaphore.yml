@@ -13,33 +13,22 @@ blocks:
           commands:
             - checkout
             - docker --version
-            # Pulling (true avoid errors if the build hasn't been pushed before)
-            - docker pull bamaas/fullstackfit_reverseproxy:latest || true
-            - docker pull bamaas/fullstackfit_database:latest || true
-            - docker pull bamaas/fullstackfit_frontend:latest || true
-            - docker pull bamaas/fullstackfit_backend:latest || true
-            # Tagging (Remove the bamaas/...  So the make prod command uses caching)
-            - docker tag bamaas/fullstackfit_reverseproxy:latest fullstackfit_reverseproxy:latest
-            - docker tag bamaas/fullstackfit_backend:latest fullstackfit_backend:latest
-            - docker tag bamaas/fullstackfit_frontend:latest fullstackfit_frontend:latest
-            - docker tag bamaas/fullstackfit_database:latest fullstackfit_database:latest
-            # Building
-            - make build-prod
-            # Tagging   
-            - 'docker tag fullstackfit_frontend:latest "$DOCKER_USERNAME"/fullstackfit_frontend:latest'
-            - 'docker tag fullstackfit_backend:latest "$DOCKER_USERNAME"/fullstackfit_backend:latest'
-            - 'docker tag fullstackfit_database:latest "$DOCKER_USERNAME"/fullstackfit_database:latest'
-            - 'docker tag fullstackfit_reverseproxy:latest "$DOCKER_USERNAME"/fullstackfit_reverseproxy:latest'
-            # Login to Dockerhub
-            - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+            # Quick unit test
+            - make test-unit
+            # Building (generates :prod images)
+            - docker-compose -f docker-compose-build-prod.yml build
+            # Tagging from :prod to :latest
+            - 'docker tag bamaas/fullstackfit_frontend:prod "$DOCKER_USERNAME"fullstackfit_frontend:latest'
+            - 'docker tag bamaas/fullstackfit_backend:prod "$DOCKER_USERNAME"/fullstackfit_backend:latest'
+            - 'docker tag bamaas/fullstackfit_database:prod "$DOCKER_USERNAME"/fullstackfit_database:latest'
+            - 'docker tag bamaas/fullstackfit_reverseproxy:prod "$DOCKER_USERNAME"/fullstackfit_reverseproxy:latest'
+            # Run latest
+            - docker-compose -f docker-compose -f docker-compose-run-latest.yml up -d
             # Testing
-            - make shutdown
-            - docker images
-            - make prod-up
-            - docker pull bamaas/fullstackfit_test:latest || true
-            - docker tag bamaas/fullstackfit_test:latest fullstackfit_test:latest
-            - make test
-            - 'docker tag fullstackfit_test:latest "$DOCKER_USERNAME"/fullstackfit_test:latest'
+            - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+            - 'docker pull "$DOCKER_USERNAME"/fullstackfit_test:latest || true'
+            - make test-ws
+            - make test-e2e
             # Pushing to Dockerhub
             - docker images
             - 'docker push "$DOCKER_USERNAME"/fullstackfit_frontend:latest'

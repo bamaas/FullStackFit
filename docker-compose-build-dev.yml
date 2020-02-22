@@ -11,6 +11,7 @@ services:
   # Backend adress: ip/api/
   reverseproxy:
     container_name: fit_reverseproxy-dev
+    image: fullstackfit_reverseproxy:dev
     depends_on:
       - database
       - frontend
@@ -30,6 +31,7 @@ services:
 
   frontend:
     container_name: fit_frontend-dev
+    image: bamaas/fullstackfit_frontend:dev
     depends_on: 
       - database
       - backend
@@ -44,6 +46,7 @@ services:
     
   backend:
     container_name: fit_backend-dev
+    image: fullstackfit_backend:dev
     restart: always   # Dev purpose
     depends_on: 
       - database
@@ -61,6 +64,7 @@ services:
 
   database:
     container_name: fit_database-dev
+    image: fullstackfit_database:dev
     build:
       context: ./database
       dockerfile: Dockerfile

@@ -9,13 +9,13 @@ services:
     ports:
       - 80:80
     restart: always
-    image: fullstackfit_reverseproxy:latest
+    image: fullstackfit_reverseproxy:prod
     build:
       context: ./reverse-proxy
 
   frontend:
     container_name: fit_frontend-prod
-    image: fullstackfit_frontend:latest
+    image: bamaas/fullstackfit_frontend:prod
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -26,7 +26,7 @@ services:
     
   backend:
     container_name: fit_backend-prod
-    image: fullstackfit_backend:latest
+    image: bamaas/fullstackfit_backend:prod
     restart: always
     depends_on: 
       - reverseproxy
@@ -40,6 +40,7 @@ services:
 
   database:
     container_name: fit_database-prod
+    image: bamaas/fullstackfit_database:prod
     depends_on:
      - reverseproxy
     build:

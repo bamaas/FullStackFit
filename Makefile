@@ -7,7 +7,6 @@ restart:
 	docker-compose restart
 
 # DEV
-
 dev:
 	docker-compose -f docker-compose-dev.yml build
 	docker-compose -f docker-compose-dev.yml up
@@ -31,14 +30,7 @@ dev-proxy:
 reload-nginx:
 	docker exec -it fit_reverseproxy-dev nginx -s reload
 
-# BUILD
-
-build-prod:
-	docker-compose -f docker-compose-build-prod.yml build
-	docker-compose -f docker-compose-build-prod.yml up -d
-
 # TEST
-
 test:
 	make test-unit
 	make test-ws
@@ -53,10 +45,14 @@ test-ws:
 test-e2e:
 	docker-compose -f docker-compose-test.yml run --rm test -d logs testsuites/gui.robot
 
-# DEPLOY PROD
-prod-pull:
-	docker-compose rm -f
-	docker-compose -f docker-compose-deploy-prod.yml build --pull
+# PROD
+prod:
+	docker-compose -f docker-compose-prod.build.yml build
+	docker-compose -f docker-compose-prod.build.yml up -d
 
-prod-up:
-	docker-compose -f docker-compose-deploy-prod.yml up -d
+# LATEST
+run-latest:
+	docker-compose down
+	docker-compose rm -f
+	docker-compose -f docker-compose-run-latest.yml build --pull
+	docker-compose -f docker-compose-run-latest.yml up -d
