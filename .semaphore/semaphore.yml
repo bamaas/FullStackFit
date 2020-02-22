@@ -23,7 +23,7 @@ blocks:
             - docker tag bamaas/fullstackfit_frontend:latest fullstackfit_frontend:latest
             - docker tag bamaas/fullstackfit_database:latest fullstackfit_database:latest
             # Building
-            - make prod
+            - make build-prod
             # Testing
             - docker pull bamaas/fullstackfit_test:latest || true
             - docker tag bamaas/fullstackfit_test:latest fullstackfit_test:latest
