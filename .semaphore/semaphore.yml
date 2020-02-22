@@ -20,8 +20,10 @@ blocks:
   - name: Build & Test & Push
     task:
       jobs:
-        - name: ''
+        - name: Bas
           commands:
+            - checkout
+            - cache restore
             - make prod
             - make test-ws
             - make test-e2e
@@ -36,10 +38,6 @@ blocks:
             - 'docker push "$DOCKER_USERNAME"/fullstackfit_reverseproxy:latest'
             - 'docker tag fullstackfit_test:latest "$DOCKER_USERNAME"/fullstackfit_test:latest'
             - 'docker push "$DOCKER_USERNAME"/fullstackfit_test:latest'
-      prologue:
-        commands:
-          - checkout
-          - cache restore
       epilogue:
         always:
           commands:
