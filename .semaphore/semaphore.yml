@@ -5,18 +5,6 @@ agent:
     type: e1-standard-2
     os_image: ubuntu1804
 blocks:
-  - name: Checkout & Unittest
-    task:
-      jobs:
-        - name: BE unit test
-          commands:
-            - python ./backend/tests/tests.py
-      prologue:
-        commands:
-          - checkout
-          - sem-version python 3.7
-          - cache restore
-    dependencies: []
   - name: Build & Test & Push
     task:
       jobs:
@@ -28,26 +16,16 @@ blocks:
             - docker pull bamaas/fullstackfit_database:latest || true
             - docker pull bamaas/fullstackfit_frontend:latest || true
             - docker pull bamaas/fullstackfit_backend:latest || true
-            # Renaming/retaggin the images
-            # Remove the bamaas/... from teh name so the make prod command uses caching
-              # Reverseproxy
+            # Tagging (Remove the bamaas/...  So the make prod command uses caching)
             - docker tag bamaas/fullstackfit_reverseproxy:latest fullstackfit_reverseproxy:latest
-            - docker rmi bamaas/fullstackfit_reverseproxy:latest
-              # Backend
             - docker tag bamaas/fullstackfit_backend:latest fullstackfit_backend:latest
-            - docker rmi bamaas/fullstackfit_backend:latest
-              # Frontend
             - docker tag bamaas/fullstackfit_frontend:latest fullstackfit_frontend:latest
-            - docker rmi bamaas/fullstackfit_frontend:latest
-              # Database
             - docker tag bamaas/fullstackfit_database:latest fullstackfit_database:latest
-            - docker rmi bamaas/fullstackfit_database:latest
             # Building
             - make prod
             # Testing
             - docker pull bamaas/fullstackfit_test:latest || true
             - docker tag bamaas/fullstackfit_test:latest fullstackfit_test:latest
-            - docker rmi bamaas/fullstackfit_test:latest
             - make test
             # Login to Dockerhub
             - docker images
