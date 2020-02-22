@@ -11,6 +11,7 @@ blocks:
         - name: Bas
           commands:
             - checkout
+            - docker --version
             # Pulling (true avoid errors if the build hasn't been pushed before)
             - docker pull bamaas/fullstackfit_reverseproxy:latest || true
             - docker pull bamaas/fullstackfit_database:latest || true

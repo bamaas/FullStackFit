@@ -12,8 +12,6 @@ RUN apt-get update \
     && pip install -r requirements.txt \
     && apt-get purge -y --auto-remove gcc
 
-#RUN pip install -r ./requirements.txt
-
 # With 'Make dev' we overwrite these copied folders with mounting a host volume to container.
 COPY . /src
 
