@@ -12,7 +12,6 @@ blocks:
         - name: Bas
           commands:
             - checkout
-            - docker --version
             # Quick unit test
             - make test-unit
             # Building (generates :prod images)
