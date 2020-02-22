@@ -55,4 +55,7 @@ test-e2e:
 
 # DEPLOY
 deploy-prod:
-	docker-compose -f docker-compose-deploy-prod.yml up -d
+	docker-compose down
+	docker-compose rm -f
+	docker-compose -f docker-compose-deploy-prod.yml build --pull
+	docker-compose -f docker-compose-deploy-prod.yml up
