@@ -9,7 +9,7 @@ services:
     ports:
       - 80:80
     restart: always
-    image: fullstackfit_reverseproxy:prod
+    image: bamaas/fullstackfit_reverseproxy:prod
     build:
       context: ./reverse-proxy
 
