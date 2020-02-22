@@ -53,9 +53,10 @@ test-ws:
 test-e2e:
 	docker-compose -f docker-compose-test.yml run --rm test -d logs testsuites/gui.robot
 
-# DEPLOY
-deploy-prod:
-	docker-compose down
+# DEPLOY PROD
+prod-pull:
 	docker-compose rm -f
 	docker-compose -f docker-compose-deploy-prod.yml build --pull
+
+prod-up:
 	docker-compose -f docker-compose-deploy-prod.yml up -d

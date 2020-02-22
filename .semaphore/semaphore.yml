@@ -31,16 +31,17 @@ blocks:
             - 'docker tag fullstackfit_database:latest "$DOCKER_USERNAME"/fullstackfit_database:latest'
             - 'docker tag fullstackfit_reverseproxy:latest "$DOCKER_USERNAME"/fullstackfit_reverseproxy:latest'
             # Login to Dockerhub
-            - docker images
             - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
             # Testing
             - make shutdown
-            - make deploy-prod
+            - docker images
+            - make prod-up
             - docker pull bamaas/fullstackfit_test:latest || true
             - docker tag bamaas/fullstackfit_test:latest fullstackfit_test:latest
             - make test
             - 'docker tag fullstackfit_test:latest "$DOCKER_USERNAME"/fullstackfit_test:latest'
             # Pushing to Dockerhub
+            - docker images
             - 'docker push "$DOCKER_USERNAME"/fullstackfit_frontend:latest'
             - 'docker push "$DOCKER_USERNAME"/fullstackfit_backend:latest'
             - 'docker push "$DOCKER_USERNAME"/fullstackfit_database:latest'
