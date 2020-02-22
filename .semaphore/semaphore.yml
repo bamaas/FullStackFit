@@ -8,7 +8,7 @@ blocks:
   - name: Checkout & Unittest
     task:
       jobs:
-        - name: Nameless 1
+        - name: BE unit test
           commands:
             - python ./backend/tests/tests.py
       prologue:
@@ -17,14 +17,19 @@ blocks:
           - sem-version python 3.7
           - cache restore
     dependencies: []
-  - name: Build & Up
+  - name: Build & Test
     task:
       jobs:
-        - name: Build & Up
+        - name: make prod
           commands:
             - make prod
             - cache store
-            - make test
+        - name: make test-ws
+          commands:
+            - make test-ws
+        - name: make test-e2e
+          commands:
+            - make test-e2e
       prologue:
         commands:
           - checkout
