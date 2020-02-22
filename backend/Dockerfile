@@ -1,10 +1,18 @@
-FROM python:3.7.4-stretch
+FROM python:3.8-slim-buster
 
 WORKDIR /src
 
-# First install the dependencies. Docker will skip the RUN part if it detects that there are no changes on the COPY part
 COPY ./requirements.txt /src
-RUN pip install -r ./requirements.txt
+
+# First install the dependencies. Docker will skip the RUN part if it detects that there are no changes on the COPY part
+RUN apt-get update \
+    && apt-get install -y gcc \
+    && apt-get install -y libpq-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install -r requirements.txt \
+    && apt-get purge -y --auto-remove gcc
+
+#RUN pip install -r ./requirements.txt
 
 # With 'Make dev' we overwrite these copied folders with mounting a host volume to container.
 COPY . /src
