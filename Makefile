@@ -51,7 +51,7 @@ prod:
 	docker-compose -f docker-compose-prod.build.yml up -d
 
 # LATEST
-run-latest:
+latest:
 	docker-compose down
 	docker-compose rm -f
 	docker-compose -f docker-compose-run-latest.yml build --pull
