@@ -28,5 +28,7 @@ COPY nginx.conf /etc/nginx/nginx.conf
 WORKDIR /usr/share/nginx/html
 COPY --from=builder /usr/src/app/dist/angu/ .
 
+ENV PORT=4200
+
 # Replace $PORT in nginx.conf with the environment variable $PORT
 CMD sed -i -e 's/$PORT/'"$PORT"'/g' /etc/nginx/nginx.conf && nginx -g 'daemon off;'

@@ -1,38 +1,29 @@
 version: '3.3'
 services:
 
-  # With the use of this reverse proxy both the frontend and backend are accessable through port 80.
-  # In this way I expose an public api
-  # Backend adress: baseURL/api/
   reverseproxy:
-    container_name: fit_reverseproxy-prod
+    container_name: fit_reverseproxy
     ports:
       - 80:80
     restart: always
+    depends_on:
+      - frontend
     image: bamaas/fullstackfit_reverseproxy:latest
 
   frontend:
-    container_name: fit_frontend-prod
+    container_name: fit_frontend
     image: bamaas/fullstackfit_frontend:latest
-    environment:
-      - PORT=4200
+    depends_on:
+      - backend
     
   backend:
-    container_name: fit_backend-prod
+    container_name: fit_backend
     image: bamaas/fullstackfit_backend:latest
     restart: always
     depends_on: 
-      - reverseproxy
       - database
-    environment:
-      - RELOAD=False
-      - PORT=5000
 
   database:
-    container_name: fit_database-prod
+    container_name: fit_database
     image: bamaas/fullstackfit_database:latest
     env_file: './backend/database.env'
-    depends_on:
-     - reverseproxy
-    ports:
-      - 5432:5432

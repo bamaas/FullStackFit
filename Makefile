@@ -45,7 +45,7 @@ test:
 	make test-e2e
 
 test-unit:
-	python3 ./backend/tests/tests.py
+	python3 "./backend/unit tests/test_calculations.py"
 
 test-ws:
 	docker-compose -f docker-compose-test.yml run --rm test -d logs testsuites/ws.robot
