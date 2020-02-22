@@ -25,7 +25,8 @@ blocks:
             - checkout
             - cache restore
             - make prod
-            - make test-ws
+            - docker images
+            - make test
             - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
             - 'docker tag fullstackfit_frontend:latest "$DOCKER_USERNAME"/fullstackfit_frontend:latest'
             - 'docker push "$DOCKER_USERNAME"/fullstackfit_frontend:latest'

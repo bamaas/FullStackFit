@@ -31,9 +31,9 @@ GUI | Calculate TDEE
     input text                          id=weight-hb    80
     input text                          id=length-hb    180
     input text                          id=age-hb       20
-    click element                       //mat-select[@ng-reflect-id='activitylevel-hb']
+    click element                       id=activitylevel-hb
     click element                       //*[text()='Sedentary or light activity']
-    click element                       //mat-select[@ng-reflect-id='goal-hb']
+    click element                       id=goal-hb
     click element                       //*[text()='Fat loss']
     click element                       //button[contains(.,'Calculate TDEE')]
     wait until element is visible       //p[text()='BMR 1932 kcal']
