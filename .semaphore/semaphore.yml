@@ -16,6 +16,7 @@ blocks:
           - checkout
           - sem-version python 3.7
           - cache restore
+    dependencies: []
   - name: Build & Up
     task:
       jobs:
@@ -23,25 +24,18 @@ blocks:
           commands:
             - make prod
             - cache store
+            - make test
       prologue:
         commands:
           - checkout
           - cache restore
-    skip:
-      when: branch != 'master'
-  - name: Test
-    task:
       epilogue:
         always:
           commands:
-            - Make shutdown
-      jobs:
-        - name: Test
-          commands:
-            - Make test
-      prologue:
-        commands:
-          - checkout
-          - cache restore
+            - make shutdown
+    skip:
+      when: branch != 'master'
+    dependencies:
+      - Checkout & Unittest
 execution_time_limit:
   minutes: 30
