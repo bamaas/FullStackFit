@@ -4,5 +4,5 @@ export const environment = {
   // Set this value equal to the externally accessable backend adress
   // apiBaseUrl: 'https://nittiest-dormouse-2376.dataplicity.io'
   // apiBaseUrl : 'http://localhost/api'
-  apiBaseUrl: window.location.href + 'api'
+  apiBaseUrl: window.location.origin + 'api'
 };
