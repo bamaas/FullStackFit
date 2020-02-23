@@ -8,27 +8,27 @@ restart:
 
 # DEV
 dev:
-	docker-compose -f docker-compose-dev.yml build
-	docker-compose -f docker-compose-dev.yml up
+	docker-compose -f docker-compose-build-dev.yml build
+	docker-compose -f docker-compose-build-dev.yml up
 
 dev-fe:
-	docker-compose -f docker-compose-dev.yml build frontend
-	docker-compose -f docker-compose-dev.yml up frontend
+	docker-compose -f docker-compose-build-dev.yml build frontend
+	docker-compose -f docker-compose-build-dev.yml up frontend
 
 dev-be:
-	docker-compose -f docker-compose-dev.yml build backend
-	docker-compose -f docker-compose-dev.yml up backend
+	docker-compose -f docker-compose-build-dev.yml build backend
+	docker-compose -f docker-compose-build-dev.yml up backend
 
 dev-db:
-	docker-compose -f docker-compose-dev.yml build database
-	docker-compose -f docker-compose-dev.yml up database
+	docker-compose -f docker-compose-build-dev.yml build database
+	docker-compose -f docker-compose-build-dev.yml up database
 
 dev-proxy:
-	docker-compose -f docker-compose-dev.yml build reverseproxy
-	docker-compose -f docker-compose-dev.yml up reverseproxy
+	docker-compose -f docker-compose-build-dev.yml build reverseproxy
+	docker-compose -f docker-compose-build-dev.yml up reverseproxy
 
 reload-nginx:
-	docker exec -it fit_reverseproxy-dev nginx -s reload
+	docker exec -it fit_reverseproxy-build-dev nginx -s reload
 
 # TEST
 test:
