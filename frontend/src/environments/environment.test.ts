@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'http://localhost/api'
+  apiBaseUrl: window.location.href + 'api'
   //  ng build --configuration=staging
 };
