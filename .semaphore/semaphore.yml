@@ -11,7 +11,8 @@ blocks:
         - name: Bas
           commands:
             - checkout
-            - gcloud auth activate-service-account --key-file=secrets-gcp.json
+            - gcloud auth activate-service-account --key-file=.secrets.gcp.json
+            - gcloud auth configure-docker -q
             - gcloud compute ssh instance-2 --project united-watch-268115 --zone us-central1-a --command='echo hi'
             - echo hi
             - make test-unit
@@ -36,6 +37,7 @@ blocks:
           commands:
             - make shutdown
       secrets:
+        - name: Docker
         - name: google-cloud-stg
     skip:
       when: branch != 'master'
