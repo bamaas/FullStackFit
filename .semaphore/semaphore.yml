@@ -13,7 +13,6 @@ blocks:
             - checkout
             - gcloud auth activate-service-account --key-file=.secrets.gcp.json
             - gcloud compute ssh instance-2 --project united-watch-268115 --zone us-central1-a --command='echo hi'
-            - echo hi
             - make test-unit
             - docker-compose -f docker-compose-build-prod.yml build
             - docker-compose -f docker-compose-build-prod.yml up -d
