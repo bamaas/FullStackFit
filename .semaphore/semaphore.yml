@@ -1,4 +1,3 @@
-# $SEMAPHORE_WORKFLOW_ID 
 version: v1.0
 name: Pipeline
 agent:
@@ -12,22 +11,19 @@ blocks:
         - name: Bas
           commands:
             - checkout
-            # Quick unit test
+            - gcloud auth activate-service-account --key-file=.secrets.gcp.json
+            - gcloud compute ssh instance-2 --project united-watch-268115 --zone us-central1-a --command='echo hi'
             - make test-unit
-            # Building (generates :prod images)
             - docker-compose -f docker-compose-build-prod.yml build
             - docker-compose -f docker-compose-build-prod.yml up -d
-            # Tagging from :prod to :latest
             - 'docker tag bamaas/fullstackfit_frontend:prod "$DOCKER_USERNAME"/fullstackfit_frontend:latest'
             - 'docker tag bamaas/fullstackfit_backend:prod "$DOCKER_USERNAME"/fullstackfit_backend:latest'
             - 'docker tag bamaas/fullstackfit_database:prod "$DOCKER_USERNAME"/fullstackfit_database:latest'
             - 'docker tag bamaas/fullstackfit_reverseproxy:prod "$DOCKER_USERNAME"/fullstackfit_reverseproxy:latest'
-            # Testing
             - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
             - 'docker pull "$DOCKER_USERNAME"/fullstackfit_test:latest || true'
             - make test-ws
             - make test-e2e
-            # Pushing to Dockerhub
             - docker images
             - 'docker push "$DOCKER_USERNAME"/fullstackfit_frontend:latest'
             - 'docker push "$DOCKER_USERNAME"/fullstackfit_backend:latest'
@@ -40,6 +36,7 @@ blocks:
             - make shutdown
       secrets:
         - name: Docker
+        - name: google-cloud-stg
     skip:
       when: branch != 'master'
 execution_time_limit:
