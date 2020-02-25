@@ -20,7 +20,8 @@ blocks:
             - 'docker tag bamaas/fullstackfit_reverseproxy:prod "$DOCKER_USERNAME"/fullstackfit_reverseproxy:latest'
             - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
             - 'docker pull "$DOCKER_USERNAME"/fullstackfit_test:latest || true'
-            - docker-compose -f docker-compose-test.yml run --rm test -d logs testsuites
+            - docker-compose -f docker-compose-test.yml run --rm test -d logs -v ENVIRONMENT:LOCALHOST --log testlog-WS-\(build\).html testsuites/ws.robot
+            - docker-compose -f docker-compose-test.yml run --rm test -d logs -v ENVIRONMENT:LOCALHOST --log testlog-GUI-\(build\).html testsuites/gui.robot
             - docker images
             - 'docker push "$DOCKER_USERNAME"/fullstackfit_frontend:latest'
             - 'docker push "$DOCKER_USERNAME"/fullstackfit_backend:latest'
@@ -31,11 +32,16 @@ blocks:
             - chmod 600 ../google_compute_engine
             - chmod 600 ../google_compute_engine.pub
             - gcloud compute ssh instance-2 --project united-watch-268115 --zone us-central1-a --ssh-key-file=../google_compute_engine --command='cd FullStackFit && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0  -f docker-compose-run-latest.yml pull && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0  -f docker-compose-run-latest.yml up -d'
+            - docker-compose -f docker-compose-test.yml run --rm test -d logs -v ENVIRONMENT:PROD --log testlog-WS-\(prod\).html testsuites/ws.robot
+            - docker-compose -f docker-compose-test.yml run --rm test -d logs -v ENVIRONMENT:PROD --log testlog-GUI-\(prod\).html testsuites/gui.robot
       epilogue:
         always:
           commands:
             - make shutdown
-            - artifact push workflow ./test/logs/log.html
+            - artifact push workflow ./test/logs/testlog-WS-\(build\).html
+            - artifact push workflow ./test/logs/testlog-GUI-\(build\).html
+            - artifact push workflow ./test/logs/testlog-WS-\(prod\).html
+            - artifact push workflow ./test/logs/testlog-GUI-\(prod\).html
       secrets:
         - name: Docker
         - name: google-cloud-stg
