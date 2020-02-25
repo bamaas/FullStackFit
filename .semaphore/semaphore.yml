@@ -10,7 +10,7 @@ blocks:
       jobs:
         - name: Bas
           commands:
-            - gcloud auth activate-service-account --key-file=.secrets.gcp.json --ssh-key-file=secrets.gcp.ssh
+            - gcloud auth activate-service-account --key-file=.secrets.gcp.json
             - gcloud compute ssh instance-2 --project united-watch-268115 --zone us-central1-a --command='echo hi'
             - checkout
             - echo hi
