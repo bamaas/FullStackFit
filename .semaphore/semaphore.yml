@@ -10,10 +10,6 @@ blocks:
       jobs:
         - name: Bas
           commands:
-            - gcloud auth activate-service-account --key-file=.secrets.gcp.json
-            - chmod 600 google_compute_engine
-            - chmod 600 google_compute_engine.pub
-            - gcloud compute ssh instance-2 --project united-watch-268115 --zone us-central1-a --ssh-key-file=$SEMAPHORE_PROJECT_NAME/google_compute_engine --command='cd FullStackFit && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0  -f docker-compose-run-latest.yml pull && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0  -f docker-compose-run-latest.yml up -d'
             - checkout
             - make asdfsdaf
             - make test-unit
@@ -33,6 +29,10 @@ blocks:
             - 'docker push "$DOCKER_USERNAME"/fullstackfit_database:latest'
             - 'docker push "$DOCKER_USERNAME"/fullstackfit_reverseproxy:latest'
             - 'docker push "$DOCKER_USERNAME"/fullstackfit_test:latest'
+            - gcloud auth activate-service-account --key-file=$SEMAPHORE_PROJECT_NAME/.secrets.gcp.json
+            - chmod 600 $SEMAPHORE_PROJECT_NAME/google_compute_engine
+            - chmod 600 $SEMAPHORE_PROJECT_NAME/google_compute_engine.pub
+            - gcloud compute ssh instance-2 --project united-watch-268115 --zone us-central1-a --ssh-key-file=$SEMAPHORE_PROJECT_NAME/google_compute_engine --command='cd FullStackFit && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0  -f docker-compose-run-latest.yml pull && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0  -f docker-compose-run-latest.yml up -d'
       epilogue:
         always:
           commands:
