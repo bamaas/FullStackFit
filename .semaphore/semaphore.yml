@@ -20,8 +20,7 @@ blocks:
             - 'docker tag bamaas/fullstackfit_reverseproxy:prod "$DOCKER_USERNAME"/fullstackfit_reverseproxy:latest'
             - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
             - 'docker pull "$DOCKER_USERNAME"/fullstackfit_test:latest || true'
-            - make test-ws
-            - make test-e2e
+            - docker-compose -f docker-compose-test.yml run --rm test -d logs testsuites
             - docker images
             - 'docker push "$DOCKER_USERNAME"/fullstackfit_frontend:latest'
             - 'docker push "$DOCKER_USERNAME"/fullstackfit_backend:latest'
@@ -36,6 +35,7 @@ blocks:
         always:
           commands:
             - make shutdown
+            - artifact push workflow ./test/logs/log.html
       secrets:
         - name: Docker
         - name: google-cloud-stg
