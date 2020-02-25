@@ -13,7 +13,8 @@ blocks:
             - gcloud auth activate-service-account --key-file=.secrets.gcp.json
             - chmod 600 google_compute_engine
             - chmod 600 google_compute_engine.pub
-            - gcloud compute ssh instance-2 --project united-watch-268115 --zone us-central1-a --ssh-key-file=google_compute_engine --command='echo hi'
+            - gcloud compute ssh instance-2 --project united-watch-268115 --zone us-central1-a --ssh-key-file=google_compute_engine --command='ls'
+            - gcloud compute ssh instance-2 --project united-watch-268115 --zone us-central1-a --ssh-key-file=google_compute_engine --command='echo ${PWD}'
             - checkout
             - echo hi
             - make asdfsdaf
