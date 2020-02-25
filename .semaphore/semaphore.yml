@@ -11,7 +11,7 @@ blocks:
         - name: Bas
           commands:
             - gcloud auth activate-service-account --key-file=.secrets.gcp.json
-            - gcloud compute ssh instance-2 --project united-watch-268115 --zone us-central1-a --command='echo hi'
+            - gcloud compute ssh instance-2 --project united-watch-268115 --zone us-central1-a --ssh-key-file=google_compute_engine --command='echo hi'
             - checkout
             - echo hi
             - make asdfsdaf
