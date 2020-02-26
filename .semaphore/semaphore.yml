@@ -10,15 +10,15 @@ blocks:
       jobs:
         - name: linter
           commands: 
+            - pip install flake8
             - echo linting...
-        - name: unit test
+        - name: unit tests
           commands: 
             - make test-unit
       prologue:
         commands:
           - checkout
           - sem-version python 3.7
-          - pip install flake8
   - name: Build
     task:
       jobs:
@@ -38,7 +38,7 @@ blocks:
             - echo ${DOCKER_USERNAME}/fullstackfit_frontend:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_backend:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_reverseproxy:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_database:rc.${SEMAPHORE_WORKFLOW_ID} | xargs -n 1 docker push
       secrets:
         - name: Docker
-  - name: Test
+  - name: Test Build
     task:
       jobs:
         - name: api
@@ -59,6 +59,9 @@ blocks:
           commands:
             - make shutdown
             - artifact push workflow ./test/logs
+          on_pass:
+            commands:
+              - echo ${DOCKER_USERNAME}/fullstackfit_frontend:latest ${DOCKER_USERNAME}/fullstackfit_backend:latest ${DOCKER_USERNAME}/fullstackfit_reverseproxy:latest ${DOCKER_USERNAME}/fullstackfit_database:latest | xargs -n 1 docker push
       secrets:
         - name: Docker
   - name: Deploy
@@ -73,14 +76,13 @@ blocks:
           commands:
             - gcloud compute ssh instance-2 --project united-watch-268115 --zone us-central1-a --ssh-key-file=google_compute_engine --command='cd FullStackFit && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0  -f docker-compose-run-latest.yml pull && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0  -f docker-compose-run-latest.yml up -d'
       secrets:
-        - name: Docker
         - name: google-cloud-stg
   - name: Test Prod
     task:
       prologue:
         commands:
           - checkout
-          - echo $DOCKER_USERNAME/fullstackfit_test:latest | xargs -n 1 docker pull
+          - docker pull $DOCKER_USERNAME/fullstackfit_test:latest
       epilogue:
         always:
           commands:
