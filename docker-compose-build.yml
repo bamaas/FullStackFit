@@ -1,0 +1,57 @@
+version: '3.3'
+services:
+
+  ######################################################################
+  # This compose file builds Release Candidate (rc) images
+  # tagged with the environment variable SEMAPHORE_WORKFLOW_ID.
+  # This is the ID of the CI worklfow.
+  ######################################################################
+  
+  reverseproxy:
+    container_name: fit_reverseproxy-rc
+    ports:
+      - 80:80
+    restart: always
+    image: "bamaas/fullstackfit_reverseproxy:rc${SEMAPHORE_WORKFLOW_ID}"
+    build:
+      context: ./reverse-proxy
+    depends_on:
+      - database
+      - backend
+      - frontend
+
+  frontend:
+    container_name: fit_frontend-rc
+    image: "bamaas/fullstackfit_frontend:rc${SEMAPHORE_WORKFLOW_ID}"
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+      - 'config=production'
+    environment:
+      - PORT=4200
+    depends_on:
+      - database
+      - backend
+    
+  backend:
+    container_name: fit_backend-rc
+    image: "bamaas/fullstackfit_backend:rc${SEMAPHORE_WORKFLOW_ID}"
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - RELOAD=False
+      - PORT=5000
+    depends_on:
+      - database
+  
+  database:
+    container_name: fit_database-rc
+    image: "bamaas/fullstackfit_database:rc${SEMAPHORE_WORKFLOW_ID}"
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    env_file: './backend/database.env'    
+    ports:
+      - 5432:5432

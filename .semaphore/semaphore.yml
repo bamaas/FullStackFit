@@ -12,14 +12,21 @@ blocks:
           commands:
             - checkout
             - make test-unit
-            - docker-compose -f docker-compose-build-prod.yml build
-            - docker-compose -f docker-compose-build-prod.yml up -d
-            - 'docker tag bamaas/fullstackfit_frontend:prod "$DOCKER_USERNAME"/fullstackfit_frontend:latest'
-            - 'docker tag bamaas/fullstackfit_backend:prod "$DOCKER_USERNAME"/fullstackfit_backend:latest'
-            - 'docker tag bamaas/fullstackfit_database:prod "$DOCKER_USERNAME"/fullstackfit_database:latest'
-            - 'docker tag bamaas/fullstackfit_reverseproxy:prod "$DOCKER_USERNAME"/fullstackfit_reverseproxy:latest'
+            - make build
+            - curl -i http://localhost:803123
             - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+            - 'docker push "$DOCKER_USERNAME"/fullstackfit_frontend:latest'
+            - make hi
+
+
+
+            # - 'docker tag bamaas/fullstackfit_frontend:prod "$DOCKER_USERNAME"/fullstackfit_frontend:latest'
+            # - 'docker tag bamaas/fullstackfit_backend:prod "$DOCKER_USERNAME"/fullstackfit_backend:latest'
+            # - 'docker tag bamaas/fullstackfit_database:prod "$DOCKER_USERNAME"/fullstackfit_database:latest'
+            # - 'docker tag bamaas/fullstackfit_reverseproxy:prod "$DOCKER_USERNAME"/fullstackfit_reverseproxy:latest'
+            
             - 'docker pull "$DOCKER_USERNAME"/fullstackfit_test:latest || true'
+            
             - docker-compose -f docker-compose-test.yml run --rm test -d logs -v ENVIRONMENT:LOCALHOST --log testlog-WS-\(build\).html testsuites/ws.robot
             - docker-compose -f docker-compose-test.yml run --rm test -d logs -v ENVIRONMENT:LOCALHOST --log testlog-GUI-\(build\).html testsuites/gui.robot
             - docker images

@@ -3,12 +3,9 @@ services:
 
   ######################################################################
   # This compose file runs the containers with hot reloading enabled
-  # and exposing the ports of the specific services to the host
+  # and mapping the ports of the specific services to the host
   ######################################################################
 
-  # With the use of this reverse proxy both the frontend and backend are accessable through port 80.
-  # In this way I expose an public api for the TDEE calculations.
-  # Backend adress: ip/api/
   reverseproxy:
     container_name: fit_reverseproxy-dev
     image: fullstackfit_reverseproxy:dev
@@ -18,14 +15,11 @@ services:
       - backend
     ports:
       - 80:80
-    # environment:
-    #   - PORT=80
     restart: always
     build:
       context: ./reverse-proxy
       dockerfile: Dockerfile
-    # Caution: if mounting this volume, changing the file with CMD sed (in the Dockerfile) won't work.
-    # The file is 'busy'. It is in use by the host system.
+    # Use ./reverseproxy/fswatch.sh for hot reloading nginx in the Docker container.
     volumes:
       - './reverse-proxy/nginx.conf:/etc/nginx/nginx.conf'
 
@@ -40,14 +34,14 @@ services:
       dockerfile: Dockerfile-dev
     volumes:
       - './frontend:/app'
-    # Not needed anymore, handled by the reverse proxy. Just using it for dev/debug purpose.
+    # Mapping to host for dev purpose.
     ports:
      - 4200:4200
-    
+
   backend:
     container_name: fit_backend-dev
     image: fullstackfit_backend:dev
-    restart: always   # Dev purpose
+    restart: always
     depends_on: 
       - database
     build:
@@ -58,7 +52,7 @@ services:
     environment:
       - RELOAD=True
       - PORT=5000
-    # Not needed anymore, handled by the reverse proxy. Just using it for dev/debug purpose.
+    # Mapping to host for dev purpose.
     ports:
       - 5000:5000
 
@@ -72,6 +66,7 @@ services:
     # volumes:
     #   - '${PWD}/volumes/database:/var/lib/postgresql/data'
     # Not possible to move the database.env file to the /database folder because its a seperate container
-    env_file: './backend/database.env'    
+    env_file: './backend/database.env'
+    # Mapping to host for dev purpose.
     ports:
       - 5432:5432
