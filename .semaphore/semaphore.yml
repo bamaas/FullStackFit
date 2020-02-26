@@ -34,8 +34,9 @@ blocks:
             - make shutdown
         on_pass:
           commands:
+            - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
             - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
-            - echo ${DOCKER_USERNAME}/fullstackfit_frontend:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_backend:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_reverseproxy:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_database:rc.${SEMAPHORE_WORKFLOW_ID} | xargs -n 1 docker push
+            - echo ${DOCKER_USERNAME}/fullstackfit_frontend:rc.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/fullstackfit_backend:rc.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/fullstackfit_reverseproxy:rc.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/fullstackfit_database:rc.${GIT_COMMIT_SHA} | xargs -n 1 docker push
       secrets:
         - name: Docker
   - name: Test RC
@@ -51,8 +52,8 @@ blocks:
         commands:
           - checkout
           - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
-          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_backend:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_reverseproxy:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_database:rc.${SEMAPHORE_WORKFLOW_ID} | xargs -n 1 docker pull
-          - echo $DOCKER_USERNAME/fullstackfit_frontend:rc.$SEMAPHORE_WORKFLOW_ID $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/fullstackfit_backend:rc.$SEMAPHORE_WORKFLOW_ID $DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/fullstackfit_database:rc.$SEMAPHORE_WORKFLOW_ID $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/fullstackfit_reverseproxy:rc.$SEMAPHORE_WORKFLOW_ID $DOCKER_USERNAME/fullstackfit_reverseproxy:latest | xargs -n 2 docker tag
+          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:rc.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/fullstackfit_backend:rc.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/fullstackfit_reverseproxy:rc.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/fullstackfit_database:rc.${GIT_COMMIT_SHA} | xargs -n 1 docker pull
+          - echo $DOCKER_USERNAME/fullstackfit_frontend:rc.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/fullstackfit_backend:rc.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/fullstackfit_database:rc.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/fullstackfit_reverseproxy:rc.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:latest | xargs -n 2 docker tag
           - make latest
       epilogue:
         always:
@@ -95,5 +96,7 @@ blocks:
           commands:
             - make shutdown
             - artifact push workflow ./test/logs
+      secrets:
+        - name: Docker
 execution_time_limit:
   minutes: 30

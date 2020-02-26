@@ -3,7 +3,7 @@ services:
 
   ######################################################################
   # This compose file builds Release Candidate (rc) images
-  # tagged with the environment variable SEMAPHORE_WORKFLOW_ID.
+  # tagged with the environment variable GIT_COMMIT_SHA.
   # This is the ID of the CI worklfow.
   ######################################################################
   
@@ -12,7 +12,7 @@ services:
     ports:
       - 80:80
     restart: always
-    image: "bamaas/fullstackfit_reverseproxy:rc.${SEMAPHORE_WORKFLOW_ID}"
+    image: "bamaas/fullstackfit_reverseproxy:rc.${GIT_COMMIT_SHA}"
     build:
       context: ./reverse-proxy
     depends_on:
@@ -22,7 +22,7 @@ services:
 
   frontend:
     container_name: fit_frontend-rc
-    image: "bamaas/fullstackfit_frontend:rc.${SEMAPHORE_WORKFLOW_ID}"
+    image: "bamaas/fullstackfit_frontend:rc.${GIT_COMMIT_SHA}"
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -36,7 +36,7 @@ services:
     
   backend:
     container_name: fit_backend-rc
-    image: "bamaas/fullstackfit_backend:rc.${SEMAPHORE_WORKFLOW_ID}"
+    image: "bamaas/fullstackfit_backend:rc.${GIT_COMMIT_SHA}"
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -48,7 +48,7 @@ services:
   
   database:
     container_name: fit_database-rc
-    image: "bamaas/fullstackfit_database:rc.${SEMAPHORE_WORKFLOW_ID}"
+    image: "bamaas/fullstackfit_database:rc.${GIT_COMMIT_SHA}"
     build:
       context: ./database
       dockerfile: Dockerfile
