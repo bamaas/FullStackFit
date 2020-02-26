@@ -66,19 +66,26 @@ blocks:
         - name: Docker
   - name: Deploy
     task:
+      jobs:
+        - name: to VM
+          commands:
+            - gcloud compute ssh instance-2 --project united-watch-268115 --zone us-central1-a --ssh-key-file=google_compute_engine --command='cd FullStackFit && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0  -f docker-compose-run-latest.yml pull && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0  -f docker-compose-run-latest.yml up -d'
       prologue:
         commands:
           - gcloud auth activate-service-account --key-file=.secrets.gcp.json
           - chmod 600 google_compute_engine
           - chmod 600 google_compute_engine.pub
-      jobs:
-        - name: to VM
-          commands:
-            - gcloud compute ssh instance-2 --project united-watch-268115 --zone us-central1-a --ssh-key-file=google_compute_engine --command='cd FullStackFit && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0  -f docker-compose-run-latest.yml pull && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0  -f docker-compose-run-latest.yml up -d'
       secrets:
         - name: google-cloud-stg
   - name: Test Prod
     task:
+      jobs:
+        - name: api
+          commands:
+            - sh testbot -v environment:prod --log testlog-api-\(prod\).html testsuites/ws.robot
+        - name: e2e
+          commands:
+            - sh testbot -v environment:prod --log testlog-e2e-\(prod\).html testsuites/gui.robot
       prologue:
         commands:
           - checkout
@@ -88,12 +95,5 @@ blocks:
           commands:
             - make shutdown
             - artifact push workflow ./test/logs
-      jobs:
-        - name: api
-          commands:
-            - sh testbot -v environment:prod --log testlog-api-\(prod\).html testsuites/ws.robot
-        - name: e2e
-          commands:
-            - sh testbot -v environment:prod --log testlog-e2e-\(prod\).html testsuites/gui.robot
 execution_time_limit:
   minutes: 30
