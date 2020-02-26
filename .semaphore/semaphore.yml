@@ -5,7 +5,7 @@ agent:
     type: e1-standard-2
     os_image: ubuntu1804
 blocks:
-  - name: Checkout
+  - name: Check
     task:
       jobs:
         - name: linter
@@ -22,7 +22,7 @@ blocks:
   - name: Build
     task:
       jobs:
-        - name: images
+        - name: release candidate
           commands:
             - make build
       prologue:
@@ -38,7 +38,7 @@ blocks:
             - echo ${DOCKER_USERNAME}/fullstackfit_frontend:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_backend:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_reverseproxy:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_database:rc.${SEMAPHORE_WORKFLOW_ID} | xargs -n 1 docker push
       secrets:
         - name: Docker
-  - name: Test Build
+  - name: Test RC
     task:
       jobs:
         - name: api
@@ -59,9 +59,9 @@ blocks:
           commands:
             - make shutdown
             - artifact push workflow ./test/logs
-          on_pass:
-            commands:
-              - echo hi
+        on_pass:
+          commands:
+            - echo ${DOCKER_USERNAME}/fullstackfit_frontend:latest ${DOCKER_USERNAME}/fullstackfit_backend:latest ${DOCKER_USERNAME}/fullstackfit_reverseproxy:latest ${DOCKER_USERNAME}/fullstackfit_database:latest | xargs -n 1 docker push
       secrets:
         - name: Docker
   - name: Deploy
