@@ -5,31 +5,72 @@ agent:
     type: e1-standard-2
     os_image: ubuntu1804
 blocks:
-  - name: Build & Test & Push
+  - name: Build
     task:
       jobs:
-        - name: Bas
+        - name: dockerize
           commands:
             - checkout
-            - make test-unit
             - make build
             - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
-            # Push all images to Docker Hub
-             - echo 
-             ${DOCKER_USERNAME}/fullstackfit_frontend:${SEMAPHORE_WORKFLOW_ID} 
-             ${DOCKER_USERNAME}/fullstackfit_backend:${SEMAPHORE_WORKFLOW_ID} 
-             ${DOCKER_USERNAME}/fullstackfit_reverseproxy:${SEMAPHORE_WORKFLOW_ID} 
-             ${DOCKER_USERNAME}/fullstackfit_database:${SEMAPHORE_WORKFLOW_ID} | xargs -n 1 docker push
+            - echo ${DOCKER_USERNAME}/fullstackfit_frontend:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_backend:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_reverseproxy:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_database:rc.${SEMAPHORE_WORKFLOW_ID} | xargs -n 1 docker push
+      secrets:
+        - name: Docker
+  - name: Test
+    task:
+      prologue:
+        commands:
+          - checkout
+          - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_backend:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_reverseproxy:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_database:rc.${SEMAPHORE_WORKFLOW_ID} | xargs -n 1 docker pull
+          - docker tag $DOCKER_USERNAME/fullstackfit_frontend:rc.$SEMAPHORE_WORKFLOW_ID $DOCKER_USERNAME/fullstackfit_frontend:latest
+          - docker tag $DOCKER_USERNAME/fullstackfit_backend:rc.$SEMAPHORE_WORKFLOW_ID $DOCKER_USERNAME/fullstackfit_backend:latest
+          - docker tag $DOCKER_USERNAME/fullstackfit_database:rc.$SEMAPHORE_WORKFLOW_ID $DOCKER_USERNAME/fullstackfit_database:latest
+          - docker tag $DOCKER_USERNAME/fullstackfit_reverseproxy:rc.$SEMAPHORE_WORKFLOW_ID $DOCKER_USERNAME"/fullstackfit_reverseproxy:latest
+          - make latest
       epilogue:
         always:
           commands:
             - make shutdown
-            - artifact push workflow ./test/logs/testlog-WS-\(build\).html
-            - artifact push workflow ./test/logs/testlog-GUI-\(build\).html
-            - artifact push workflow ./test/logs/testlog-WS-\(prod\).html
-            - artifact push workflow ./test/logs/testlog-GUI-\(prod\).html
+            - artifact push workflow ./test/logs
+      jobs:
+        - name: unit
+          commands:
+            - make test-unit
+        - name: api
+            - sh testbot -v environment:localhost --log testlog-api-\(rc\).html testsuites/ws.robot
+        - name: e2e
+            - sh testbot -v environment:localhost --log testlog-e2e-\(rc\).html testsuites/gui.robot
+      secrets:
+        - name: Docker
+  - name: Deploy
+    task:
+      prologue:
+        commands:
+          - gcloud auth activate-service-account --key-file=.secrets.gcp.json
+          - chmod 600 google_compute_engine
+          - chmod 600 google_compute_engine.pub
+      jobs:
+        - name: ssh and deploy
+            - gcloud compute ssh instance-2 --project united-watch-268115 --zone us-central1-a --ssh-key-file=google_compute_engine --command='cd FullStackFit && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0  -f docker-compose-run-latest.yml pull && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0  -f docker-compose-run-latest.yml up -d'
       secrets:
         - name: Docker
         - name: google-cloud-stg
+  - name: Test Prod
+    task:
+      prologue:
+        commands:
+          - checkout
+          - echo $DOCKER_USERNAME/fullstackfit_test:latest | xargs -n 1 docker pull
+      epilogue:
+        always:
+          commands:
+            - make shutdown
+            - artifact push workflow ./test/logs
+      jobs:
+        - name: api
+            - sh testbot -v environment:prod --log testlog-api-\(prod\).html testsuites/ws.robot
+        - name: e2e
+            - sh testbot -v environment:prod --log testlog-e2e-\(prod\).html testsuites/gui.robot
 execution_time_limit:
   minutes: 30
