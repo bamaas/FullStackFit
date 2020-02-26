@@ -45,10 +45,10 @@ blocks:
       jobs:
         - name: api
           commands:
-            - sh testbot -v environment:localhost --log testlog-api-\(rc\).html testsuites/ws.robot
+            - sh testbot -v environment:localhost testsuites/ws.robot
         - name: e2e
           commands:
-            - sh testbot -v environment:localhost --log testlog-e2e-\(rc\).html testsuites/gui.robot
+            - sh testbot -v environment:localhost testsuites/gui.robot
       prologue:
         commands:
           - checkout
@@ -62,7 +62,7 @@ blocks:
         always:
           commands:
             - make shutdown
-            - artifact push workflow ./test/logs
+            - artifact push job ./test/logs/log.html
         on_pass:
           commands:
             - echo ${DOCKER_USERNAME}/fullstackfit_frontend:latest ${DOCKER_USERNAME}/fullstackfit_backend:latest ${DOCKER_USERNAME}/fullstackfit_reverseproxy:latest ${DOCKER_USERNAME}/fullstackfit_database:latest | xargs -n 1 docker push
@@ -86,10 +86,10 @@ blocks:
       jobs:
         - name: api
           commands:
-            - sh testbot -v environment:prod --log testlog-api-\(prod\).html testsuites/ws.robot
+            - sh testbot -v environment:prod testsuites/ws.robot
         - name: e2e
           commands:
-            - sh testbot -v environment:prod --log testlog-e2e-\(prod\).html testsuites/gui.robot
+            - sh testbot -v environment:prod testsuites/gui.robot
       prologue:
         commands:
           - checkout
@@ -98,7 +98,7 @@ blocks:
         always:
           commands:
             - make shutdown
-            - artifact push workflow ./test/logs
+            - artifact push job ./test/logs/log.html
       secrets:
         - name: Docker
 execution_time_limit:
