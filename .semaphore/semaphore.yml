@@ -13,34 +13,13 @@ blocks:
             - checkout
             - make test-unit
             - make build
-            - curl -i http://localhost:803123
             - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
-            - 'docker push "$DOCKER_USERNAME"/fullstackfit_frontend:latest'
-            - make hi
-
-
-
-            # - 'docker tag bamaas/fullstackfit_frontend:prod "$DOCKER_USERNAME"/fullstackfit_frontend:latest'
-            # - 'docker tag bamaas/fullstackfit_backend:prod "$DOCKER_USERNAME"/fullstackfit_backend:latest'
-            # - 'docker tag bamaas/fullstackfit_database:prod "$DOCKER_USERNAME"/fullstackfit_database:latest'
-            # - 'docker tag bamaas/fullstackfit_reverseproxy:prod "$DOCKER_USERNAME"/fullstackfit_reverseproxy:latest'
-            
-            - 'docker pull "$DOCKER_USERNAME"/fullstackfit_test:latest || true'
-            
-            - docker-compose -f docker-compose-test.yml run --rm test -d logs -v ENVIRONMENT:LOCALHOST --log testlog-WS-\(build\).html testsuites/ws.robot
-            - docker-compose -f docker-compose-test.yml run --rm test -d logs -v ENVIRONMENT:LOCALHOST --log testlog-GUI-\(build\).html testsuites/gui.robot
-            - docker images
-            - 'docker push "$DOCKER_USERNAME"/fullstackfit_frontend:latest'
-            - 'docker push "$DOCKER_USERNAME"/fullstackfit_backend:latest'
-            - 'docker push "$DOCKER_USERNAME"/fullstackfit_database:latest'
-            - 'docker push "$DOCKER_USERNAME"/fullstackfit_reverseproxy:latest'
-            - 'docker push "$DOCKER_USERNAME"/fullstackfit_test:latest'
-            - gcloud auth activate-service-account --key-file=../.secrets.gcp.json
-            - chmod 600 ../google_compute_engine
-            - chmod 600 ../google_compute_engine.pub
-            - gcloud compute ssh instance-2 --project united-watch-268115 --zone us-central1-a --ssh-key-file=../google_compute_engine --command='cd FullStackFit && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0  -f docker-compose-run-latest.yml pull && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0  -f docker-compose-run-latest.yml up -d'
-            - docker-compose -f docker-compose-test.yml run --rm test -d logs -v ENVIRONMENT:PROD --log testlog-WS-\(prod\).html testsuites/ws.robot
-            - docker-compose -f docker-compose-test.yml run --rm test -d logs -v ENVIRONMENT:PROD --log testlog-GUI-\(prod\).html testsuites/gui.robot
+            # Push all images to Docker Hub
+             - echo 
+             ${DOCKER_USERNAME}/fullstackfit_frontend:${SEMAPHORE_WORKFLOW_ID} 
+             ${DOCKER_USERNAME}/fullstackfit_backend:${SEMAPHORE_WORKFLOW_ID} 
+             ${DOCKER_USERNAME}/fullstackfit_reverseproxy:${SEMAPHORE_WORKFLOW_ID} 
+             ${DOCKER_USERNAME}/fullstackfit_database:${SEMAPHORE_WORKFLOW_ID} | xargs -n 1 docker push
       epilogue:
         always:
           commands:
@@ -52,7 +31,5 @@ blocks:
       secrets:
         - name: Docker
         - name: google-cloud-stg
-    skip:
-      when: branch != 'master'
 execution_time_limit:
   minutes: 30
