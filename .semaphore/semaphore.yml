@@ -22,7 +22,7 @@ blocks:
   - name: Build
     task:
       jobs:
-        - name: release candidate
+        - name: RC images
           commands:
             - make build
       prologue:
