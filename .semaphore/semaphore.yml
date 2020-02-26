@@ -5,48 +5,59 @@ agent:
     type: e1-standard-2
     os_image: ubuntu1804
 blocks:
+  - name: Checkout
+    task:
+      jobs:
+        - name: linter
+          commands: 
+            - echo linting...
+        - name: unit test
+          commands: 
+            - make test-unit
+      prologue:
+        commands:
+          - checkout
+          - python3 -m pip install flake8
   - name: Build
     task:
       jobs:
-        - name: dockerize
+        - name: images
           commands:
-            - checkout
             - make build
-            - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
-            - echo ${DOCKER_USERNAME}/fullstackfit_frontend:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_backend:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_reverseproxy:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_database:rc.${SEMAPHORE_WORKFLOW_ID} | xargs -n 1 docker push
+      prologue:
+        commands:
+          - checkout
       epilogue:
         always:
           commands:
             - make shutdown
+        on_pass:
+          commands:
+            - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+            - echo ${DOCKER_USERNAME}/fullstackfit_frontend:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_backend:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_reverseproxy:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_database:rc.${SEMAPHORE_WORKFLOW_ID} | xargs -n 1 docker push
       secrets:
         - name: Docker
   - name: Test
     task:
-      prologue:
-        commands:
-          - checkout
-          - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
-          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_backend:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_reverseproxy:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_database:rc.${SEMAPHORE_WORKFLOW_ID} | xargs -n 1 docker pull
-          - docker tag $DOCKER_USERNAME/fullstackfit_frontend:rc.$SEMAPHORE_WORKFLOW_ID $DOCKER_USERNAME/fullstackfit_frontend:latest
-          - docker tag $DOCKER_USERNAME/fullstackfit_backend:rc.$SEMAPHORE_WORKFLOW_ID $DOCKER_USERNAME/fullstackfit_backend:latest
-          - docker tag $DOCKER_USERNAME/fullstackfit_database:rc.$SEMAPHORE_WORKFLOW_ID $DOCKER_USERNAME/fullstackfit_database:latest
-          - docker tag $DOCKER_USERNAME/fullstackfit_reverseproxy:rc.$SEMAPHORE_WORKFLOW_ID $DOCKER_USERNAME"/fullstackfit_reverseproxy:latest
-          - make latest
-      epilogue:
-        always:
-          commands:
-            - make shutdown
-            - artifact push workflow ./test/logs
       jobs:
-        - name: unit
-          commands:
-            - make test-unit
         - name: api
           commands:
             - sh testbot -v environment:localhost --log testlog-api-\(rc\).html testsuites/ws.robot
         - name: e2e
           commands:
             - sh testbot -v environment:localhost --log testlog-e2e-\(rc\).html testsuites/gui.robot
+      prologue:
+        commands:
+          - checkout
+          - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_backend:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_reverseproxy:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_database:rc.${SEMAPHORE_WORKFLOW_ID} | xargs -n 1 docker pull
+          - echo $DOCKER_USERNAME/fullstackfit_frontend:rc.$SEMAPHORE_WORKFLOW_ID $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/fullstackfit_backend:rc.$SEMAPHORE_WORKFLOW_ID $DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/fullstackfit_database:rc.$SEMAPHORE_WORKFLOW_ID $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/fullstackfit_reverseproxy:rc.$SEMAPHORE_WORKFLOW_ID $DOCKER_USERNAME/fullstackfit_reverseproxy:latest | xargs -n 2 docker tag
+          - make latest
+      epilogue:
+        always:
+          commands:
+            - make shutdown
+            - artifact push workflow ./test/logs
       secrets:
         - name: Docker
   
