@@ -14,7 +14,41 @@ blocks:
             - make build
             - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
             - echo ${DOCKER_USERNAME}/fullstackfit_frontend:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_backend:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_reverseproxy:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_database:rc.${SEMAPHORE_WORKFLOW_ID} | xargs -n 1 docker push
+      epilogue:
+        always:
+          commands:
+            - make shutdown
       secrets:
         - name: Docker
+  - name: Test
+    task:
+      prologue:
+        commands:
+          - checkout
+          - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_backend:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_reverseproxy:rc.${SEMAPHORE_WORKFLOW_ID} ${DOCKER_USERNAME}/fullstackfit_database:rc.${SEMAPHORE_WORKFLOW_ID} | xargs -n 1 docker pull
+          - docker tag $DOCKER_USERNAME/fullstackfit_frontend:rc.$SEMAPHORE_WORKFLOW_ID $DOCKER_USERNAME/fullstackfit_frontend:latest
+          - docker tag $DOCKER_USERNAME/fullstackfit_backend:rc.$SEMAPHORE_WORKFLOW_ID $DOCKER_USERNAME/fullstackfit_backend:latest
+          - docker tag $DOCKER_USERNAME/fullstackfit_database:rc.$SEMAPHORE_WORKFLOW_ID $DOCKER_USERNAME/fullstackfit_database:latest
+          - docker tag $DOCKER_USERNAME/fullstackfit_reverseproxy:rc.$SEMAPHORE_WORKFLOW_ID $DOCKER_USERNAME"/fullstackfit_reverseproxy:latest
+          - make latest
+      epilogue:
+        always:
+          commands:
+            - make shutdown
+            - artifact push workflow ./test/logs
+      jobs:
+        - name: unit
+          commands:
+            - make test-unit
+        - name: api
+          commands:
+            - sh testbot -v environment:localhost --log testlog-api-\(rc\).html testsuites/ws.robot
+        - name: e2e
+          commands:
+            - sh testbot -v environment:localhost --log testlog-e2e-\(rc\).html testsuites/gui.robot
+      secrets:
+        - name: Docker
+  
 execution_time_limit:
   minutes: 30
