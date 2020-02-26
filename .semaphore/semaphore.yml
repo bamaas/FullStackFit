@@ -59,6 +59,9 @@ blocks:
           commands:
             - make shutdown
             - artifact push workflow ./test/logs
+          on_pass:
+            commands:
+              - echo hi
       secrets:
         - name: Docker
   - name: Deploy
