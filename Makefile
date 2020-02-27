@@ -56,10 +56,22 @@ test-api:
 test-e2e:
 	sh testbot -v environment:localhost testsuites/gui.robot
 
-# BUILD & RUN A RELEASE CANDIDATE
+# BUILD RELEASE CANDIDATE
 build:
 	docker-compose -f docker-compose-build.yml build
 	docker-compose -f docker-compose-build.yml up -d
+
+build-db:
+	docker-compose -f docker-compose-build.yml build database
+
+build-be:
+	docker-compose -f docker-compose-build.yml build backend
+
+build-fe:
+	docker-compose -f docker-compose-build.yml build frontend
+
+build-proxy:
+	docker-compose -f docker-compose-build.yml build reverseproxy
 
 # DEPLOY LATEST RELEASE
 latest:

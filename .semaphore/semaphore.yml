@@ -19,25 +19,31 @@ blocks:
         commands:
           - checkout
           - sem-version python 3.7
-  - name: Build
+  - name: Build RC
     task:
       jobs:
-        - name: RC images
+        - name: database
           commands:
-            - make build
+            - make build-db
+            - docker push ${DOCKER_USERNAME}/fullstackfit_database:rc.${GIT_COMMIT_SHA}
+        - name: backend
+          commands:
+            - make build-be
+            - docker push ${DOCKER_USERNAME}/fullstackfit_backend:rc.${GIT_COMMIT_SHA}
+        - name: frontend
+          commands:
+            - make build-fe
+            - docker push ${DOCKER_USERNAME}/fullstackfit_frontend:rc.${GIT_COMMIT_SHA}
+        - name: proxy
+          commands:
+            - make build-proxy
+            - docker push ${DOCKER_USERNAME}/fullstackfit_reverseproxy:rc.${GIT_COMMIT_SHA}
       prologue:
         commands:
           - checkout
           - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
           - echo $GIT_COMMIT_SHA
-      epilogue:
-        always:
-          commands:
-            - make shutdown
-        on_pass:
-          commands:
-            - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
-            - echo ${DOCKER_USERNAME}/fullstackfit_frontend:rc.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/fullstackfit_backend:rc.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/fullstackfit_reverseproxy:rc.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/fullstackfit_database:rc.${GIT_COMMIT_SHA} | xargs -n 1 docker push
+          - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
       secrets:
         - name: Docker
   - name: Test RC

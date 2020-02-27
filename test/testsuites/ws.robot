@@ -5,7 +5,7 @@ Resource          ../keywords/all.robot
 # The value in 'environment' is used to load the config file containing variables for the specific environment, such as the GUI_URL.
 ${ENVIRONMENT}                  localhost
 
-*** Settings ***
+*** Settings *** 
 Test Teardown                   report last output message on failure
 
 *** Test Cases ***
