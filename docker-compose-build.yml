@@ -8,11 +8,11 @@ services:
   ######################################################################
   
   reverseproxy:
-    container_name: fit_reverseproxy-rc
+    container_name: fit_reverseproxy-b
     ports:
       - 80:80
     restart: always
-    image: "bamaas/fullstackfit_reverseproxy:rc.${GIT_COMMIT_SHA}"
+    image: "fullstackfit_reverseproxy:b.${GIT_COMMIT_SHA}"
     build:
       context: ./reverse-proxy
     depends_on:
@@ -21,8 +21,8 @@ services:
       - frontend
 
   frontend:
-    container_name: fit_frontend-rc
-    image: "bamaas/fullstackfit_frontend:rc.${GIT_COMMIT_SHA}"
+    container_name: fit_frontend-b
+    image: "fullstackfit_frontend:b.${GIT_COMMIT_SHA}"
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -35,8 +35,8 @@ services:
       - backend
     
   backend:
-    container_name: fit_backend-rc
-    image: "bamaas/fullstackfit_backend:rc.${GIT_COMMIT_SHA}"
+    container_name: fit_backend-b
+    image: "fullstackfit_backend:b.${GIT_COMMIT_SHA}"
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -47,8 +47,8 @@ services:
       - database
   
   database:
-    container_name: fit_database-rc
-    image: "bamaas/fullstackfit_database:rc.${GIT_COMMIT_SHA}"
+    container_name: fit_database-b
+    image: "fullstackfit_database:b.${GIT_COMMIT_SHA}"
     build:
       context: ./database
       dockerfile: Dockerfile

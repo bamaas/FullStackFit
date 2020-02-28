@@ -1,78 +1,18 @@
-.PHONY: shutdown restart clean-fe clean-be 
+.PHONY: build push login
 
-# GENERAL
-shutdown:
-	docker-compose down
-
-restart:
-	docker-compose restart
-
-clean:
-	make clean-fe
-	make clean-be
-
-clean-fe:
-	rm -rf ./frontend/dist/angu
-	rm -rf ./frontend/node_modules
-
-clean-be:
-	rm -rf ./backend/env
-
-# DEV
-dev:
-	docker-compose -f docker-compose-dev.yml build
-	docker-compose -f docker-compose-dev.yml up
-
-dev-fe:
-	docker-compose -f docker-compose-dev.yml build frontend
-	docker-compose -f docker-compose-dev.yml up frontend
-
-dev-be:
-	docker-compose -f docker-compose-dev.yml build backend
-	docker-compose -f docker-compose-dev.yml up backend
-
-dev-db:
-	docker-compose -f docker-compose-dev.yml build database
-	docker-compose -f docker-compose-dev.yml up database
-
-dev-proxy:
-	docker-compose -f docker-compose-dev.yml build reverseproxy
-	docker-compose -f docker-compose-dev.yml up reverseproxy
-
-dev-proxy-restart:
-	docker exec -it fit_reverseproxy-dev nginx -s reload
-
-# TEST
-test:
-	make test-unit
-	sh testbot -v environment:localhost testsuites
-
-test-unit:
-	python3 "./backend/unit_tests/test_calculations.py"
-
-test-api:
-	sh testbot -v environment:localhost testsuites/ws.robot
-
-test-e2e:
-	sh testbot -v environment:localhost testsuites/gui.robot
-
-# BUILD RELEASE CANDIDATE
+NAME:= bamaas/fullstackfit_database
+IMG:= $(NAME):$(TAG)
+TAG=$(git rev-parse --short HEAD)
+LATEST:=$(NAME):latest
+ 
 build:
-	docker-compose -f docker-compose-build.yml build
-	docker-compose -f docker-compose-build.yml up -d
+	echo $(IMG):$(TAG)
 
-build-db:
-	docker-compose -f docker-compose-build.yml build database
-
-build-be:
-	docker-compose -f docker-compose-build.yml build backend
-
-build-fe:
-	docker-compose -f docker-compose-build.yml build frontend
-
-build-proxy:
-	docker-compose -f docker-compose-build.yml build reverseproxy
-
-# DEPLOY LATEST RELEASE
-latest:
-	docker-compose -f docker-compose-deploy-latest.yml build --pull && docker-compose -f docker-compose-deploy-latest.yml up -d
+	  @docker build -t ${IMG} .
+  	  @docker tag ${IMG} ${LATEST}
+ 
+push:
+	@docker push ${NAME}
+ 
+login:
+	@docker log -u ${DOCKER_USER} -p ${DOCKER_PASS}

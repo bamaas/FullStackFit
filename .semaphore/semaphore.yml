@@ -1,5 +1,5 @@
 version: v1.0
-name: Build release candidate images
+name: Build & Test
 agent:
   machine:
     type: e1-standard-2
@@ -19,25 +19,29 @@ blocks:
         commands:
           - checkout
           - sem-version python 3.7
-  - name: Build RC
+  - name: Build
     task:
       jobs:
         - name: database
           commands:
             - make build-db
-            - docker push ${DOCKER_USERNAME}/fullstackfit_database:rc.${GIT_COMMIT_SHA}
+            - docker tag fullstackfit_database:b.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_database.${GIT_COMMIT_SHA}
+            - docker push ${DOCKER_USERNAME}/registry:fullstackfit_database.${GIT_COMMIT_SHA}
         - name: backend
           commands:
             - make build-be
-            - docker push ${DOCKER_USERNAME}/fullstackfit_backend:rc.${GIT_COMMIT_SHA}
+            - docker tag fullstackfit_backend:b.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${GIT_COMMIT_SHA}
+            - docker push ${DOCKER_USERNAME}/registry:fullstackfit_backend.${GIT_COMMIT_SHA}
         - name: frontend
           commands:
             - make build-fe
-            - docker push ${DOCKER_USERNAME}/fullstackfit_frontend:rc.${GIT_COMMIT_SHA}
+            - docker tag fullstackfit_frontend:b.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${GIT_COMMIT_SHA}
+            - docker push ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${GIT_COMMIT_SHA}
         - name: proxy
           commands:
             - make build-proxy
-            - docker push ${DOCKER_USERNAME}/fullstackfit_reverseproxy:rc.${GIT_COMMIT_SHA}
+            - docker tag fullstackfit_reverseproxy:b.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${GIT_COMMIT_SHA}
+            - docker push ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${GIT_COMMIT_SHA}
       prologue:
         commands:
           - checkout
@@ -46,9 +50,45 @@ blocks:
           - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
       secrets:
         - name: Docker
+  - name: Test
+    task:
+      jobs:
+        - name: api
+          commands:
+            - sh testbot -v environment:localhost testsuites/ws.robot
+        - name: e2e
+          commands:
+            - sh testbot -v environment:localhost testsuites/gui.robot
+      prologue:
+        commands:
+          - checkout
+          - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
+          - echo $GIT_COMMIT_SHA
+          - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+          # Pull images from bamaas/registry (private container registry)
+          - echo ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_database.${GIT_COMMIT_SHA} | xargs -n 1 docker pull
+          # Retag to latest
+          - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/registry:fullstackfit_backend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/registry:fullstackfit_database.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:latest | xargs -n 2 docker tag
+          # Start application with make latest. In This way we start the application the same was as in production
+          - make latest
+      epilogue:
+        always:
+          commands:
+            - make shutdown
+            - artifact push job ./test/logs/log.html
+        on_pass:
+          commands:
+            # Tag & Push :$GIT_COMMIT_SHA to public Docker Hub of the corresponding image
+            # By doing this we gather all the passed builds in the public Docker Hub repository corresponding with the Git commit sha
+            - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_frontend:$GIT_COMMIT_SHA $DOCKER_USERNAME/registry:fullstackfit_backend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_backend:$GIT_COMMIT_SHA $DOCKER_USERNAME/registry:fullstackfit_database.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_database:$GIT_COMMIT_SHA $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:$GIT_COMMIT_SHA | xargs -n 2 docker tag
+            - echo ${DOCKER_USERNAME}/fullstackfit_frontend:$GIT_COMMIT_SHA ${DOCKER_USERNAME}/fullstackfit_backend:$GIT_COMMIT_SHA ${DOCKER_USERNAME}/fullstackfit_reverseproxy:$GIT_COMMIT_SHA ${DOCKER_USERNAME}/fullstackfit_database:$GIT_COMMIT_SHA | xargs -n 1 docker push
+            # Push :latest to Docker Hub
+            - echo ${DOCKER_USERNAME}/fullstackfit_frontend:latest ${DOCKER_USERNAME}/fullstackfit_backend:latest ${DOCKER_USERNAME}/fullstackfit_reverseproxy:latest ${DOCKER_USERNAME}/fullstackfit_database:latest | xargs -n 1 docker push
+      secrets:
+        - name: Docker
 promotions:
-- name: Test RC
-  pipeline_file: test.yml
+- name: Deploy
+  pipeline_file: deploy.yml
   auto_promote:
     when: "result = 'passed'"
 execution_time_limit:
