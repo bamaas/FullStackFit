@@ -1,0 +1,40 @@
+version: v1.0
+name: Test release candidate
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+blocks:
+  - name: Test RC
+    task:
+      jobs:
+        - name: api
+          commands:
+            - sh testbot -v environment:localhost testsuites/ws.robot
+        - name: e2e
+          commands:
+            - sh testbot -v environment:localhost testsuites/gui.robot
+      prologue:
+        commands:
+          - checkout
+          - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
+          - echo $GIT_COMMIT_SHA
+          - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:rc.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/fullstackfit_backend:rc.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/fullstackfit_reverseproxy:rc.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/fullstackfit_database:rc.${GIT_COMMIT_SHA} | xargs -n 1 docker pull
+          - echo $DOCKER_USERNAME/fullstackfit_frontend:rc.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/fullstackfit_backend:rc.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/fullstackfit_database:rc.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/fullstackfit_reverseproxy:rc.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:latest | xargs -n 2 docker tag
+          - make latest
+      epilogue:
+        always:
+          commands:
+            - make shutdown
+            - artifact push job ./test/logs/log.html
+        on_pass:
+          commands:
+            - echo ${DOCKER_USERNAME}/fullstackfit_frontend:latest ${DOCKER_USERNAME}/fullstackfit_backend:latest ${DOCKER_USERNAME}/fullstackfit_reverseproxy:latest ${DOCKER_USERNAME}/fullstackfit_database:latest | xargs -n 1 docker push
+      secrets:
+        - name: Docker
+promotions:
+- name: Deploy Production
+  pipeline_file: deploy.yml
+  auto_promote:
+    when: "result = 'passed'"
