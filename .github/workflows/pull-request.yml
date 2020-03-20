@@ -7,7 +7,6 @@ jobs:
     - uses: actions/checkout@v1
     
     - name: On my_custom_webhook do ABC...
-      if: github.event.action == 'open_pr'
       run: |
         echo "Hello From my_custom_webhook...doing ABC"
 # jobs:
