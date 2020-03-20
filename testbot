@@ -1,3 +1,3 @@
 #!/bin/bash
-# fDocker wrapper to easily run RF tests in a container
+# Docker wrapper to easily run RF tests in a container
 docker-compose -f docker-compose-test.yml run --rm test -d logs "$@"
