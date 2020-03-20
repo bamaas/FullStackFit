@@ -11,4 +11,7 @@ jobs:
     - name: pull-request
       uses: repo-sync/pull-request@v2
       with:
+        destination_branch: "prod"
+        pr_title: "Pulling ${{ github.ref }} into prod"
+        pr_label: "auto-pr"
         github_token: ${{ secrets.GITHUB_TOKEN }}
