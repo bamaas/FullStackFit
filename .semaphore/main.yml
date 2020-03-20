@@ -92,7 +92,7 @@ blocks:
         - name: pr
           commands:
           # Automatic pull request to prod branch
-            - hub pull-request -m "Automatic PR" -b prod
+            - hub pull-request -m "Automatic PR for $GIT_COMMIT_SHA" -b prod
         - name: e2e
           commands:
             - sh testbot -v environment:localhost testsuites/gui.robot
@@ -101,14 +101,7 @@ blocks:
           - checkout
           - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
           - echo $GIT_COMMIT_SHA
-      epilogue:
-        always:
-          commands:
-            - make shutdown
-            - artifact push job ./test/logs/log.html
-        on_pass:
-          commands:
-            - sudo snap install hub --classic
+          - sudo snap install hub --classic
       secrets:
         - name: github
 # promotions:
