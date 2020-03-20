@@ -1,3 +1,3 @@
 #!/bin/bash
-# Docker wrapper to easily run RF tests in a container
+# Docker wrapper to easily run Robot Framework tests in a Docker container
 docker-compose -f docker-compose-test.yml run --rm test -d logs "$@"

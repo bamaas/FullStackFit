@@ -1,4 +1,4 @@
-.PHONY: shutdown restart clean-fe clean-be 
+.PHONY: shutdown restart clean-fe clean-be test
 
 # GENERAL
 shutdown:
@@ -45,7 +45,7 @@ dev-proxy-restart:
 # TEST
 test:
 	make test-unit
-	sh testbot -v environment:localhost testsuites
+	sh testcontainer -v environment:localhost testsuites
 
 test-unit:
 	python3 "./backend/unit_tests/test_calculations.py"

@@ -37,5 +37,4 @@ RUN mkdir /src/logs
 RUN chmod 755 /src/logs
 
 ## Running via command line:
-# --network="host" is used to access localhost on host machine
-# docker run --rm -u ${EUID}:${EUID} -v ${PWD}:/src --network="host" robot:latest -d logs testsuites
+# docker run --rm -v ${PWD}:/src --network="host" robot:latest -d logs testsuites

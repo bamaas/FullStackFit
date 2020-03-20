@@ -3,7 +3,7 @@ services:
 
   test:
     container_name: fullstackfit_test
-    image: bamaas/fullstackfit_test:latest
+    image: fullstackfit_test:latest
     build:
       context: ./test
       dockerfile: Dockerfile
