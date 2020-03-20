@@ -1,17 +1,24 @@
-on:
-  push:
-    branches:
-    - dev
-
+name: Open pull request
+on: repository_dispatch
 jobs:
-  pull-request:
+  build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: pull-request
-      uses: repo-sync/pull-request@v2
-      with:
-        destination_branch: "prod"
-        pr_title: "Pulling ${{ github.ref }} into prod"
-        pr_label: "auto-pr"
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: On my_custom_webhook do ABC...
+      if: github.event.action == 'open_pr'
+      run: |
+        echo "Hello From my_custom_webhook...doing ABC"
+# jobs:
+#   pull-request:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v1
+#     - name: pull-request
+#       uses: repo-sync/pull-request@v2
+#       with:
+#         destination_branch: "prod"
+#         pr_title: "Pulling ${{ github.ref }} into prod"
+#         pr_label: "auto-pr"
+#         github_token: ${{ secrets.GITHUB_TOKEN }}
