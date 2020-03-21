@@ -86,21 +86,21 @@ blocks:
             - echo ${DOCKER_USERNAME}/fullstackfit_frontend:latest ${DOCKER_USERNAME}/fullstackfit_backend:latest ${DOCKER_USERNAME}/fullstackfit_reverseproxy:latest ${DOCKER_USERNAME}/fullstackfit_database:latest | xargs -n 1 docker push
       secrets:
         - name: docker
-  # - name: Integrate
-  #   task:
-  #     jobs:
-  #       - name: pull request
-  #         commands:
-  #         # Automatic pull request to prod branch
-  #           - hub pull-request -m "Automatic PR for $GIT_COMMIT_SHA" -b prod
-  #     prologue:
-  #       commands:
-  #         - checkout
-  #         - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
-  #         - echo $GIT_COMMIT_SHA
-  #         - sudo snap install hub --classic
-  #     secrets:
-  #       - name: github
+  - name: Merge
+  # On success -> merge from the dev (trunk) branch to prod and release it.
+    task:
+      jobs:
+        - name: to prod
+          commands:
+          - git fetch
+          - git checkout prod
+          - git pull origin dev
+          - git push origin prod
+      prologue:
+        commands:
+          - checkout
+          - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
+          - echo $GIT_COMMIT_SHA
 # promotions:
 # - name: Deploy
 #   pipeline_file: deploy.yml

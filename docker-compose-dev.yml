@@ -25,7 +25,7 @@ services:
 
   frontend:
     container_name: fit_frontend-dev
-    image: bamaas/fullstackfit_frontend:dev
+    image: fullstackfit_frontend:dev
     depends_on: 
       - database
       - backend
