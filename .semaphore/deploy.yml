@@ -7,7 +7,7 @@ agent:
 blocks:
   - name: Deploy
     skip:
-      when: "branch != 'prod'"
+      when: "branch != 'master'"
     task:
       jobs:
         - name: to VM
@@ -20,8 +20,25 @@ blocks:
           - chmod 600 google_compute_engine.pub
       secrets:
         - name: google-cloud-stg
-promotions:
-- name: Test prod
-  pipeline_file: test-prod.yml
-  auto_promote:
-    when: "result = 'passed'"
+  - name: Test Prod
+    skip:
+      when: "branch != 'master'"
+    task:
+      jobs:
+        - name: api
+          commands:
+            - sh testbot -v environment:prod testsuites/ws.robot
+        - name: e2e
+          commands:
+            - sh testbot -v environment:prod testsuites/gui.robot
+      prologue:
+        commands:
+          - checkout
+          - docker pull $DOCKER_USERNAME/fullstackfit_test:latest
+      epilogue:
+        always:
+          commands:
+            - make shutdown
+            - artifact push job ./test/logs/log.html
+      secrets:
+        - name: Docker

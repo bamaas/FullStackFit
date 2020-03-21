@@ -5,9 +5,9 @@ agent:
     type: e1-standard-2
     os_image: ubuntu1804
 blocks:
-  - name: Checkout
+  - name: Check
     skip:
-      when: "branch != 'dev'"
+      when: "branch == 'master'"
     task:
       jobs:
         - name: linter
@@ -23,7 +23,7 @@ blocks:
           - sem-version python 3.7
   - name: Build
     skip:
-      when: "branch != 'dev'"
+      when: "branch == 'master'"
     task:
       jobs:
         - name: database
@@ -53,10 +53,10 @@ blocks:
           - echo $GIT_COMMIT_SHA
           - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
       secrets:
-        - name: docker
+        - name: Docker
   - name: Test
     skip:
-      when: "branch != 'dev'"
+      when: "branch == 'master'"
     task:
       jobs:
         - name: api
@@ -91,29 +91,11 @@ blocks:
             # Push :latest to Docker Hub
             - echo ${DOCKER_USERNAME}/fullstackfit_frontend:latest ${DOCKER_USERNAME}/fullstackfit_backend:latest ${DOCKER_USERNAME}/fullstackfit_reverseproxy:latest ${DOCKER_USERNAME}/fullstackfit_database:latest | xargs -n 1 docker push
       secrets:
-        - name: docker
-  - name: Merge
-    skip:
-      when: "branch != 'dev'"
-  # On successful build -> merge from the dev (trunk) branch to prod and release it.
-    task:
-      jobs:
-        - name: to prod
-          commands:
-          - git fetch
-          - git checkout -b prod
-          - git push -q https://$GITHUB_TOKEN@github.com/bamaas/FullStackFit.git prod
-      prologue:
-        commands:
-          - checkout
-          - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
-          - echo $GIT_COMMIT_SHA
-      secrets:
-        - name: github
-# promotions:
-# - name: Deploy
-#   pipeline_file: deploy.yml
-#   auto_promote:
-#     when: "result = 'passed'"
+        - name: Docker
+promotions:
+- name: Deploy
+  pipeline_file: deploy.yml
+  auto_promote:
+    when: "result = 'passed'"
 execution_time_limit:
   minutes: 30
