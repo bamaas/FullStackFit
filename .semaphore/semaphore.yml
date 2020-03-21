@@ -7,7 +7,7 @@ agent:
 blocks:
   - name: Check
     skip:
-      when: "branch == 'master'"
+      when: "branch = 'master'"
     task:
       jobs:
         - name: linter
@@ -23,7 +23,7 @@ blocks:
           - sem-version python 3.7
   - name: Build
     skip:
-      when: "branch == 'master'"
+      when: "branch = 'master'"
     task:
       jobs:
         - name: database
@@ -53,10 +53,10 @@ blocks:
           - echo $GIT_COMMIT_SHA
           - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
       secrets:
-        - name: Docker
+        - name: docker
   - name: Test
     skip:
-      when: "branch == 'master'"
+      when: "branch = 'master'"
     task:
       jobs:
         - name: api
@@ -91,7 +91,7 @@ blocks:
             # Push :latest to Docker Hub
             - echo ${DOCKER_USERNAME}/fullstackfit_frontend:latest ${DOCKER_USERNAME}/fullstackfit_backend:latest ${DOCKER_USERNAME}/fullstackfit_reverseproxy:latest ${DOCKER_USERNAME}/fullstackfit_database:latest | xargs -n 1 docker push
       secrets:
-        - name: Docker
+        - name: docker
 promotions:
 - name: Deploy
   pipeline_file: deploy.yml

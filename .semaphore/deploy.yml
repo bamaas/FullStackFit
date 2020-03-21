@@ -41,4 +41,4 @@ blocks:
             - make shutdown
             - artifact push job ./test/logs/log.html
       secrets:
-        - name: Docker
+        - name: docker
