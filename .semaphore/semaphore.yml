@@ -6,8 +6,6 @@ agent:
     os_image: ubuntu1804
 blocks:
   - name: Check
-    skip:
-      when: "branch = 'master'"
     task:
       jobs:
         - name: linter
@@ -22,8 +20,6 @@ blocks:
           - checkout
           - sem-version python 3.7
   - name: Build
-    skip:
-      when: "branch = 'master'"
     task:
       jobs:
         - name: database
@@ -55,8 +51,6 @@ blocks:
       secrets:
         - name: docker
   - name: Test
-    skip:
-      when: "branch = 'master'"
     task:
       jobs:
         - name: api
@@ -75,7 +69,7 @@ blocks:
           - echo ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_database.${GIT_COMMIT_SHA} | xargs -n 1 docker pull
           # Retag to latest
           - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/registry:fullstackfit_backend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/registry:fullstackfit_database.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:latest | xargs -n 2 docker tag
-          # Start application with make latest. In This way we start the application the same was as in production
+          # Start application with 'make latest'. In this way we start the application the same was as we do in production.
           - make latest
       epilogue:
         always:
@@ -88,14 +82,13 @@ blocks:
             # By doing this we gather all the passed builds in the public Docker Hub repository corresponding with the Git commit sha
             - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_frontend:$GIT_COMMIT_SHA $DOCKER_USERNAME/registry:fullstackfit_backend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_backend:$GIT_COMMIT_SHA $DOCKER_USERNAME/registry:fullstackfit_database.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_database:$GIT_COMMIT_SHA $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:$GIT_COMMIT_SHA | xargs -n 2 docker tag
             - echo ${DOCKER_USERNAME}/fullstackfit_frontend:$GIT_COMMIT_SHA ${DOCKER_USERNAME}/fullstackfit_backend:$GIT_COMMIT_SHA ${DOCKER_USERNAME}/fullstackfit_reverseproxy:$GIT_COMMIT_SHA ${DOCKER_USERNAME}/fullstackfit_database:$GIT_COMMIT_SHA | xargs -n 1 docker push
-            # Push :latest to Docker Hub
-            - echo ${DOCKER_USERNAME}/fullstackfit_frontend:latest ${DOCKER_USERNAME}/fullstackfit_backend:latest ${DOCKER_USERNAME}/fullstackfit_reverseproxy:latest ${DOCKER_USERNAME}/fullstackfit_database:latest | xargs -n 1 docker push
+            # Don't push :latest to Docker Hub. This is done in the promoted 'deploy' pipeline.
       secrets:
         - name: docker
 promotions:
 - name: Deploy
   pipeline_file: deploy.yml
   auto_promote:
-    when: "result = 'passed'"
+    when: "result = 'passed' and branch = 'master'"
 execution_time_limit:
   minutes: 30
