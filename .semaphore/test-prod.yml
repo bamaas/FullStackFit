@@ -1,0 +1,27 @@
+version: v1.0
+name: Deploy to production
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+blocks:
+  - name: Test Prod
+    task:
+      jobs:
+        - name: api
+          commands:
+            - sh testbot -v environment:prod testsuites/ws.robot
+        - name: e2e
+          commands:
+            - sh testbot -v environment:prod testsuites/gui.robot
+      prologue:
+        commands:
+          - checkout
+          - docker pull $DOCKER_USERNAME/fullstackfit_test:latest
+      epilogue:
+        always:
+          commands:
+            - make shutdown
+            - artifact push job ./test/logs/log.html
+      secrets:
+        - name: docker

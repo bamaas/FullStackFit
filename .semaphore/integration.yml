@@ -93,14 +93,15 @@ blocks:
         - name: to prod
           commands:
           - git fetch
-          - git checkout prod
-          - git pull origin dev
-          - git push origin prod
+          - git checkout -b prod
+          - git push -q https://$GITHUB_TOKEN@github.com/bamaas/FullStackFit.git prod
       prologue:
         commands:
           - checkout
           - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
           - echo $GIT_COMMIT_SHA
+      secrets:
+        - name: github
 # promotions:
 # - name: Deploy
 #   pipeline_file: deploy.yml
