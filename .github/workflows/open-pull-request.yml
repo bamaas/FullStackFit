@@ -12,7 +12,6 @@ jobs:
         pr_title: "Pulling ${{ github.ref }} into master"
         pr_label: "auto-pr"
         github_token: ${{ secrets.GITHUB_TOKEN }}
-
 # jobs:
 #   build:
 #     runs-on: ubuntu-latest
