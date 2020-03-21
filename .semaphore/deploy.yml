@@ -5,6 +5,26 @@ agent:
     type: e1-standard-2
     os_image: ubuntu1804
 blocks:
+  - name: Promote Image
+    skip:
+      when: "branch != 'master'"
+    task:
+      jobs:
+      # Push the newest :latest image to DockerHub
+        - name: to DockerHub
+          commands:
+          - checkout
+          - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
+          - echo $GIT_COMMIT_SHA
+          - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+          # Pull images from bamaas/registry (private container registry)
+          - echo ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_database.${GIT_COMMIT_SHA} | xargs -n 1 docker pull
+          # Retag to latest
+          - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/registry:fullstackfit_backend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/registry:fullstackfit_database.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:latest | xargs -n 2 docker tag
+          # Push :latest to Docker Hub
+          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:latest ${DOCKER_USERNAME}/fullstackfit_backend:latest ${DOCKER_USERNAME}/fullstackfit_reverseproxy:latest ${DOCKER_USERNAME}/fullstackfit_database:latest | xargs -n 1 docker push
+      secrets:
+        - name: docker
   - name: Deploy
     skip:
       when: "branch != 'master'"
