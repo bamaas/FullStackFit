@@ -6,6 +6,8 @@ agent:
     os_image: ubuntu1804
 blocks:
   - name: Checkout
+    skip:
+      when: "branch != 'dev'"
     task:
       jobs:
         - name: linter
@@ -20,6 +22,8 @@ blocks:
           - checkout
           - sem-version python 3.7
   - name: Build
+    skip:
+      when: "branch != 'dev'"
     task:
       jobs:
         - name: database
@@ -51,6 +55,8 @@ blocks:
       secrets:
         - name: docker
   - name: Test
+    skip:
+      when: "branch != 'dev'"
     task:
       jobs:
         - name: api
@@ -87,6 +93,8 @@ blocks:
       secrets:
         - name: docker
   - name: Merge
+    skip:
+      when: "branch != 'dev'"
   # On successful build -> merge from the dev (trunk) branch to prod and release it.
     task:
       jobs:
