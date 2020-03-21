@@ -78,10 +78,10 @@ blocks:
             - artifact push job ./test/logs/log.html
         on_pass:
           commands:
-            # Tag & Push :$GIT_COMMIT_SHA to public Docker Hub of the corresponding image
-            # By doing this we gather all the passed builds in the public Docker Hub repository corresponding with the Git commit sha
-            - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_frontend:$GIT_COMMIT_SHA $DOCKER_USERNAME/registry:fullstackfit_backend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_backend:$GIT_COMMIT_SHA $DOCKER_USERNAME/registry:fullstackfit_database.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_database:$GIT_COMMIT_SHA $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:$GIT_COMMIT_SHA | xargs -n 2 docker tag
-            - echo ${DOCKER_USERNAME}/fullstackfit_frontend:$GIT_COMMIT_SHA ${DOCKER_USERNAME}/fullstackfit_backend:$GIT_COMMIT_SHA ${DOCKER_USERNAME}/fullstackfit_reverseproxy:$GIT_COMMIT_SHA ${DOCKER_USERNAME}/fullstackfit_database:$GIT_COMMIT_SHA | xargs -n 1 docker push
+            # Tag & Push :$GIT_COMMIT_SHA to private Docker Hub registry
+            # By doing this we gather all the passed builds in the public Docker Hub repository corresponding with the Git commit
+            # - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_frontend:$GIT_COMMIT_SHA $DOCKER_USERNAME/registry:fullstackfit_backend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_backend:$GIT_COMMIT_SHA $DOCKER_USERNAME/registry:fullstackfit_database.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_database:$GIT_COMMIT_SHA $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:$GIT_COMMIT_SHA | xargs -n 2 docker tag
+            # - echo ${DOCKER_USERNAME}/fullstackfit_frontend:$GIT_COMMIT_SHA ${DOCKER_USERNAME}/fullstackfit_backend:$GIT_COMMIT_SHA ${DOCKER_USERNAME}/fullstackfit_reverseproxy:$GIT_COMMIT_SHA ${DOCKER_USERNAME}/fullstackfit_database:$GIT_COMMIT_SHA | xargs -n 1 docker push
             # Don't push :latest to Docker Hub. This is done in the promoted 'deploy' pipeline.
       secrets:
         - name: docker
