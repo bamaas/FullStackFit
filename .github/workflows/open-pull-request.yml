@@ -1,4 +1,4 @@
-name: Open Pull Request
+name: Open pull request
 on: push
 jobs:
   pull-request:
