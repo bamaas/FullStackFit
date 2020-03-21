@@ -87,7 +87,7 @@ blocks:
       secrets:
         - name: docker
   - name: Merge
-  # On success -> merge from the dev (trunk) branch to prod and release it.
+  # On successful build -> merge from the dev (trunk) branch to prod and release it.
     task:
       jobs:
         - name: to prod
