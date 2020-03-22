@@ -88,6 +88,7 @@ blocks:
             # Don't push :latest to Docker Hub. This is done in the promoted 'deploy' pipeline.
       secrets:
         - name: docker
+        - name: browserstack
 promotions:
 - name: Deploy
   pipeline_file: deploy-prod.yml
