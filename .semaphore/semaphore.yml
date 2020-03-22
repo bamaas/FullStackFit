@@ -67,8 +67,12 @@ blocks:
           - checkout
           - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
           - echo $GIT_COMMIT_SHA
+          # .env file
           - mv ../.env .env
           - chmod 600 .env
+          # Parse from .env file
+          - export BROWSERSTACK_URL=$(grep BROWSERSTACK_URL .env | cut -d '=' -f2)
+          # Docker
           - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
           # Pull images from bamaas/registry (private container registry)
           - echo ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_database.${GIT_COMMIT_SHA} | xargs -n 1 docker pull
@@ -93,6 +97,7 @@ blocks:
       secrets:
         - name: docker
         - name: browserstack
+        - name: browserstack_test
 promotions:
 - name: Deploy
   pipeline_file: deploy-prod.yml
