@@ -42,5 +42,5 @@ class Calculator():
     @staticmethod
     def calculate_ffm(weight, body_fat_perc):
         percentage = (100-body_fat_perc)/100
-        ffm = weight-(weight*percentage)
+        ffm = (weight*percentage)
         return round(ffm)
