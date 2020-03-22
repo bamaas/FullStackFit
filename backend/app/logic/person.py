@@ -13,12 +13,11 @@ class Person():
         self.goal_factor = self.determine_goal_factor(self.goal)
         self.activitylevel_factor = self.determine_activitylevel_factor(self.activitylevel)
         # Calculations
-        calc = Calculator()
-        self._bmr = calc.calculate_bmr(self.gender, self.weight, self.length, self.age)
-        self._tdee = calc.calculate_tdee(self.bmr, self.activitylevel_factor, self.goal_factor)
-        self.bmi = calc.calculate_bmi(self.weight, self.length)
-        self.ffm = calc.calculate_ffm(self.weight, self.body_fat_perc)
-        self.macros = calc.calculate_macronutrients(self.weight, self.tdee)
+        self._bmr = Calculator.calculate_bmr(self.gender, self.weight, self.length, self.age)
+        self._tdee = Calculator.calculate_tdee(self.bmr, self.activitylevel_factor, self.goal_factor)
+        self.bmi = Calculator.calculate_bmi(self.weight, self.length)
+        self.ffm = Calculator.calculate_ffm(self.weight, self.body_fat_perc)
+        self.macros = Calculator.calculate_macronutrients(self.weight, self.tdee)
     
     # TOOD create getters and setters for BMI, VVM, FFMI
 
@@ -85,7 +84,9 @@ class Person():
     
 
 class Calculator():
-    def calculate_bmr(self, gender, weight, length, age):
+
+    @staticmethod
+    def calculate_bmr(gender, weight, length, age):
         if gender.lower() == 'man':
             bmr = 66.5 + ( 13.75 * weight ) + ( 5.003 * length ) - ( 6.755 * age )
         elif gender.lower() == 'woman':
@@ -94,12 +95,13 @@ class Calculator():
             raise Exception ("Error: expected gender to be 'woman' or 'man'. Actual: '{}'".format(gender))
         return round(bmr)
 
-    def calculate_tdee(self, bmr, activity_level_factor, goal_factor):
+    @staticmethod
+    def calculate_tdee(bmr, activity_level_factor, goal_factor):
         tdee = (bmr * activity_level_factor) * goal_factor
         return round(tdee)
 
-
-    def calculate_macronutrients(self, weight, tdee):
+    @staticmethod
+    def calculate_macronutrients(weight, tdee):
         # Protein
         protein_gr = round(weight * 2)
         protein_kcal = round(protein_gr * 4)
@@ -117,11 +119,13 @@ class Calculator():
                 'carb_kcal':carb_kcal, 'carb_gram':carb_gram, 'carb_perc':carb_perc}
         return macronutrients
 
-    def calculate_bmi(self, weight, length):
+    @staticmethod
+    def calculate_bmi(weight, length):
         bmi = weight/((length/100)*(length/100))
         return round(bmi)
 
-    def calculate_ffm(self, weight, body_fat_perc):
+    @staticmethod
+    def calculate_ffm(weight, body_fat_perc):
         percentage = (100-body_fat_perc)/100
         ffm = weight-(weight*percentage)
         return round(ffm)

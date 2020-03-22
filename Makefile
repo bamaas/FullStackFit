@@ -1,4 +1,4 @@
-.PHONY: shutdown restart clean-fe clean-be 
+.PHONY: shutdown restart clean-fe clean-be  test test-unit test-api test-e2e
 
 # GENERAL
 shutdown:
