@@ -8,7 +8,7 @@ auto_cancel:
   running:
     when: "true"
 blocks:
-  - name: Check
+  - name: Checkout
     task:
       jobs:
         - name: linter
@@ -59,9 +59,18 @@ blocks:
         - name: api
           commands:
             - sh testcontainer -v environment:localhost testsuites/ws.robot
-        - name: e2e
+        - name: e2e (Linux - Chrome)
+          commands:
+            - sh testcontainer -v environment:localhost -v browser:Chrome testsuites/gui.robot
+        - name: e2e (W10 - Chrome)
           commands:
             - sh testcontainer -v environment:localhost -v remote_webdriver:true -v capabilities:w10_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/gui.robot
+        - name: e2e (W10 - Firefox)
+          commands:
+            - sh testcontainer -v environment:localhost -v remote_webdriver:true -v capabilities:w10_firefox -v remote_url:${BROWSERSTACK_URL} testsuites/gui.robot
+        - name: e2e (Mac - Chrome)
+          commands:
+            - sh testcontainer -v environment:localhost -v remote_webdriver:true -v capabilities:mac_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/gui.robot
       prologue:
         commands:
           - checkout
