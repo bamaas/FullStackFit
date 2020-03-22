@@ -3,3 +3,6 @@ node_modules/
 .DS_Store
 .now
 __pycache__
+local.log
+browserstack.err
+.env

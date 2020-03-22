@@ -58,20 +58,25 @@ blocks:
       jobs:
         - name: api
           commands:
-            - sh testbot -v environment:localhost testsuites/ws.robot
+            - sh testcontainer -v environment:localhost testsuites/ws.robot
         - name: e2e
           commands:
-            - sh testbot -v environment:localhost testsuites/gui.robot
+            - sh testcontainer -v environment:localhost -v remote_webdriver:true -v capabilities:w10_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/gui.robot
       prologue:
         commands:
           - checkout
           - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
           - echo $GIT_COMMIT_SHA
+          # create .env file from environment variables
+          - echo BROWSERSTACK_URL=${BROWSERSTACK_URL} >> ./test/.env
+          - echo BROWSERSTACK_USER=${BROWSERSTACK_USER} >> ./test/.env
+          - echo BROWSERSTACK_KEY=${BROWSERSTACK_KEY} >> ./test/.env
+          # Docker
           - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
           # Pull images from bamaas/registry (private container registry)
           - echo ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_database.${GIT_COMMIT_SHA} | xargs -n 1 docker pull
           # Retag to latest
-          - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/registry:fullstackfit_backend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/registry:fullstackfit_database.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:latest | xargs -n 2 docker tag
+          - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/registry:fullstackfit_backend.$GIT_COMMIT_SHA ls$DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/registry:fullstackfit_database.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:latest | xargs -n 2 docker tag
           # Start application with 'make latest'. In this way we start the application the same was as we do in production.
           - make latest
       epilogue:
@@ -79,6 +84,8 @@ blocks:
           commands:
             - make shutdown
             - artifact push job ./test/logs/log.html
+            - artifact push job ./test/logs/output.xml
+            - artifact push job ./test/logs/report.html
         # on_pass:
         #   commands:
             # Tag & Push :$GIT_COMMIT_SHA to private Docker Hub registry
@@ -88,6 +95,7 @@ blocks:
             # Don't push :latest to Docker Hub. This is done in the promoted 'deploy' pipeline.
       secrets:
         - name: docker
+        - name: browserstack
 promotions:
 - name: Deploy
   pipeline_file: deploy-prod.yml

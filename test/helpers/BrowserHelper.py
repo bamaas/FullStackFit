@@ -19,16 +19,15 @@ class BrowserHelper(object):
     def __init__(self):
         pass
     
-    def setup_browser(self, remote_webdriver, browser, remote_url, capabilities, setup_url, maximize_window, bs_local=True):
+    def setup_browser(self, remote_webdriver, browser, remote_url, capabilities, setup_url, maximize_window):
         logger.info('remote_webdriver: {}'.format(remote_webdriver))
         if remote_webdriver.lower() == 'true':
             # Argument  validations...
             try:
                 # Because you can't pass a dictionary through CLI you have to get it like this way....
                 capabilities = BuiltIn().get_variable_value("&{}".format(capabilities))
-                remote_url = BuiltIn().get_variable_value("${}".format(remote_url))
             except:
-                raise Exception("Input error. The $CAPABILITIES or $REMOTE_URL variable is not allowed to be empty because $REMOTE_WEBDRIVER == true")
+                raise Exception("Input error. The $CAPABILITIES variable is not allowed to be empty because $REMOTE_WEBDRIVER == true")
             if browser != '':
                 raise Exception("""'$BROWSER' == '{}' | '$BROWSER' should not have a value if '$REMOTE_WEBDRIVER' is set to 'false', because the browser is set in the $CAPABILITIES.""".format(browser))
             remote_url_log = remote_url   # Need 2 different vars. 1 for logging and 1 for actual execution.
@@ -39,12 +38,9 @@ class BrowserHelper(object):
                 key = protocol_key.partition('//')[2]
                 key_secret = "*" * len(key)
                 remote_url_log = protocol + key_secret + base_url
-                # From here on we create a connection between Browserstack and localhost
-                if bs_local == True:
-                    # TODO Idea: make a functionality to set bs_local to true if setup_url == localhost and remote_url == browserstack
-                    # This is required for Browserstack to be able to detect that a local connection has to be made
-                    capabilities['browserstack.local'] = 'true'
-                    self._connect_bs_local()
+                capabilities['browserstack.local'] = 'true'
+                key = os.getenv("BROWSERSTACK_KEY")
+                BuiltIn().run_keyword('connect_bs_to_local', key)
             logger.info('Remote URL: {}'.format(remote_url_log))
             test_name = BuiltIn().get_variable_value("${TEST NAME}")
             # if 'name' in capabilities:
