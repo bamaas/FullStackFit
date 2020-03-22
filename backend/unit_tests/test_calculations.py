@@ -6,7 +6,8 @@ filepath = str(pathlib.Path(__file__).parent.absolute())
 runpath = filepath + '/../app'
 runpath = os.path.normpath(runpath)
 sys.path.append(runpath)
-from logic.person import Person
+#from logic.person import Person
+from logic.person import *
 
 class BMRcalculations(unittest.TestCase):
     def test_01(self):
@@ -32,6 +33,11 @@ class BMRcalculations(unittest.TestCase):
         activitylevel = 'Vigorously active'
         john = Person(name=name, gender=gender, weight=weight, age=age, goal=goal, activitylevel=activitylevel, length=length)
         self.assertEqual(john.tdee, 3478)
+    
+    def test_03(self):
+        print("Test 03 - test BMI calculation")
+        bmi = Calculator.calculate_bmi(weight=80,length=180)
+        self.assertEqual(bmi, 25)
 
 if __name__ == '__main__':
     unittest.main()
