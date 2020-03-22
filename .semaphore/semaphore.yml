@@ -67,11 +67,10 @@ blocks:
           - checkout
           - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
           - echo $GIT_COMMIT_SHA
-          # .env file
-          - mv ../.env .env
-          - chmod 600 .env
-          # Parse from .env file
-          - export BROWSERSTACK_URL=$(grep BROWSERSTACK_URL .env | cut -d '=' -f2)
+          # create .env file from environment variables
+          - echo BROWSERSTACK_URL=${BROWSERSTACK_URL} >> ./test/.env
+          - echo BROWSERSTACK_USER=${BROWSERSTACK_USER} >> ./test/.env
+          - echo BROWSERSTACK_KEY=${BROWSERSTACK_KEY} >> ./test/.env
           # Docker
           - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
           # Pull images from bamaas/registry (private container registry)
@@ -97,7 +96,6 @@ blocks:
       secrets:
         - name: docker
         - name: browserstack
-        - name: browserstack_test
 promotions:
 - name: Deploy
   pipeline_file: deploy-prod.yml
