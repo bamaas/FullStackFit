@@ -1,8 +1,10 @@
 pull_request_rules:
-  - name: Automatic merge ⬇️ on approval ✔
+  - name: Automatic merge on checks passed ✔
     conditions:
       - label=auto-pr
-      # - status-success=ci/semaphoreci/push: Build & Test
+      - "status-success=ci/semaphoreci/push: Build & Test"
+      - base=master
     actions:
       merge:
         method: merge
+        strict: true
