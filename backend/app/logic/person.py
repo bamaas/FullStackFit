@@ -1,4 +1,4 @@
-from logic.calculator import Calculator
+from logic import Calculator
 
 class Person():
     def __init__(self, name='bas', age=20, gender='man', weight=80, activitylevel='Vigorously active', goal='Fat loss', length=180, level='Intermediate', body_fat_perc=15):
