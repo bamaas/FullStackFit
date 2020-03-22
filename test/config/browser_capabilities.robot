@@ -14,6 +14,12 @@
 ######################
 # Browserstack
 ######################
-&{IPHONE8PLUS}                         browserName=iPhone          device=iPhone 8 Plus         realMobile=true       os_version=11     
+# Desktop
 &{W10_CHROME}                          os=Windows                  os_version=10                browser=Chrome        browser_version=76.0        resolution=1920x1080     browserstack.selenium_version=3.1.0
+&{W10_FIREFOX}                         os=Windows                  os_version=10                browser=Firefox        browser_version=74.0        resolution=1920x1080     browserstack.selenium_version=3.141.59 
+&{MAC_SAFARI}                          os=OS X      os_version=High Sierra     browser=Safari      browser_version=11.0        resolution=1920x1080      browserstack.selenium_version=3.14.0
+&{MAC_CHROME}                          os=OS X      os_version=High Sierra     browser=Chrome      browser_version=76.0        resolution=1920x1080      browserstack.selenium_version=3.14.0
+
+# Mobile
+&{IPHONE8PLUS}                         browserName=iPhone          device=iPhone 8 Plus         realMobile=true       os_version=11     
 &{SAMSUNG_S8}                          os_version=7.0              device=Samsung Galaxy S8     real_mobile=true     
