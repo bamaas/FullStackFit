@@ -2,27 +2,28 @@ import unittest
 import sys
 import os
 import pathlib
-filepath = str(pathlib.Path(__file__).parent.absolute())
-runpath = filepath + '/../app'
-runpath = os.path.normpath(runpath)
+filepath = str(pathlib.Path(__file__).parent.absolute()) + '/../app'
+runpath = os.path.normpath(filepath)
 sys.path.append(runpath)
-#from logic.person import Person
-from logic.person import *
+from logic import Calculator
+from logic import Person
 
-class Calculator_test(unittest.TestCase):
-    def test_03(self):
-        print("Test 03 - BMI calculation")
+
+class Calculator_tests(unittest.TestCase):
+    def test_bmi_calculation(self):
+        print("Calculator - BMI calculation")
         bmi = Calculator.calculate_bmi(weight=80,length=180)
         self.assertEqual(bmi, 25)
     
-    def test_04(self):
-        print("Test 04 - FFM calculation")
+    def test_ffm_calculation(self):
+        print("Calculator - FFM calculation")
         ffm = Calculator.calculate_ffm(weight=100, body_fat_perc=20)
         self.assertEqual(ffm, 80)
 
-class Person_test(unittest.TestCase):
+
+class Person_tests(unittest.TestCase):
     def test_01(self):
-        print("Test 01 - BMR calculation")
+        print("Person - BMR calculation")
         name = 'john'
         age = 20
         weight = 80
@@ -34,7 +35,7 @@ class Person_test(unittest.TestCase):
         self.assertEqual(john.bmr, 1932)
     
     def test_02(self):
-        print("Test 02 - TDEE calculation")
+        print("Person - TDEE calculation")
         name = 'john'
         age = 20
         weight = 80
