@@ -23,4 +23,4 @@ Commando to run latest release:
 This will start the application on `http://localhost:80`. To view the API documentation visit: `http://localhost:80/api`
 
 ## License
-MIT License
+[MIT](LICENSE.MD)
