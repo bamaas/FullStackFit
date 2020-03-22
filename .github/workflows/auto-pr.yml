@@ -12,12 +12,4 @@ jobs:
         pr_title: "Pulling ${{ github.ref }} into master"
         pr_label: "auto-pr"
         github_token: ${{ secrets.GITHUB_TOKEN }}
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-#     steps:
-#     - uses: actions/checkout@v1
-    
-#     - name: On my_custom_webhook do ABC...
-#       run: |
-#         echo "Hello From my_custom_webhook...doing ABC"
+        pr_body: ":crown: *An automated PR*"  # Full markdown support, requires pr_title to be set
