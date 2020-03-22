@@ -17,12 +17,12 @@ def set_suite_tags(environment, remote_webdriver, capabilities, browser):
                 raise Exception("Input error. The $CAPABILITIES variable seems empty when $REMOTE_WEBDRIVER is set to True.")
             if get_capabilities is None:
                 raise Exception("Couldnt find variable {} Did you use a & in the browser_capabilities.robot instead of a $".format(capabilities))
-        set_capabilities_as_test_tags(get_capabilities)
+        _set_capabilities_as_test_tags(get_capabilities)
     elif remote_webdriver.lower() == 'false':
-        BuiltIn().set_tags("browserName: {}".format(browser.title()))
+        BuiltIn().set_tags("browser: {}".format(browser.title()))
 
-def set_capabilities_as_test_tags(capabilities):
-    """ This function appends tags to a test case according to the key:value pairs
+def _set_capabilities_as_test_tags(capabilities):
+    """ This private function appends tags to a test case according to the key:value pairs
         of the given capabilities dictionary. Argument capabilities, needs to be a dictionary"""
     for key in capabilities:
         if key == 'platformVersion':
@@ -31,15 +31,21 @@ def set_capabilities_as_test_tags(capabilities):
             if platform is None:
                 raise Exception("Error: couldn't find a value for key platform or platformName in the capabilities dictionary.")
             BuiltIn().set_tags("{}: {} ({})".format(key, capabilities[key], platform))
-        elif key == 'version':
-            browser_name = capabilities.get('browserName')
-            BuiltIn().set_tags("{} version: {}".format(browser_name, capabilities[key]))
-        elif key == 'os_version':
+        elif key == 'browser':
+            BuiltIn().set_tags("browser: {} {}".format(capabilities['browser'], capabilities['os_version']))
+        elif key =='os':
             os = capabilities.get('os')
             os_version = capabilities.get('os_version')
-            BuiltIn().set_tags("os_version: {} ({})".format(os_version, os))
-        elif key == 'tunnel' or key == 'chromeOptions' or key == 'browserstack.local':
+            BuiltIn().set_tags("os: {} {}".format(os, os_version))
+        elif key == 'tunnel' or key == 'chromeOptions' or key == 'browserstack.local' or key == 'os_version' or key == 'browser_version' or key == 'resolution':
             # This ensures that the key 'tunnel' is not added to the test tags
             pass
         else:
             BuiltIn().set_tags("{}: {}".format(key, capabilities[key]))
+
+def remove_UID_tags_from_test():
+    tags = BuiltIn().get_variable_value('@{TEST_TAGS}')
+    for tag in tags:
+        if len(tag) == 6:
+            if tag[3:].isdigit() and tag[:3].isalpha():
+                BuiltIn().remove_tags(tag)

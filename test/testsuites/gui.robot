@@ -2,18 +2,30 @@
 Resource          ../keywords/all.robot
 
 *** Variables ***
-# The value in 'environment' is used to load the config file containing variables for the specific environment, such as the kvk_frontend_url.
+# The value in 'environment' is used to load the config file containing variables for the specific environment.
 ${ENVIRONMENT}                  localhost
 
-# Keyword arguments for the 'setup browser' functionality
-${REMOTE_WEBDRIVER}             False
-${BROWSER}                      Chrome
-${REMOTE_URL}                   #browserstack        #appium
-${CAPABILITIES}                 #ANDROID_EMULATOR_CHROME
-${MAXIMIZE_WINDOW}              False
+
+########################
+# Webdriver settings
+# ---------------------
+# If you want to run tests through BrowserStack, 
+# set remote_webdriver to False and provide a remote_url and capabilities dictionary
+########################
+# Remote vs local
+${REMOTE_WEBDRIVER}             #True
+# Local
+${BROWSER}                      #Chrome
+# Remote
+${REMOTE_URL}                   #%{BROWSERSTACK_REMOTE_URL}
+${CAPABILITIES}                 #w10_chrome
+# Other settings
+${MAXIMIZE_WINDOW}              True
+
 
 *** Settings ***
-Suite Setup         set suite tags    environment=${ENVIRONMENT}                remote_webdriver=${REMOTE_WEBDRIVER}      capabilities=${CAPABILITIES}          browser=${BROWSER}
+Suite Setup         run keywords      set suite tags      environment=${ENVIRONMENT}      remote_webdriver=${REMOTE_WEBDRIVER}      capabilities=${CAPABILITIES}          browser=${BROWSER}
+...                 AND               load env file       ${CURDIR}/../.env
 
 Test Setup          setup browser     remote_webdriver=${REMOTE_WEBDRIVER}      browser=${BROWSER}                        remote_url=${REMOTE_URL}    
 ...                                   capabilities=${CAPABILITIES}              setup_url=${FRONTEND_URL}                 maximize_window=${MAXIMIZE_WINDOW}   
@@ -21,8 +33,10 @@ Test Setup          setup browser     remote_webdriver=${REMOTE_WEBDRIVER}      
 Test Teardown       run keywords      close browser if running remotely and report screenshot on failure                  ${REMOTE_WEBDRIVER}
 ...                 AND               report last output message on failure
 
+
 *** Test Cases ***
-GUI | Calculate TDEE
+Calculate TDEE
+    [Tags]                              Critical        TDE001      e2e
     # Validate home screen
     element should be visible           //h3[text()='Calculator']
     # Fill form

@@ -6,10 +6,12 @@ Resource          ../keywords/all.robot
 ${ENVIRONMENT}                  localhost
 
 *** Settings *** 
+Suite Setup                     load env file       ${CURDIR}/../.env
 Test Teardown                   report last output message on failure
 
 *** Test Cases ***
-WS | Calculate TDEE
+Calculate TDEE
+    [Tags]                 WS
     # Create the body
     ${body}=            create dictionary   name=john   
     ...                                     age=20  
@@ -32,7 +34,8 @@ WS | Calculate TDEE
     assert JSON         ${response}         $.proteinReqPerc    18        integer
     assert dictionary   ${response}         {"tdee":3478}
 
-WS | Calculate BMR
+Calculate BMR
+    [Tags]                 WS
     # Test Data
     ${body}=                create dictionary   
     ...                     age=20
@@ -44,7 +47,8 @@ WS | Calculate BMR
     should be equal         '${response}'       '1932'
     ...                     Assertion failed. Expected the BMR response to be "1932". Actual: "${response}".
 
-WS | Calculate BMI
+Calculate BMI
+    [Tags]                 WS
     # Test Data
     ${body}=                create dictionary   
     ...                     weight=80
@@ -54,7 +58,8 @@ WS | Calculate BMI
     should be equal         '${response}'       '25'
     ...                     Assertion failed. Expected the BMI response to be "25". Actual: "${response}".
 
-WS | Send wrong POST request and assert the status
+Send wrong POST request and assert the status
+    [Tags]                 WS
     [Documentation]                         Wrong gender given. Return status should be equal to 500
     # Create the body
     ${body}=            create dictionary   name=john   

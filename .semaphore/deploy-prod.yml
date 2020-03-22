@@ -53,10 +53,10 @@ blocks:
       jobs:
         - name: api
           commands:
-            - sh testbot -v environment:prod testsuites/ws.robot
+            - sh testcontainer -v environment:prod testsuites/ws.robot
         - name: e2e
           commands:
-            - sh testbot -v environment:prod testsuites/gui.robot
+            - sh testcontainer -v environment:prod testsuites/gui.robot
       prologue:
         commands:
           - checkout
