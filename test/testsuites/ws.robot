@@ -6,7 +6,7 @@ Resource          ../keywords/all.robot
 ${ENVIRONMENT}                  localhost
 
 *** Settings *** 
-Suite Setup                     load env file       ${CURDIR}/../.env
+#Suite Setup                     load env file       ${CURDIR}/../.env
 Test Teardown                   report last output message on failure
 
 *** Test Cases ***
