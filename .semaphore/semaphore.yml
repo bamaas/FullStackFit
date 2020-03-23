@@ -7,6 +7,9 @@ agent:
 auto_cancel:
   running:
     when: "true"
+fail_fast:
+  cancel:
+    when: "true"
 blocks:
   - name: Checkout
     task:
