@@ -65,9 +65,9 @@ blocks:
         - name: e2e (W10 - Chrome)
           commands:
             - sh testcontainer -v environment:localhost -v remote_webdriver:true -v capabilities:w10_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/gui.robot
-        - name: e2e (W10 - Firefox)
-          commands:
-            - sh testcontainer -v environment:localhost -v remote_webdriver:true -v capabilities:w10_firefox -v remote_url:${BROWSERSTACK_URL} testsuites/gui.robot
+        # - name: e2e (W10 - Firefox)
+        #   commands:
+        #     - sh testcontainer -v environment:localhost -v remote_webdriver:true -v capabilities:w10_firefox -v remote_url:${BROWSERSTACK_URL} testsuites/gui.robot
         - name: e2e (Mac - Chrome)
           commands:
             - sh testcontainer -v environment:localhost -v remote_webdriver:true -v capabilities:mac_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/gui.robot
