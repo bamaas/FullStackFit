@@ -38,15 +38,18 @@ class BrowserHelper(object):
                 key = protocol_key.partition('//')[2]
                 key_secret = "*" * len(key)
                 remote_url_log = protocol + key_secret + base_url
+                # Add extra capabilities for BrowserStack
                 capabilities['browserstack.local'] = 'true'
+                test_name = BuiltIn().get_variable_value("${TEST NAME}")
+                capabilities['name'] = test_name
+                capabilities['project'] = 'FullStackFit'
+                semaphore_git_pre_name = os.environ.get('SEMAPHORE_GIT_PR_NAME')
+                git_commit_sha = os.environ.get('GIT_COMMIT_SHA', 'Untitled Build')
+                capabilities['build'] = str(semaphore_git_pre_name) + ' [' + str(git_commit_sha) + ']'
+                # BS local connection
                 key = os.getenv("BROWSERSTACK_KEY")
                 BuiltIn().run_keyword('connect_bs_to_local', key)
             logger.info('Remote URL: {}'.format(remote_url_log))
-            test_name = BuiltIn().get_variable_value("${TEST NAME}")
-            # if 'name' in capabilities:
-                #raise Exception("Please remove 'name' from the capabilites dictionary. As this key value is automatically set to the test case name.")
-            # Append test name to the capabilities. This value is used as test name in lamdatest                
-            capabilities['name'] = test_name
             logger.info('Capabilities: {}'.format(capabilities))
             selib = BuiltIn().get_library_instance('SeleniumLibrary')
             driver = webdriver.Remote(command_executor='{0}'.format(remote_url), desired_capabilities=capabilities)

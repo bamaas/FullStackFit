@@ -99,6 +99,8 @@ blocks:
           - echo BROWSERSTACK_URL=${BROWSERSTACK_URL} >> ./test/.env
           - echo BROWSERSTACK_USER=${BROWSERSTACK_USER} >> ./test/.env
           - echo BROWSERSTACK_KEY=${BROWSERSTACK_KEY} >> ./test/.env
+          - echo SEMAPHORE_GIT_PR_NAME=${SEMAPHORE_GIT_PR_NAME} >> ./test/.env
+          - echo GIT_COMMIT_SHA=${GIT_COMMIT_SHA} >> ./test/.env
           # Docker
           - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
           # Pull images from bamaas/registry (private container registry)
