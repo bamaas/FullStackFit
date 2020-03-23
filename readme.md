@@ -1,6 +1,6 @@
 # Fulltackfit project - Bas Maas
 
-Deployed @ https://basmaas.nl/fit
+Deployed @ https://basmaas.nl/fit (Google Cloud Compute Engine)
 
 QA (CI/CD) @ https://bamaas.semaphoreci.com/projects/FullStackFit/
 

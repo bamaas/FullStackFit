@@ -62,6 +62,10 @@ blocks:
         commands:
           - checkout
           - docker pull $DOCKER_USERNAME/fullstackfit_test:latest
+          # create .env file from environment variables
+          - echo BROWSERSTACK_URL=${BROWSERSTACK_URL} >> ./test/.env
+          - echo BROWSERSTACK_USER=${BROWSERSTACK_USER} >> ./test/.env
+          - echo BROWSERSTACK_KEY=${BROWSERSTACK_KEY} >> ./test/.env
       epilogue:
         always:
           commands:
@@ -69,3 +73,4 @@ blocks:
             - artifact push job ./test/logs/log.html
       secrets:
         - name: docker
+        - name: browserstack

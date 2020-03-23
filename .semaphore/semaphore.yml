@@ -14,10 +14,10 @@ blocks:
   - name: Checkout
     task:
       jobs:
-        - name: lint Python backend
+        - name: lint Python
           commands: 
             - pip install flake8
-            - flake8 ./backend/app/ --exit-zero
+            - flake8 ./backend/app/ --exit-zero --tee --output-file=lint_python.txt -vv
         - name: lint Dockerfiles
           commands:
             - printf "\n\nBackend\n------------------\n" >> lint_dockerfiles.txt && make lint-dockerfile f="./test/Dockerfile | tee -a lint_dockerfiles.txt"
@@ -27,6 +27,12 @@ blocks:
         - name: unit test backend
           commands: 
             - make test-unit
+        # - name: lint Angular
+        #   commands:
+        #     - sem-version node 12.0
+        #     - npm install -g @angular/cli
+        #     - cd frontend
+        #     - ng lint
       prologue:
         commands:
           - checkout
@@ -34,7 +40,7 @@ blocks:
       epilogue:
         always:
           commands:
-            - artifact push job ./lint_dockerfiles.txt
+            - artifact push job ./lint_*.txt
   - name: Build
     task:
       jobs:
@@ -108,13 +114,6 @@ blocks:
             - artifact push job ./test/logs/log.html
             - artifact push job ./test/logs/output.xml
             - artifact push job ./test/logs/report.html
-        # on_pass:
-        #   commands:
-            # Tag & Push :$GIT_COMMIT_SHA to private Docker Hub registry
-            # By doing this we gather all the passed builds in the public Docker Hub repository corresponding with the Git commit
-            # - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_frontend:$GIT_COMMIT_SHA $DOCKER_USERNAME/registry:fullstackfit_backend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_backend:$GIT_COMMIT_SHA $DOCKER_USERNAME/registry:fullstackfit_database.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_database:$GIT_COMMIT_SHA $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:$GIT_COMMIT_SHA | xargs -n 2 docker tag
-            # - echo ${DOCKER_USERNAME}/fullstackfit_frontend:$GIT_COMMIT_SHA ${DOCKER_USERNAME}/fullstackfit_backend:$GIT_COMMIT_SHA ${DOCKER_USERNAME}/fullstackfit_reverseproxy:$GIT_COMMIT_SHA ${DOCKER_USERNAME}/fullstackfit_database:$GIT_COMMIT_SHA | xargs -n 1 docker push
-            # Don't push :latest to Docker Hub. This is done in the promoted 'deploy' pipeline.
       secrets:
         - name: docker
         - name: browserstack
