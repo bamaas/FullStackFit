@@ -61,7 +61,7 @@ blocks:
             - sh testcontainer -v environment:localhost testsuites/ws.robot
         - name: e2e (Linux - Chrome)
           commands:
-            - sh testcontainer -v environment:localhost -v remote:webdriver:false -v browser:Chrome testsuites/gui.robot
+            - sh testcontainer -v environment:localhost -v remote_webdriver:false -v browser:Chrome testsuites/gui.robot
         - name: e2e (W10 - Chrome)
           commands:
             - sh testcontainer -v environment:localhost -v remote_webdriver:true -v capabilities:w10_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/gui.robot
