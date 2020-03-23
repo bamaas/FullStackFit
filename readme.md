@@ -1,14 +1,16 @@
+[![BrowserStack Status](https://automate.browserstack.com/badge.svg?badge_key=akVNb2w4dERMSzR0TEZFM0RmZTgzVGx1cTZRcnNRcmUrQm5oSXBiZFdCST0tLTBWdDlBNTRhdFRBa1hGK2IyWXU5cFE9PQ==--f354e3356bca1abe114cd7767b85d2a8fa540768)](https://automate.browserstack.com/public-build/akVNb2w4dERMSzR0TEZFM0RmZTgzVGx1cTZRcnNRcmUrQm5oSXBiZFdCST0tLTBWdDlBNTRhdFRBa1hGK2IyWXU5cFE9PQ==--f354e3356bca1abe114cd7767b85d2a8fa540768)
+
 # Fulltackfit project - Bas Maas
 
-Deployed @ https://basmaas.nl/fit (Google Cloud Compute Engine)
+Deployed @ [basmaas.nl/fit](https://basmaas.nl/fit) (Google Cloud Compute Engine)
 
-QA (CI/CD) @ https://bamaas.semaphoreci.com/projects/FullStackFit/
+CI/CD @ [Semaphore](https://bamaas.semaphoreci.com/projects/FullStackFit/)
 
-Docker Images @ https://hub.docker.com/u/bamaas
+Container Registry @ [DockerHub](https://hub.docker.com/u/bamaas)
 
-Uptime Monitoring @ https://stats.uptimerobot.com/zp8vnhRRwy
+Uptime Monitoring @ [Uptime Robot](https://stats.uptimerobot.com/zp8vnhRRwy)
 
----------
+Test Reports @ [BrowserStack](https://automate.browserstack.com/public-build/akVNb2w4dERMSzR0TEZFM0RmZTgzVGx1cTZRcnNRcmUrQm5oSXBiZFdCST0tLTBWdDlBNTRhdFRBa1hGK2IyWXU5cFE9PQ==--f354e3356bca1abe114cd7767b85d2a8fa540768?redirect=true)
 
 ## Dependencies
 - Docker
@@ -26,4 +28,3 @@ This will start the application on `http://localhost:80`. To view the API docume
 
 ## License
 [MIT](https://github.com/bamaas/FullStackFit/blob/master/LICENSE.md)
-
