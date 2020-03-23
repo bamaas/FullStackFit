@@ -12,7 +12,7 @@ Container Registry @ [DockerHub](https://hub.docker.com/u/bamaas)
 
 Uptime Monitoring @ [Uptime Robot](https://stats.uptimerobot.com/zp8vnhRRwy)
 
-Test Reports @ [BrowserStack](https://automate.browserstack.com/public-build/akVNb2w4dERMSzR0TEZFM0RmZTgzVGx1cTZRcnNRcmUrQm5oSXBiZFdCST0tLTBWdDlBNTRhdFRBa1hGK2IyWXU5cFE9PQ==--f354e3356bca1abe114cd7767b85d2a8fa540768?redirect=true)
+E2E Test Reports (latest build only) @ [BrowserStack](https://automate.browserstack.com/public-build/akVNb2w4dERMSzR0TEZFM0RmZTgzVGx1cTZRcnNRcmUrQm5oSXBiZFdCST0tLTBWdDlBNTRhdFRBa1hGK2IyWXU5cFE9PQ==--f354e3356bca1abe114cd7767b85d2a8fa540768?redirect=true)
 
 ## Dependencies
 - Docker
