@@ -7,21 +7,34 @@ agent:
 auto_cancel:
   running:
     when: "true"
+fail_fast:
+  cancel:
+    when: "true"
 blocks:
   - name: Checkout
     task:
       jobs:
-        - name: linter
+        - name: lint Python backend
           commands: 
             - pip install flake8
-            - echo linting...
-        - name: unit tests
+            - flake8 ./backend/app/ --exit-zero
+        - name: lint Dockerfiles
+          commands:
+            - printf "\n\nBackend\n------------------\n" >> lint_dockerfiles.txt && make lint-dockerfile f="./test/Dockerfile | tee -a lint_dockerfiles.txt"
+            - printf "\n\nDatabase\n------------------\n" >> lint_dockerfiles.txt && make lint-dockerfile f="./database/Dockerfile | tee -a lint_dockerfiles.txt"
+            - printf "\n\nFrontend\n------------------\n" >> lint_dockerfiles.txt && make lint-dockerfile f="./frontend/Dockerfile | tee -a lint_dockerfiles.txt"
+            - printf "\n\nReverse-proxy\n------------------\n" >> lint_dockerfiles.txt && make lint-dockerfile f="./reverse-proxy/Dockerfile | tee -a lint_dockerfiles.txt"
+        - name: unit test backend
           commands: 
             - make test-unit
       prologue:
         commands:
           - checkout
           - sem-version python 3.7
+      epilogue:
+        always:
+          commands:
+            - artifact push job ./lint_dockerfiles.txt
   - name: Build
     task:
       jobs:

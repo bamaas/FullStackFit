@@ -18,6 +18,9 @@ clean-fe:
 clean-be:
 	rm -rf ./backend/env
 
+lint-dockerfile:
+	docker run --rm -i hadolint/hadolint < ${f}
+
 # DEV
 dev:
 	docker-compose -f docker-compose-dev.yml build
