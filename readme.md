@@ -6,6 +6,8 @@ QA (CI/CD) @ https://bamaas.semaphoreci.com/projects/FullStackFit/
 
 Docker Images @ https://hub.docker.com/u/bamaas
 
+Uptime Monitoring @ https://stats.uptimerobot.com/zp8vnhRRwy
+
 ---------
 
 ## Dependencies
