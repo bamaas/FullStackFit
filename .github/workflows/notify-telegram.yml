@@ -20,13 +20,13 @@ jobs:
   github-to-telegram:
     runs-on: ubuntu-latest
     steps:
-      - name: workflow name
-        uses: athul/telewire@master
-        if: always()
-        with:
-          chat: ${{ secrets.telegramchannelname }}
-          token: ${{ secrets.telegramtoken }}
-          status: ${{ job.status }}
+    - uses: actions/checkout@master
+    - name: send custom message with args
+      uses: appleboy/telegram-action@master
+      with:
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        args: The ${{ github.event_name }} event triggered first step.
 
   # notify-telegram:
   #   runs-on: ubuntu-latest
