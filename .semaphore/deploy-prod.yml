@@ -45,6 +45,10 @@ blocks:
           - gcloud auth activate-service-account --key-file=.secrets.gcp.json
           - chmod 600 google_compute_engine
           - chmod 600 google_compute_engine.pub
+      epilogue:
+        on_fail:
+            commands:
+              - curl -d message="**[Semaphore[bot]](${SEMAPHORE_ORGANIZATION_URL})** [deployment](${SEMAPHORE_ORGANIZATION_URL}/workflows/${SEMAPHORE_WORKFLOW_ID}) _${SEMAPHORE_JOB_RESULT}_ — [${GIT_COMMIT_SHA}](github.com/bamaas/FullStackFit/commit/${GIT_COMMIT_SHA_LONG}) *${GIT_COMMIT_MSG}*" -d level=error https://webhooks.gitter.im/e/afa7445bc110e2ed8000
       secrets:
         - name: google-cloud-stg
   - name: Test Prod
@@ -73,21 +77,22 @@ blocks:
           commands:
             - make shutdown
             - artifact push job ./test/logs/log.html
+        on_fail:
+            commands:
+              - curl -d message="**[Semaphore[bot]](${SEMAPHORE_ORGANIZATION_URL})** [deployment](${SEMAPHORE_ORGANIZATION_URL}/workflows/${SEMAPHORE_WORKFLOW_ID}) _${SEMAPHORE_JOB_RESULT}_ — [${GIT_COMMIT_SHA}](github.com/bamaas/FullStackFit/commit/${GIT_COMMIT_SHA_LONG}) *${GIT_COMMIT_MSG}*" -d level=error https://webhooks.gitter.im/e/afa7445bc110e2ed8000
       secrets:
         - name: docker
         - name: browserstack
   - name: Notify
     task:
       jobs:
-        - name: Gitter
+        - name: to Gitter
           commands:
-            - curl -d message="**[Semaphore[bot]](${SEMAPHORE_ORGANIZATION_URL})** [deployment](${SEMAPHORE_ORGANIZATION_URL}/workflows/${SEMAPHORE_WORKFLOW_ID}) ${SEMAPHORE_JOB_RESULT} — [${GIT_COMMIT_SHA}](github.com/bamaas/FullStackFit/commit/${GIT_COMMIT_SHA_LONG}) *${GIT_COMMIT_MSG}*" -d level=info https://webhooks.gitter.im/e/afa7445bc110e2ed8000
-            - curl -d message="**@[Semaphore[bot]](${SEMAPHORE_ORGANIZATION_URL})** new release now live @ https://basmaas.nl/fit" -d level=info https://webhooks.gitter.im/e/afa7445bc110e2ed8000
+            - curl -d message="**[Semaphore[bot]](${SEMAPHORE_ORGANIZATION_URL})** [deployment](${SEMAPHORE_ORGANIZATION_URL}/workflows/${SEMAPHORE_WORKFLOW_ID}) _${SEMAPHORE_JOB_RESULT}_ — [${GIT_COMMIT_SHA}](github.com/bamaas/FullStackFit/commit/${GIT_COMMIT_SHA_LONG}) *${GIT_COMMIT_MSG}*" -d level=info https://webhooks.gitter.im/e/afa7445bc110e2ed8000
+            - curl -d message="**@[Semaphore[bot]](${SEMAPHORE_ORGANIZATION_URL})** _new release now live_ @ https://basmaas.nl/fit" -d level=info https://webhooks.gitter.im/e/afa7445bc110e2ed8000
       prologue:
         commands:
           - checkout
           - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
           - export GIT_COMMIT_SHA_LONG=$(git rev-parse HEAD)
           - export GIT_COMMIT_MSG=$(git show -s --format=%B ${GIT_COMMIT_SHA})
-      secrets:
-        - name: browserstack
