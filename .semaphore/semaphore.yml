@@ -1,5 +1,5 @@
 version: v1.0
-name: Build & Test
+name: lint, build and test
 agent:
   machine:
     type: e1-standard-2
@@ -46,7 +46,7 @@ blocks:
             - artifact push job ./lint_*.txt
         on_fail:
           commands:
-            - curl -d message="**[Semaphore[bot]](${SEMAPHORE_ORGANIZATION_URL})** [build and test](${SEMAPHORE_ORGANIZATION_URL}/workflows/${SEMAPHORE_WORKFLOW_ID}) ${SEMAPHORE_JOB_RESULT} — [${GIT_COMMIT_SHA}](github.com/bamaas/FullStackFit/commit/${GIT_COMMIT_SHA_LONG}) *${GIT_COMMIT_MSG}*" -d level=error https://webhooks.gitter.im/e/afa7445bc110e2ed8000
+            - curl -d message="**[Semaphore[bot]](${SEMAPHORE_ORGANIZATION_URL})** [lint, build and test](${SEMAPHORE_ORGANIZATION_URL}/workflows/${SEMAPHORE_WORKFLOW_ID}) ${SEMAPHORE_JOB_RESULT} — [${GIT_COMMIT_SHA}](github.com/bamaas/FullStackFit/commit/${GIT_COMMIT_SHA_LONG}) *${GIT_COMMIT_MSG}*" -d level=error https://webhooks.gitter.im/e/afa7445bc110e2ed8000
   - name: Build
     task:
       jobs:
@@ -81,7 +81,7 @@ blocks:
       epilogue:
         on_fail:
           commands:
-            - curl -d message="**[Semaphore[bot]](${SEMAPHORE_ORGANIZATION_URL})** [build and test](${SEMAPHORE_ORGANIZATION_URL}/workflows/${SEMAPHORE_WORKFLOW_ID}) ${SEMAPHORE_JOB_RESULT} — [${GIT_COMMIT_SHA}](github.com/bamaas/FullStackFit/commit/${GIT_COMMIT_SHA_LONG}) *${GIT_COMMIT_MSG}*" -d level=error https://webhooks.gitter.im/e/afa7445bc110e2ed8000
+            - curl -d message="**[Semaphore[bot]](${SEMAPHORE_ORGANIZATION_URL})** [lint, build and test](${SEMAPHORE_ORGANIZATION_URL}/workflows/${SEMAPHORE_WORKFLOW_ID}) ${SEMAPHORE_JOB_RESULT} — [${GIT_COMMIT_SHA}](github.com/bamaas/FullStackFit/commit/${GIT_COMMIT_SHA_LONG}) *${GIT_COMMIT_MSG}*" -d level=error https://webhooks.gitter.im/e/afa7445bc110e2ed8000
       secrets:
         - name: docker
   - name: Test
@@ -132,10 +132,10 @@ blocks:
             - artifact push job ./test/logs/report.html
         on_pass:
           commands:
-            - curl -d message="**[Semaphore[bot]](${SEMAPHORE_ORGANIZATION_URL})** [build and test](${SEMAPHORE_ORGANIZATION_URL}/workflows/${SEMAPHORE_WORKFLOW_ID}) ${SEMAPHORE_JOB_RESULT} — [${GIT_COMMIT_SHA}](github.com/bamaas/FullStackFit/commit/${GIT_COMMIT_SHA_LONG}) *${GIT_COMMIT_MSG}*" -d level=info https://webhooks.gitter.im/e/afa7445bc110e2ed8000
+            - curl -d message="**[Semaphore[bot]](${SEMAPHORE_ORGANIZATION_URL})** [lint, build and test](${SEMAPHORE_ORGANIZATION_URL}/workflows/${SEMAPHORE_WORKFLOW_ID}) ${SEMAPHORE_JOB_RESULT} — [${GIT_COMMIT_SHA}](github.com/bamaas/FullStackFit/commit/${GIT_COMMIT_SHA_LONG}) *${GIT_COMMIT_MSG}*" -d level=info https://webhooks.gitter.im/e/afa7445bc110e2ed8000
         on_fail:
           commands:
-            - curl -d message="**[Semaphore[bot]](${SEMAPHORE_ORGANIZATION_URL})** [build and test](${SEMAPHORE_ORGANIZATION_URL}/workflows/${SEMAPHORE_WORKFLOW_ID}) ${SEMAPHORE_JOB_RESULT} — [${GIT_COMMIT_SHA}](github.com/bamaas/FullStackFit/commit/${GIT_COMMIT_SHA_LONG}) *${GIT_COMMIT_MSG}*" -d level=error https://webhooks.gitter.im/e/afa7445bc110e2ed8000
+            - curl -d message="**[Semaphore[bot]](${SEMAPHORE_ORGANIZATION_URL})** [lint, build and test](${SEMAPHORE_ORGANIZATION_URL}/workflows/${SEMAPHORE_WORKFLOW_ID}) ${SEMAPHORE_JOB_RESULT} — [${GIT_COMMIT_SHA}](github.com/bamaas/FullStackFit/commit/${GIT_COMMIT_SHA_LONG}) *${GIT_COMMIT_MSG}*" -d level=error https://webhooks.gitter.im/e/afa7445bc110e2ed8000
       secrets:
         - name: docker
         - name: browserstack

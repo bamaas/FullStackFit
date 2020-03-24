@@ -9,6 +9,8 @@ on:
   issues:
     types: [opened, edited, pinned, closed, reopened, assigned, labeled]
   pull_request:
+    branches:
+      - master
     types: [opened, closed, edited, ready_for_review, review_requested, reopened]
   pull_request_review_comment:
     types: [created]
