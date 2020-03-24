@@ -17,17 +17,16 @@ on:
   status: {}
 
 jobs:
-
   github-to-telegram:
     runs-on: ubuntu-latest
     steps:
-    - name: workflow name
-      uses: athul/telewire@master
-      if: always()
-      with:
-        chat: ${{ secrets.telegramchannelname }}
-        token: ${{ secrets.telegramtoken }}
-        status: ${{ job.status }}
+      - name: workflow name
+        uses: athul/telewire@master
+        if: always()
+        with:
+          chat: ${{ secrets.telegramchannelname }}
+          token: ${{ secrets.telegramtoken }}
+          status: ${{ job.status }}
 
   notify-telegram:
     runs-on: ubuntu-latest
