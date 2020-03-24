@@ -1,4 +1,5 @@
 name: Notify Telegram
+
 on:
   pull_request:
     types:
@@ -14,32 +15,66 @@ on:
     types:
       - submitted
   status: {}
+
 jobs:
+
+  github-to-telegram:
+    runs-on: ubuntu-latest
+    steps:
+    - name: workflow name
+      uses: athul/telewire@master
+      if: always()
+      with:
+        chat: ${{ secrets.telegramchannelname }}
+        token: ${{ secrets.telegramtoken }}
+        status: ${{ job.status }}
+
   notify-telegram:
     runs-on: ubuntu-latest
     steps:
-      - name: 'Wait for status checks'
-        id: waitforstatuschecks
-        uses: "WyriHaximus/github-action-wait-for-status@f8bbe3bb321919ec6a009bc98121f39874dc8ee0"
+      - name: Wait for build to succeed
+        uses: fountainhead/action-wait-for-check@v1.0.0
+        id: wait-for-build
         with:
-          ignoreActions: automerge
-          checkInterval: 13
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-      - name: 'Notify'
-        uses: yanzay/notify-telegram@v0.1.0
-        if: steps.waitforstatuschecks.outputs.status == 'success'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          checkName: build
+          ref: github.event.pull_request.head.sha || github.sha
+
+      - name: Do something with a passing build
+        if: steps.wait-for-build.outputs.conclusion == 'success'
+
+      - name: Do something with a failing build
+        if: steps.wait-for-build.outputs.conclusion == 'failure'
         with:
-          chat: ${{ secrets.telegramchannelname }} # user id or channel name secret
-          token: ${{ secrets.telegramtoken }} # token secret
-          status: ${{ job.status }} # do not modify this line
-      - name: 'Notify'
-        uses: yanzay/notify-telegram@v0.1.0
-        if: steps.waitforstatuschecks.outputs.status == 'failure'
-        with:
-          chat: ${{ secrets.telegramchannelname }} # user id or channel name secret
-          token: ${{ secrets.telegramtoken }} # token secret
-          status: ${{ job.status }} # do not modify this line
+          chat: ${{ secrets.telegramchannelname }}
+          token: ${{ secrets.telegramtoken }}
+          status: ${{ job.status }}
+
+  #   steps:
+  #     - name: 'Wait for status checks'
+  #       id: waitforstatuschecks
+  #       uses: "WyriHaximus/github-action-wait-for-status@f8bbe3bb321919ec6a009bc98121f39874dc8ee0"
+  #       with:
+  #         ignoreActions: automerge
+  #         checkInterval: 13
+  #       env:
+  #         GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+  #     - name: 'Notify'
+  #       uses: yanzay/notify-telegram@v0.1.0
+  #       if: steps.waitforstatuschecks.outputs.status == 'success'
+  #       with:
+  #         chat: ${{ secrets.telegramchannelname }} # user id or channel name secret
+  #         token: ${{ secrets.telegramtoken }} # token secret
+  #         status: ${{ job.status }} # do not modify this line
+  #     - name: 'Notify'
+  #       uses: yanzay/notify-telegram@v0.1.0
+  #       if: steps.waitforstatuschecks.outputs.status == 'failure'
+  #       with:
+  #         chat: ${{ secrets.telegramchannelname }} # user id or channel name secret
+  #         token: ${{ secrets.telegramtoken }} # token secret
+  #         status: ${{ job.status }} # do not modify this line
+
+
 
 # name: Notify Telegram
 # on: push
