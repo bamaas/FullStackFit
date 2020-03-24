@@ -1,0 +1,37 @@
+name: Notify Telegram
+
+on: push
+
+jobs:
+  build:
+    name: Notifier
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Wait for build to succeed
+        uses: fountainhead/action-wait-for-check@v1.0.0
+        id: wait-for-build
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          checkName: build
+          ref: github.event.pull_request.head.sha || github.sha
+
+      - name: Do something with a passing build
+        uses: GokulDas027/TelegramBridge@master
+        if: steps.wait-for-build.outputs.conclusion == 'success'
+        with:
+          chat: ${{ secrets.telegramchannelname }} # save your chat id at settings/secrets with name: chat
+          token: ${{ secrets.telegramtoken }} # savethe bot token at settings/secrets with name: token
+          status: ${{ job.status }} # don't change
+          event: ${{ github.event_name }} # don't change
+          actor: ${{ github.actor }} # don't change
+
+      - name: Do something with a failing build
+        uses: GokulDas027/TelegramBridge@master
+        if: steps.wait-for-build.outputs.conclusion == 'failure'
+        with:
+          chat: ${{ secrets.telegramchannelname }} # save your chat id at settings/secrets with name: chat
+          token: ${{ secrets.telegramtoken }} # savethe bot token at settings/secrets with name: token
+          status: ${{ job.status }} # don't change
+          event: ${{ github.event_name }} # don't change
+          actor: ${{ github.actor }} # don't change
