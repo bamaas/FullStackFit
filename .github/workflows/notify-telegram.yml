@@ -15,7 +15,7 @@ on:
       - submitted
   status: {}
 jobs:
-  automerge:
+  notify-telegram:
     runs-on: ubuntu-latest
     steps:
       - name: 'Wait for status checks'
@@ -30,14 +30,14 @@ jobs:
         uses: yanzay/notify-telegram@v0.1.0
         if: steps.waitforstatuschecks.outputs.status == 'success'
         with:
-          chat: ${{ secrets.chat }} # user id or channel name secret
+          chat: ${{ secrets.telegramchannelname }} # user id or channel name secret
           token: ${{ secrets.telegramtoken }} # token secret
           status: ${{ job.status }} # do not modify this line
       - name: 'Notify'
         uses: yanzay/notify-telegram@v0.1.0
         if: steps.waitforstatuschecks.outputs.status == 'failure'
         with:
-          chat: ${{ secrets.chat }} # user id or channel name secret
+          chat: ${{ secrets.telegramchannelname }} # user id or channel name secret
           token: ${{ secrets.telegramtoken }} # token secret
           status: ${{ job.status }} # do not modify this line
 
