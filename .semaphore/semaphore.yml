@@ -90,7 +90,7 @@ blocks:
         - name: api
           commands:
             - sh testcontainer robotlooper -v environment:localhost testsuites/ws.robot
-        - name: e2e (Linux - Chrome)
+        - name: e2e
           commands:
             - sh testcontainer robotlooper -v environment:localhost -v remote_webdriver:false -v browser:Chrome testsuites/gui.robot
       prologue:
