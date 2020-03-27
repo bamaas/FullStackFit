@@ -118,6 +118,7 @@ blocks:
       epilogue:
         always:
           commands:
+            - cd ..
             - make shutdown
             - artifact push job ./test/logs/log.html
             - artifact push job ./test/logs/output.xml
@@ -165,6 +166,7 @@ blocks:
       epilogue:
         always:
           commands:
+            - cd ..
             - make shutdown
             - artifact push job ./test/logs/log.html
             - artifact push job ./test/logs/output.xml
