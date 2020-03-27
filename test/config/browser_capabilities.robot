@@ -21,5 +21,5 @@
 &{MAC_CHROME}                          os=OS X      os_version=High Sierra     browser=Chrome      browser_version=76.0        resolution=1920x1080      browserstack.selenium_version=3.14.0
 
 # Mobile
-&{IPHONE8PLUS}                         browserName=iPhone          device=iPhone 8 Plus         realMobile=true       os_version=11     
+&{IPHONE11}                            browserName=iPhone          device=iPhone 11         real_mobile=true       os_version=13 
 &{SAMSUNG_S8}                          os_version=7.0              device=Samsung Galaxy S8     real_mobile=true     

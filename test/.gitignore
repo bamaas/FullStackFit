@@ -12,3 +12,4 @@ __pycache__
 helpers/__pycache__/
 .tool-versions
 lambdatest_key.robot
+BrowserStackLocal

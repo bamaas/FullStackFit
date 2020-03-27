@@ -2,9 +2,6 @@ FROM python:3.7.4-stretch
 
 WORKDIR /src
 
-COPY docker-entrypoint.sh /
-
-ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["robot"]
 
 # Copy requirements separately, because only if the requirements are changed, it will run again. Otherwise the
@@ -35,7 +32,3 @@ ENV HEADLESS=no \
 # Make folder for log files
 RUN mkdir /src/logs
 RUN chmod 755 /src/logs
-
-## Running via command line:
-# --network="host" is used to access localhost on host machine
-# docker run --rm -u ${EUID}:${EUID} -v ${PWD}:/src --network="host" robot:latest -d logs testsuites
