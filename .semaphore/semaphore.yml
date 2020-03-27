@@ -89,10 +89,10 @@ blocks:
       jobs:
         - name: api
           commands:
-            - sh testcontainer robotlooper -v environment:localhost testsuites/ws.robot
+            - bash testcontainer robotlooper -v environment:localhost testsuites/ws.robot
         - name: e2e
           commands:
-            - sh testcontainer robotlooper -v environment:localhost -v remote_webdriver:false -v browser:Chrome testsuites/gui.robot
+            - bash testcontainer robotlooper -v environment:localhost -v remote_webdriver:false -v browser:Chrome testsuites/gui.robot
       prologue:
         commands:
           - checkout
@@ -136,10 +136,10 @@ blocks:
       jobs:
         - name: Windows 10 - Chrome
           commands:
-            - sh rerunner.sh robotlooper -v environment:localhost -v remote_webdriver:true -v capabilities:w10_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/gui.robot
+            - bash rerunner.sh robotlooper -v environment:localhost -v remote_webdriver:true -v capabilities:w10_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/gui.robot
         - name: MacOS - Chrome
           commands:
-            - sh rerunner.sh robotlooper -v environment:localhost -v remote_webdriver:true -v capabilities:mac_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/gui.robot
+            - bash rerunner.sh robotlooper -v environment:localhost -v remote_webdriver:true -v capabilities:mac_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/gui.robot
       prologue:
         commands:
           - checkout
