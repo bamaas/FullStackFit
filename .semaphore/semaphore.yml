@@ -14,7 +14,7 @@ blocks:
   - name: Lint
     task:
       jobs:
-        - name: "Python: backend"
+        - name: "Python backend"
           commands: 
             - pip install flake8
             - flake8 ./backend/app/ --exit-zero --tee --output-file=lint_python.txt -v
@@ -24,9 +24,6 @@ blocks:
             - printf "\n\nDatabase\n------------------\n" >> lint_dockerfiles.txt && make lint-dockerfile f="./database/Dockerfile | tee -a lint_dockerfiles.txt"
             - printf "\n\nFrontend\n------------------\n" >> lint_dockerfiles.txt && make lint-dockerfile f="./frontend/Dockerfile | tee -a lint_dockerfiles.txt"
             - printf "\n\nReverse-proxy\n------------------\n" >> lint_dockerfiles.txt && make lint-dockerfile f="./reverse-proxy/Dockerfile | tee -a lint_dockerfiles.txt"
-        - name: unit test backend
-          commands: 
-            - make test-unit
         # - name: lint Angular
         #   commands:
         #     - sem-version node 12.0
@@ -156,6 +153,9 @@ blocks:
         - name: MacOS - Chrome
           commands:
             - bash ./test/rerunner.sh robotlooper -v environment:localhost -v remote_webdriver:true -v capabilities:mac_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/gui.robot
+        - name: MacOS - Chrome
+          commands:
+            - bash ./test/rerunner.sh robotlooper -v environment:localhost -v remote_webdriver:true -v capabilities:mac_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/gui.robot
       prologue:
         commands:
           - checkout
@@ -180,7 +180,6 @@ blocks:
       epilogue:
         always:
           commands:
-            - cd ..
             - make shutdown
             - artifact push job ./test/logs/log.html
             - artifact push job ./test/logs/output.xml

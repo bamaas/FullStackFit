@@ -3,6 +3,7 @@
 # 'Wrapper' to easily run RF tests in a container
 # Example: bash testcontainer robotlooper -t "my test" testsuites
 # First exec command in container can be: robotlooper, robot or rebot.
+# Log files are stored in ./FullStackFit/test/logs
 #########################################################################
 # Verify first cli argument is correct
 if [ $1 != 'robot' ] && [ $1 != 'robotlooper' ] && [ $1 != 'rebot' ]; then
@@ -25,4 +26,4 @@ else
     printf "Please run this script from ./test or ./FullStackfit (root). \nCURDIR: $CURDIR"
     exit 1
 fi
-docker-compose -f $f run --rm test $runner "${@:2}"
+docker-compose -f $f run --rm test $runner -d logs "${@:2}"

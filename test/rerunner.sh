@@ -11,7 +11,7 @@ if [ $CURDIR = 'test' ]; then
 elif [ $CURDIR = 'FullStackFit' ]; then
     testcontainer="bash ./test/testcontainer "
 else
-    printf "Please run this script from ./test or ./FullStackFit (root)\nCURDIR: $CURDIR"
+    printf "Please run this script from ./test or ./FullStackFit (root)\nCURDIR: $CURDIR \n"
     exit 1
 fi
 # Init vars
@@ -28,7 +28,7 @@ printf "Execute tests (1st run)..."
 $testcontainer $1 -d logs -o output1.xml -l log1.html -r report1.html "${@:2}"
 rc1=$?
 tries=1
-printf "Return Code:" $rc1
+printf "Return Code: $rc1"
 docker rm testcontainer &> /dev/null
 # (2nd run) If failed then re-execute
 if [[ $rc1 != 0 ]]; then 
@@ -36,7 +36,7 @@ if [[ $rc1 != 0 ]]; then
     $testcontainer $1 -d logs -o output2.xml -l log2.html -r report2.html --rerunfailed logs/output1.xml "${@:2}"
     rc2=$?
     tries=2
-    printf "Return Code:" $rc2
+    printf "Return Code: $rc2"
     docker rm testcontainer &> /dev/null
 fi
 # (3rd run) If failed then re-execute
@@ -45,11 +45,11 @@ if [[ $rc2 != 0 ]]; then
     $testcontainer $1 -d logs -o output3.xml -l log3.html -r report3.html --rerunfailed logs/output2.xml "${@:2}"
     rc3=$?
     tries=3
-    printf "Return Code:" $rc3
+    printf "Return Code: $rc3"
     docker rm testcontainer &> /dev/null
 fi
 # Merge results
-printf "\n\n\nMerging output files... \n=============================================================================="
+printf "\n\n\nMerging output files... \n==============================================================================\n"
 $testcontainer rebot -d logs -o output.xml --merge logs/output*.xml
 printf "\n\n\n"
 rc4=$?
