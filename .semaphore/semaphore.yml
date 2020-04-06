@@ -153,9 +153,6 @@ blocks:
         - name: MacOS - Chrome
           commands:
             - bash ./test/rerunner.sh robotlooper -v environment:localhost -v remote_webdriver:true -v capabilities:mac_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/gui.robot
-        - name: MacOS - Chrome
-          commands:
-            - bash ./test/rerunner.sh robotlooper -v environment:localhost -v remote_webdriver:true -v capabilities:mac_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/gui.robot
       prologue:
         commands:
           - checkout
