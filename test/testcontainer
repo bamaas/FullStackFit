@@ -1,11 +1,12 @@
 #!/bin/bash
-###################################################################
+#########################################################################
 # 'Wrapper' to easily run RF tests in a container
-# Example: sh testcontainer robotlooper -t "my test" testsuites
-###################################################################
+# Example: bash testcontainer robotlooper -t "my test" testsuites
+# First exec command in container can be: robotlooper, robot or rebot.
+#########################################################################
 # Verify first cli argument is correct
 if [ $1 != 'robot' ] && [ $1 != 'robotlooper' ] && [ $1 != 'rebot' ]; then
-    echo "Please choose between 'robot', 'robotlooper' or 'rebot' as exec command"
+    printf "Please choose between 'robot', 'robotlooper' or 'rebot' as exec command.\nCommand given: $1"
     exit 1
 fi
 # Set runner (since robotlooper is a bash script file, small workaround solution.)
@@ -17,10 +18,11 @@ fi
 # can be run from root of project or root of test folder
 CURDIR=$(pwd | grep -o '[^/]*$')
 if [ $CURDIR = 'test' ]; then
-    docker-compose -f ./../docker-compose-test.yml run --rm test $runner "${@:2}"
-elif [ $CURDIR = 'fullStackFit' ]; then
-    docker-compose -f docker-compose-test.yml run --rm test $runner "${@:2}"
+    f="./../docker-compose-test.yml"
+elif [ $CURDIR = 'FullStackFit' ]; then
+    f="docker-compose-test.yml"
 else
-    echo "Please run this script from ./test or ./fullStackfit (root)"
+    printf "Please run this script from ./test or ./FullStackfit (root). \nCURDIR: $CURDIR"
     exit 1
 fi
+docker-compose -f $f run --rm test $runner "${@:2}"

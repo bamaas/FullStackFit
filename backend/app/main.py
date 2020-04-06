@@ -11,13 +11,6 @@ app = FastAPI(docs_url=DOCS_URL, redoc_url=None)
 # Routers
 app.include_router(calculator.router)
 
-# CORS
-# origins = [
-#     "http://localhost",
-#     "https://localhost"
-#     "https://localhost:4200"
-#     "http://localhost:4200"
-# ]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],   # Allow all origins
@@ -25,11 +18,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# @app.get("/")
-# async def redirect_home_to_docs():
-#     response = RedirectResponse(url=DOCS_URL)
-#     return response
 
 if __name__ == "__main__":
     import os
