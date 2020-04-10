@@ -4,7 +4,9 @@
 
 # Fulltackfit project - Bas Maas
 
-Deployed @ [basmaas.nl/fit](https://basmaas.nl/fit) (Google Cloud Compute Engine)
+Frontend deployed @ [basmaas.nl/fit](https://basmaas.nl/fit) (Google Cloud Compute Engine)
+
+Backend API docs @ [basmaas.nl/fit/api](https://basmaas.nl/fit/api)
 
 CI/CD @ [Semaphore](https://bamaas.semaphoreci.com/projects/FullStackFit/)
 
