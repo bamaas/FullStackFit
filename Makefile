@@ -48,36 +48,20 @@ dev-proxy-restart:
 # TEST
 test:
 	make test-unit
-	sh testcontainer -v environment:localhost testsuites
+	sh ./test/testcontainer -v environment:localhost testsuites
 
 test-unit:
 	python3 "./backend/unit_tests/test_calculations.py"
 
 test-api:
-	sh testcontainer -v environment:localhost testsuites/ws.robot
+	sh ./test/testcontainer -v environment:localhost testsuites/ws.robot
 
 test-e2e:
-	sh testcontainer -v environment:localhost testsuites/gui.robot
+	sh ./test/testcontainer -v environment:localhost testsuites/gui.robot
 
 # BUILD
 build:
-	docker-compose -f docker-compose-build.yml build
-	docker-compose -f docker-compose-build.yml up -d
-
-build-db:
-	docker-compose -f docker-compose-build.yml build database
-
-build-be:
-	docker-compose -f docker-compose-build.yml build backend
-
-build-fe:
-	docker-compose -f docker-compose-build.yml build frontend
-
-build-proxy:
-	docker-compose -f docker-compose-build.yml build reverseproxy
-
-build-test:
-	docker-compose -f docker-compose-test.yml build test
+	docker-compose -f docker-compose-build.yml build ${s}
 
 # DEPLOY LATEST RELEASE
 latest:

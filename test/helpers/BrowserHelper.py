@@ -43,9 +43,9 @@ class BrowserHelper(object):
                 test_name = BuiltIn().get_variable_value("${TEST NAME}")
                 capabilities['name'] = test_name
                 capabilities['project'] = 'FullStackFit'
-                semaphore_git_pre_name = os.environ.get('SEMAPHORE_GIT_PR_NAME')
+                git_commit_msg = os.environ.get("GIT_COMMIT_MSG")
                 git_commit_sha = os.environ.get('GIT_COMMIT_SHA', 'Untitled Build')
-                capabilities['build'] = str(semaphore_git_pre_name) + ' [' + str(git_commit_sha) + ']'
+                capabilities['build'] = str(git_commit_msg) + ' | [' + str(git_commit_sha) + ']'
                 # BS local connection
                 key = os.getenv("BROWSERSTACK_KEY")
                 BuiltIn().run_keyword('connect_bs_to_local', key)
