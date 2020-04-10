@@ -11,7 +11,7 @@ Test Teardown                   report last output message on failure
 
 *** Test Cases ***
 Calculate TDEE
-    [Tags]                 WS
+    [Tags]                 WS       tdee
     # Create the body
     ${body}=            create dictionary   name=john   
     ...                                     age=20  
@@ -35,7 +35,7 @@ Calculate TDEE
     assert dictionary   ${response}         {"tdee":3478}
 
 Calculate BMR
-    [Tags]                 WS
+    [Tags]                 WS       bmr
     # Test Data
     ${body}=                create dictionary   
     ...                     age=20
@@ -48,7 +48,7 @@ Calculate BMR
     ...                     Assertion failed. Expected the BMR response to be "1932". Actual: "${response}".
 
 Calculate BMI
-    [Tags]                 WS
+    [Tags]                 WS       bmi
     # Test Data
     ${body}=                create dictionary   
     ...                     weight=80
@@ -59,7 +59,7 @@ Calculate BMI
     ...                     Assertion failed. Expected the BMI response to be "25". Actual: "${response}".
 
 Send wrong POST request and assert the status
-    [Tags]                 WS
+    [Tags]                 WS       tdee
     [Documentation]                         Wrong gender given. Return status should be equal to 500
     # Create the body
     ${body}=            create dictionary   name=john   

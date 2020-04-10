@@ -98,15 +98,19 @@ blocks:
             - curl -d message="**[Semaphore[bot]](${SEMAPHORE_ORGANIZATION_URL})** [lint, build and test](${SEMAPHORE_ORGANIZATION_URL}/workflows/${SEMAPHORE_WORKFLOW_ID}) _${SEMAPHORE_JOB_RESULT}_ — [${GIT_COMMIT_SHA}](github.com/bamaas/FullStackFit/commit/${GIT_COMMIT_SHA_LONG}) *${GIT_COMMIT_MSG}*" -d level=error https://webhooks.gitter.im/e/afa7445bc110e2ed8000
       secrets:
         - name: docker
-  - name: Test (functional)
+  - name: Integration test
+    dependencies: ["Build"]
     task:
       jobs:
-        - name: api
+        - name: tdee
           commands:
-            - bash ./test/testcontainer robotlooper -v environment:localhost testsuites/ws.robot
-        - name: e2e
+            - "bash ./test/testcontainer robotlooper -v environment:localhost -i tdee testsuites/ws.robot"
+        - name: bmr
           commands:
-            - bash ./test/testcontainer robotlooper -v environment:localhost -v remote_webdriver:false -v browser:Chrome testsuites/gui.robot
+            - "bash ./test/testcontainer robotlooper -v environment:localhost -i bmr testsuites/ws.robot"
+        - name: bmi
+          commands:
+            - "bash ./test/testcontainer robotlooper -v environment:localhost -i bmi testsuites/ws.robot"
       prologue:
         commands:
           - checkout
@@ -115,9 +119,6 @@ blocks:
           - export GIT_COMMIT_MSG=$(git show -s --format=%B ${GIT_COMMIT_SHA})
           - echo $GIT_COMMIT_SHA
           # create .env file from environment variables
-          - echo BROWSERSTACK_URL=${BROWSERSTACK_URL} >> ./test/.env
-          - echo BROWSERSTACK_USER=${BROWSERSTACK_USER} >> ./test/.env
-          - echo BROWSERSTACK_KEY=${BROWSERSTACK_KEY} >> ./test/.env
           - echo GIT_COMMIT_SHA=${GIT_COMMIT_SHA} >> ./test/.env
           - echo GIT_COMMIT_MSG=${GIT_COMMIT_MSG} >> ./test/.env
           # Docker
@@ -143,8 +144,47 @@ blocks:
             - curl -d message="**[Semaphore[bot]](${SEMAPHORE_ORGANIZATION_URL})** [lint, build and test](${SEMAPHORE_ORGANIZATION_URL}/workflows/${SEMAPHORE_WORKFLOW_ID}) _${SEMAPHORE_JOB_RESULT}_ — [${GIT_COMMIT_SHA}](github.com/bamaas/FullStackFit/commit/${GIT_COMMIT_SHA_LONG}) *${GIT_COMMIT_MSG}*" -d level=error https://webhooks.gitter.im/e/afa7445bc110e2ed8000
       secrets:
         - name: docker
-        - name: browserstack
-  - name: Test (compatibility)
+  - name: E2E test
+    dependencies: ["Build"]
+    task:
+      jobs:
+        - name: tdee
+          commands:
+            - bash ./test/testcontainer robotlooper -v environment:localhost -v remote_webdriver:false -v browser:Chrome testsuites/gui.robot
+      prologue:
+        commands:
+          - checkout
+          - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
+          - export GIT_COMMIT_SHA_LONG=$(git rev-parse HEAD)
+          - export GIT_COMMIT_MSG=$(git show -s --format=%B ${GIT_COMMIT_SHA})
+          # create .env file from environment variables
+          - echo GIT_COMMIT_SHA=${GIT_COMMIT_SHA} >> ./test/.env
+          - echo GIT_COMMIT_MSG=${GIT_COMMIT_MSG} >> ./test/.env
+          # Docker
+          - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+          # Pull images from bamaas/registry (private container registry)
+          - echo ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_database.${GIT_COMMIT_SHA} | xargs -n 1 docker pull
+          # Retag to latest
+          - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/registry:fullstackfit_backend.$GIT_COMMIT_SHA ls$DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/registry:fullstackfit_database.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:latest | xargs -n 2 docker tag
+          # Start application with 'make latest'. In this way we start the application the same was as we do in production.
+          - make latest
+      epilogue:
+        always:
+          commands:
+            - make shutdown
+            - artifact push job ./test/logs/log.html
+            - artifact push job ./test/logs/output.xml
+            - artifact push job ./test/logs/report.html
+        on_pass:
+          commands:
+            - curl -d message="**[Semaphore[bot]](${SEMAPHORE_ORGANIZATION_URL})** [lint, build and test](${SEMAPHORE_ORGANIZATION_URL}/workflows/${SEMAPHORE_WORKFLOW_ID}) _${SEMAPHORE_JOB_RESULT}_ — [${GIT_COMMIT_SHA}](github.com/bamaas/FullStackFit/commit/${GIT_COMMIT_SHA_LONG}) *${GIT_COMMIT_MSG}*" -d level=info https://webhooks.gitter.im/e/afa7445bc110e2ed8000
+        on_fail:
+          commands:
+            - curl -d message="**[Semaphore[bot]](${SEMAPHORE_ORGANIZATION_URL})** [lint, build and test](${SEMAPHORE_ORGANIZATION_URL}/workflows/${SEMAPHORE_WORKFLOW_ID}) _${SEMAPHORE_JOB_RESULT}_ — [${GIT_COMMIT_SHA}](github.com/bamaas/FullStackFit/commit/${GIT_COMMIT_SHA_LONG}) *${GIT_COMMIT_MSG}*" -d level=error https://webhooks.gitter.im/e/afa7445bc110e2ed8000
+      secrets:
+        - name: docker
+  - name: Compatibility test
+    dependencies: ["Build"]
     task:
       jobs:
         - name: Windows 10 - Chrome
@@ -191,6 +231,7 @@ blocks:
         - name: docker
         - name: browserstack
   - name: Notify
+    dependencies: ["Integration test", "E2E test", "Compatibility test"]
     task:
       jobs:
         - name: to Gitter

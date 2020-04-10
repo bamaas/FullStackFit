@@ -19,6 +19,10 @@ class Calculator_tests(unittest.TestCase):
         print("Calculator - FFM calculation")
         ffm = Calculator.calculate_ffm(weight=100, body_fat_perc=20)
         self.assertEqual(ffm, 80)
+    
+    # def test_bmr_man_calculation(self):
+    #     bmr = Calculator.calculate_bmr("man", 80, 180, 20)
+    #     self.assertEqual(bmr, 20)
 
 
 class Person_tests(unittest.TestCase):
