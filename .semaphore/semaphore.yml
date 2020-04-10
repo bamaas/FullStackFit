@@ -12,6 +12,7 @@ fail_fast:
     when: "true"
 blocks:
   - name: Lint
+    dependencies: []
     task:
       jobs:
         - name: "Python backend"
@@ -45,6 +46,7 @@ blocks:
           commands:
             - curl -d message="**[Semaphore[bot]](${SEMAPHORE_ORGANIZATION_URL})** [lint, build and test](${SEMAPHORE_ORGANIZATION_URL}/workflows/${SEMAPHORE_WORKFLOW_ID}) _${SEMAPHORE_JOB_RESULT}_ — [${GIT_COMMIT_SHA}](github.com/bamaas/FullStackFit/commit/${GIT_COMMIT_SHA_LONG}) *${GIT_COMMIT_MSG}*" -d level=error https://webhooks.gitter.im/e/afa7445bc110e2ed8000
   - name: Unit test
+    dependencies: []
     task:
       jobs:
         - name: backend
@@ -62,6 +64,7 @@ blocks:
           commands:
             - curl -d message="**[Semaphore[bot]](${SEMAPHORE_ORGANIZATION_URL})** [lint, build and test](${SEMAPHORE_ORGANIZATION_URL}/workflows/${SEMAPHORE_WORKFLOW_ID}) _${SEMAPHORE_JOB_RESULT}_ — [${GIT_COMMIT_SHA}](github.com/bamaas/FullStackFit/commit/${GIT_COMMIT_SHA_LONG}) *${GIT_COMMIT_MSG}*" -d level=error https://webhooks.gitter.im/e/afa7445bc110e2ed8000            
   - name: Build
+    dependencies: ["Lint",  "Unit test"]
     task:
       jobs:
         - name: database
