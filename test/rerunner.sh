@@ -58,10 +58,6 @@ rc4=$?
 docker rm testcontainer &> /dev/null || true
 # Let the job fail (exit 1) if a test still failed after 3 tries.
 # And exit 1 if something else went wrong. Like unexpected events that results in a return code != 0 
-printf "Tries: $tries \n"
-printf "1: $rc1 \n"
-printf "2: $rc2 \n"
-printf "3: $rc3 \n"
 if [ $tries = 0 ]; then 
     exit 1
 elif [[ $tries = 1 ]] && [[ $rc1 != 0 ]]; then
