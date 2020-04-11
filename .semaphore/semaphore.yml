@@ -226,13 +226,13 @@ blocks:
             - make notify-gitter level=error
   - name: Release candidate
     dependencies: ["Integration test", "E2E test", "Compatibility test"]
-    prologue:
-      commands:
-        - checkout
-        - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
-        - export GIT_COMMIT_SHA_LONG=$(git rev-parse HEAD)
-        - export GIT_COMMIT_MSG=$(git show -s --format=%B ${GIT_COMMIT_SHA})
     task:
+      prologue:
+        commands:
+          - checkout
+          - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
+          - export GIT_COMMIT_SHA_LONG=$(git rev-parse HEAD)
+          - export GIT_COMMIT_MSG=$(git show -s --format=%B ${GIT_COMMIT_SHA})
       jobs:
         - name: notify to Gitter
           commands:
