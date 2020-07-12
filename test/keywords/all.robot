@@ -23,3 +23,4 @@ Library         ../helpers/SetupHelper.py
 Library         ../helpers/BrowserHelper.py
 Library         ../helpers/RestHandler.py
 Library         ../helpers/ReportHelper.py
+Library         ../helpers/RobotLooper.py

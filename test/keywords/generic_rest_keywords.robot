@@ -1,4 +1,9 @@
 *** Keywords ***
+Create REST header
+    [Arguments]         ${content_type}=application/json
+    ${header}=          create dictionary            Content-Type=${content_type}
+    [Return]            ${header}
+
 Send GET request
     [Arguments]         ${url}      ${expected_status}=200
     [Documentation]     Sends a GET request and asserts the statuscode for status 200. Returns the response in JSON.

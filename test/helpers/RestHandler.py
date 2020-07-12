@@ -13,43 +13,29 @@ from jsonpath_rw_ext import parse
 import jsonpath_rw_ext as jp
 
 class RestHandler(object):
-    def get_from_JSON(self, json_file, json_path):
+    def get_from_JSON(self, json_file, jpath):
         """ 
         Search for a value in the given json file. 
         If multiple matches found it returns multiple matches 
         """
         data = json.dumps(json_file)    # Dict to string
         data = json.loads(data)         # string to json - pretty cumbersome
-        value = jp.match(json_path, data)
-        if value == []:  # Check if empty
-            raise Exception("No value found for the given JSON path: {}".format(json_path))
-        print("Actual value: {} {}".format(value[0], type(value[0])))
+        value = jp.match(jpath, data)
+        if len(value) == 0:
+            raise Exception(f"No value found with jpath '{jpath}'")
+        logger.info(f"Found '{value[0]}' with jpath '{jpath}'.")
         return value[0]
 
-    def assert_JSON(self, json_file, json_path, expected_value, expected_type='string'):
+    def assert_JSON(self, json_file, jpath, expected_value, expected_type='string'):
         """ 
         Search for a value in a JSON file by giving a JSONPath.
-        And validate the expected value against the actual/found value. 
-        The default expected type is 'string', 'integer' is possible too.
+        And validate the expected value against the actual/found value.
         """
-        if expected_type.lower() == 'string':
-            try:
-                expected_value = str(expected_value)
-            except:
-                raise Exception("The expected value can't be a string: {}".format(expected_value))
-        elif expected_type == 'integer':
-            try:
-                expected_value = int(expected_value)
-            except:
-                raise Exception("The expected value can't be an integer: {}".format(expected_value))
+        actual_value = self.get_from_JSON(json_file, jpath)
+        if str(actual_value) != str(expected_value):
+            BuiltIn().fail(f"Assertion failed. Actual value '{actual_value}' is not equal to the expected value of '{expected_value}'.")
         else:
-            raise ValueError("{} is not a valid option for argument 'expected_type'. \
-                Please choose between 'string' or 'integer'".format(expected_type))
-        print("Expected value: {} {}".format(expected_value, type(expected_value)))
-        actual_value = self.get_from_JSON(json_file, json_path)
-        assert actual_value == expected_value, "Assertion failed. Expected: {} {} | Actual: {} {}" \
-            .format(expected_value, type(expected_value), actual_value, type(actual_value))
-        print("Assertion passed for: {}".format(json_path))
+            logger.info(f"Assertion passed. Actual value '{actual_value}' is equal to the expected value of '{expected_value}'.")
 
     def report_last_output_message_on_failure(self):
         status = BuiltIn().get_variable_value("${TEST STATUS}")
