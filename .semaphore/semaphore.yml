@@ -32,12 +32,6 @@ blocks:
             - printf "\n\nDatabase\n------------------\n" >> lint_dockerfiles.txt && make lint-dockerfile f="./database/Dockerfile | tee -a lint_dockerfiles.txt"
             - printf "\n\nFrontend\n------------------\n" >> lint_dockerfiles.txt && make lint-dockerfile f="./frontend/Dockerfile | tee -a lint_dockerfiles.txt"
             - printf "\n\nReverse-proxy\n------------------\n" >> lint_dockerfiles.txt && make lint-dockerfile f="./reverse-proxy/Dockerfile | tee -a lint_dockerfiles.txt"
-        # - name: lint Angular
-        #   commands:
-        #     - sem-version node 12.0
-        #     - npm install -g @angular/cli
-        #     - cd frontend
-        #     - ng lint
       epilogue:
         always:
           commands:
@@ -63,8 +57,35 @@ blocks:
         on_fail:
           commands:
             - make notify-gitter level=error
-  - name: Build
+  - name: Code analysis
     dependencies: ["Unit test"]
+    task:
+      secrets:
+        - name: sonarcloud
+      prologue:
+        commands:
+          - checkout
+          - sem-version java 11
+          - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
+          - export GIT_COMMIT_SHA_LONG=$(git rev-parse HEAD)
+          - export GIT_COMMIT_MSG=$(git show -s --format=%B ${GIT_COMMIT_SHA})
+          - export GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+      jobs:
+        - name: sonarcloud
+          commands:
+            - export SONAR_SCANNER_VERSION=4.2.0.1873
+            - export SONAR_SCANNER_HOME=$HOME/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux
+            - curl --create-dirs -sSLo $HOME/.sonar/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip
+            - unzip -o $HOME/.sonar/sonar-scanner.zip -d $HOME/.sonar/
+            - export PATH=$SONAR_SCANNER_HOME/bin:$PATH
+            - export SONAR_SCANNER_OPTS="-server"
+            - sonar-scanner -Dsonar.organization=bamaas -Dsonar.projectKey=bamaas_FullStackFit -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.branch.name=${GIT_BRANCH}
+      epilogue:
+        on_fail:
+          commands:
+            - make notify-gitter level=error
+  - name: Build
+    dependencies: ["Code analysis"]
     task:
       secrets:
         - name: docker
