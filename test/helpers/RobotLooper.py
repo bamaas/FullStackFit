@@ -91,13 +91,13 @@ class Run():
                 iterator = 1
                 if len(tuple_tags) > 1:
                     new_test = robot.running.model.TestCase.deepcopy(test)
-                    if "{ROLE}" in test.name:
-                        test.name = test_name.replace("{ROLE}", tuple_tags[0])
+                    if "{DATATAG}" in test.name:
+                        test.name = test_name.replace("{DATATAG}", tuple_tags[0])
                     else:
                         test.name = test_name + ' (' + tuple_tags[0] + ')'
                     for tag in tuple_tags[1:]:
-                        if "{ROLE}" in test_name:
-                            new_test.name = test_name.replace("{ROLE}", tag)
+                        if "{DATATAG}" in test_name:
+                            new_test.name = test_name.replace("{DATATAG}", tag)
                         else:
                             new_test.name = test_name + ' (' + tag + ')'
                         for kw in new_test.keywords:

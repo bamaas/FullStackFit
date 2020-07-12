@@ -32,7 +32,7 @@ tries=1
 printf "Return Code: $rc1\n"
 docker rm testcontainer &> /dev/null
 # (2nd run) If failed then re-execute
-if [[ $rc1 != 0 ]]; then 
+    if [[ $rc1 != 0 ]]; then 
     printf "\n\n\nRerun failed TC's (2nd run)...\n"
     $testcontainer $1 -d logs -o output2.xml -l log2.html -r report2.html --rerunfailed logs/output1.xml "${@:2}"
     rc2=$?
