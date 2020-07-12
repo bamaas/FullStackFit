@@ -69,6 +69,7 @@ blocks:
           - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
           - export GIT_COMMIT_SHA_LONG=$(git rev-parse HEAD)
           - export GIT_COMMIT_MSG=$(git show -s --format=%B ${GIT_COMMIT_SHA})
+          - export GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
       jobs:
         - name: sonarcloud
           commands:
@@ -78,7 +79,7 @@ blocks:
             - unzip -o $HOME/.sonar/sonar-scanner.zip -d $HOME/.sonar/
             - export PATH=$SONAR_SCANNER_HOME/bin:$PATH
             - export SONAR_SCANNER_OPTS="-server"
-            - sonar-scanner -Dsonar.organization=bamaas -Dsonar.projectKey=bamaas_FullStackFit -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io
+            - sonar-scanner -Dsonar.organization=bamaas -Dsonar.projectKey=bamaas_FullStackFit -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.branch.name=${GIT_BRANCH}
       epilogue:
         on_fail:
           commands:
