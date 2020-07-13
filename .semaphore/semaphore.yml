@@ -145,16 +145,16 @@ blocks:
           # Pull images from bamaas/registry (private container registry)
           - echo ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_database.${GIT_COMMIT_SHA} | xargs -n 1 docker pull
           # Retag to latest
-          - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/registry:fullstackfit_backend.$GIT_COMMIT_SHA ls$DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/registry:fullstackfit_database.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:latest | xargs -n 2 docker tag
+          - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/registry:fullstackfit_backend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/registry:fullstackfit_database.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:latest | xargs -n 2 docker tag
           # Start application with 'make latest'. In this way we start the application the same was as we do in production.
           - make latest
       jobs:
         - name: tdee
           commands:
             - "bash ./test/testcontainer robotlooper -v environment:localhost -i tdee testsuites/ws.robot"
-        - name: bmr
-          commands:
-            - "bash ./test/testcontainer robotlooper -v environment:localhost -i bmr testsuites/ws.robot"
+        #- name: bmr
+        #  commands:
+        #    - "bash ./test/testcontainer robotlooper -v environment:localhost -i bmr testsuites/ws.robot"
         - name: bmi
           commands:
             - "bash ./test/testcontainer robotlooper -v environment:localhost -i bmi testsuites/ws.robot"
@@ -230,7 +230,7 @@ blocks:
           # Pull images from bamaas/registry (private container registry)
           - echo ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_database.${GIT_COMMIT_SHA} | xargs -n 1 docker pull
           # Retag to latest
-          - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/registry:fullstackfit_backend.$GIT_COMMIT_SHA ls$DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/registry:fullstackfit_database.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:latest | xargs -n 2 docker tag
+          - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/registry:fullstackfit_backend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/registry:fullstackfit_database.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:latest | xargs -n 2 docker tag
           # Start application with 'make latest'. In this way we start the application the same was as we do in production.
           - make latest
       jobs:
