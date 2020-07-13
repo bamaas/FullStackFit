@@ -7,8 +7,8 @@
                                         <mat-error *ngIf="!tdee_calculator_form.get('name').hasError('name')">Name should consist of at least 2 letters</mat-error>
                         </mat-form-field>
                         <mat-radio-group aria-label="Select an option" formControlName="gender" style="font-size: 14px;" required>
-                                <mat-radio-button value="man">Man</mat-radio-button>
-                                <mat-radio-button value="woman" style="margin-left: 15px;">Woman</mat-radio-button>
+                                <mat-radio-button value="MALE">Man</mat-radio-button>
+                                <mat-radio-button value="FEMALE" style="margin-left: 15px;">Woman</mat-radio-button>
                                 <!-- <mat-error *ngIf="!tdee_calculator_form.get('gender').hasError('gender')">Please specify your gender</mat-error> -->
                         </mat-radio-group>
                         <mat-form-field style="margin-top: 9px;">
@@ -29,9 +29,9 @@
                         <mat-form-field>
                                 <mat-label>Activity Level</mat-label>
                                 <mat-select id="activitylevel-hb" formControlName="activitylevel" required>
-                                        <mat-option value="Sedentary or light activity" id="activitylevel-1-hb">Sedentary or light activity</mat-option>
-                                        <mat-option value="Active or moderately active">Active or moderately active</mat-option>
-                                        <mat-option value="Vigorously active">Vigorously active</mat-option>
+                                        <mat-option value="LOW" id="activitylevel-1-hb">Sedentary or light activity</mat-option>
+                                        <mat-option value="MEDIUM">Active or moderately active</mat-option>
+                                        <mat-option value="HIGH">Vigorously active</mat-option>
                                 </mat-select>
                                 <!-- <mat-error *ngIf="!tdee_calculator_form.get('age').hasError('age')">Please specify your activity level</mat-error> -->
                         </mat-form-field>
@@ -39,9 +39,9 @@
                                 <mat-label>Goal</mat-label>
                                 <mat-select id="goal-hb" formControlName="goal" required>
                                         <!-- dont set values in here. set them in the ts component. If value = fat los set value is... -->
-                                        <mat-option value="Fat loss">Fat loss</mat-option>
-                                        <mat-option value="Maintenance" id="goal-2-hb">Maintenance</mat-option>
-                                        <mat-option value="Muscle gain">Muscle gain</mat-option>
+                                        <mat-option value="FAT_LOSS">Fat loss</mat-option>
+                                        <mat-option value="MAINTENANCE" id="goal-2-hb">Maintenance</mat-option>
+                                        <mat-option value="MUSCLE_GROWTH">Muscle growth</mat-option>
                                 </mat-select>
                                 <!-- <mat-error *ngIf="!tdee_calculator_form.get('age').hasError('age')">Please specify your goal</mat-error> -->
                         </mat-form-field>

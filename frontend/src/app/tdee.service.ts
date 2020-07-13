@@ -1,4 +1,5 @@
 import { HttpClient } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { Injectable, OnInit } from '@angular/core';
@@ -30,8 +31,6 @@ export class TDEEService implements OnInit{
       return this.tdeeCalculatorSubjectMacro.asObservable();
     }
 
-    
-
     get_tdee_calculator_result(): Observable<any>{
       return this.tdeeCalculatorSubject.asObservable();
     }
@@ -44,27 +43,18 @@ export class TDEEService implements OnInit{
       this.tdeeCalculatorSubject.next({'results':true});
     }
 
-    postjson(json_body){
-      console.log("Post:", json_body)
-      this.http.post(this.apiURL + '/calculate_all', json_body)
+    calc(gender, length, weight, age, activityLevel, goal){
+      let params = new HttpParams().set('gender', gender).set('length', length).set('weight', weight).set('age', age).set('activityLevel', activityLevel).set('goal', goal);
+      this.http.get('http://localhost:5000' + '/calc', {params: params})
       .subscribe(response => {
-        console.log("Response:", response)
         this.tdeeCalculatorSubjectMacro.next(
           [
-            {name: 'Protein', gram: response['proteinReqGram'], kcal: response['proteinReqKcal'], percentage: response['proteinReqPerc']},
-            {name: 'Carbohydrates', gram: response['carbReqGram'], kcal: response['carbReqKcal'], percentage: response['carbReqPerc']},
-            {name: 'Fat', gram: response['fatReqGram'], kcal: response['fatReqKcal'], percentage: response['fatReqPerc']},
+            {name: 'Protein', gram: response['macronutrients']['protein']['gram'], kcal: response['macronutrients']['protein']['kcal'], percentage: response['macronutrients']['protein']['percentage']},
+            {name: 'Carbohydrates', gram: response['macronutrients']['carbohydrates']['gram'], kcal: response['macronutrients']['carbohydrates']['kcal'], percentage: response['macronutrients']['carbohydrates']['percentage']},
+            {name: 'Fat', gram: response['macronutrients']['fat']['gram'], kcal: response['macronutrients']['fat']['kcal'], percentage: response['macronutrients']['fat']['percentage']},
           ]
         );
         this.tdeeCalculatorSubject.next({'results':true, 'bmr':response['bmr'], 'tdee':response['tdee']});
-        // this.tdeeCalculatorSubjectMacro.next(
-        //         {'macroTable':[{name: 'Protein', gram: response['proteinReqGram'], kcal: response['proteinReqKcal'], percentage: response['proteinReqPerc']},
-        //         {name: 'Carbohydrates', gram: response['carbReqGram'], kcal: response['carbReqKcal'], percentage: response['carbReqPerc']},
-        //         {name: 'Fat', gram: response['fatReqGram'], kcal: response['fatReqKcal'], percentage: response['fatReqPerc']},],
-        //         'results':true,
-        //         'bmr':response['bmr'],
-        //         'tdee':response['tdee']
-        //       });
       }, error => {
         this._snackBar.open('Error while retrieving data from server', 'Dismiss', {
           duration: 6000,

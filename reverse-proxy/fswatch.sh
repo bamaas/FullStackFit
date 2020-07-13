@@ -13,3 +13,4 @@ fi
 # Without output in stdout:
 # fswatch -o ./reverse-proxy/nginx.conf | xargs -n1 -I{} make reload-nginx > fswatch_output &
 # To kill get PID and run: kill 18574 18575
+

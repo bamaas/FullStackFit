@@ -40,9 +40,6 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    environment:
-      - RELOAD=False
-      - PORT=5000
     depends_on:
       - database
   
@@ -52,6 +49,6 @@ services:
     build:
       context: ./database
       dockerfile: Dockerfile
-    env_file: './backend/database.env'    
+    #env_file: './backend/database.env'    
     ports:
       - 5432:5432

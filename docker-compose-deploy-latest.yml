@@ -35,4 +35,4 @@ services:
   database:
     container_name: fit_database
     image: bamaas/fullstackfit_database:latest
-    env_file: './backend/database.env'
+    #env_file: './backend/database.env'
