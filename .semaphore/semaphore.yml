@@ -106,7 +106,7 @@ blocks:
             - docker push ${DOCKER_USERNAME}/registry:fullstackfit_database.${GIT_COMMIT_SHA}
         - name: backend
           commands:
-            - sem-version java 13
+            - sem-version java 11
             - cd ./backend
             - mvn package -Dmaven.compiler.executable=javac
             - cd ..
