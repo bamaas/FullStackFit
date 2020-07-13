@@ -52,7 +52,8 @@ blocks:
       jobs:
         - name: backend
           commands: 
-            - make test-unit
+           - echo test
+           # - make test-unit
       epilogue:
         on_fail:
           commands:
@@ -105,6 +106,10 @@ blocks:
             - docker push ${DOCKER_USERNAME}/registry:fullstackfit_database.${GIT_COMMIT_SHA}
         - name: backend
           commands:
+            - sem-version java 13
+            - cd ./backend
+            - mvn package -Dmaven.compiler.executable=javac
+            - cd ..
             - make build s="backend"
             - docker tag fullstackfit_backend:b.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${GIT_COMMIT_SHA}
             - docker push ${DOCKER_USERNAME}/registry:fullstackfit_backend.${GIT_COMMIT_SHA}

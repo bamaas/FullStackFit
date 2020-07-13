@@ -57,7 +57,7 @@ test-unit:
 	python3 "./backend/unit_tests/test_calculations.py"
 
 test-api:
-	sh ./test/testcontainer robotlooper -v environment:localhost testsuites/ws.robot
+	sh ./test/testcontainer robotlooper testsuites/ws.robot
 
 test-e2e:
 	sh ./test/testcontainer robotlooper -v remote_webdriver:false -v browser:chrome -v environment:localhost testsuites/gui.robot

@@ -38,14 +38,21 @@ export class tdeeCalculator implements OnInit {
     );
 
   click_calculateTDEE(){
-    this.userDetails['name'] = this.tdee_calculator_form.controls['name'].value
-    this.userDetails['gender'] = this.tdee_calculator_form.controls['gender'].value
-    this.userDetails['length'] = this.tdee_calculator_form.controls['length'].value
-    this.userDetails['weight'] = this.tdee_calculator_form.controls['weight'].value
-    this.userDetails['age'] = this.tdee_calculator_form.controls['age'].value
-    this.userDetails['activitylevel'] = this.tdee_calculator_form.controls['activitylevel'].value
-    this.userDetails['goal'] = this.tdee_calculator_form.controls['goal'].value
-    this.TDEEService.postjson(this.userDetails);
+    // this.userDetails['name'] = this.tdee_calculator_form.controls['name'].value
+    // this.userDetails['gender'] = this.tdee_calculator_form.controls['gender'].value
+    // this.userDetails['length'] = this.tdee_calculator_form.controls['length'].value
+    // this.userDetails['weight'] = this.tdee_calculator_form.controls['weight'].value
+    // this.userDetails['age'] = this.tdee_calculator_form.controls['age'].value
+    // this.userDetails['activitylevel'] = this.tdee_calculator_form.controls['activitylevel'].value
+    // this.userDetails['goal'] = this.tdee_calculator_form.controls['goal'].value
+    let name = this.tdee_calculator_form.controls['name'].value
+    let gender = this.tdee_calculator_form.controls['gender'].value
+    let length = this.tdee_calculator_form.controls['length'].value
+    let weight = this.tdee_calculator_form.controls['weight'].value
+    let age = this.tdee_calculator_form.controls['age'].value
+    let activityLevel = this.tdee_calculator_form.controls['activitylevel'].value
+    let goal = this.tdee_calculator_form.controls['goal'].value
+    this.TDEEService.calc(gender, length, weight, age, activityLevel, goal)
   }
 
   reset(){
