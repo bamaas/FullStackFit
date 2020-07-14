@@ -45,7 +45,7 @@ export class TDEEService implements OnInit{
 
     calc(gender, length, weight, age, activityLevel, goal){
       let params = new HttpParams().set('gender', gender).set('length', length).set('weight', weight).set('age', age).set('activityLevel', activityLevel).set('goal', goal);
-      this.http.get('http://localhost:5000' + '/calc', {params: params})
+      this.http.get(this.apiURL + '/calc', {params: params})
       .subscribe(response => {
         this.tdeeCalculatorSubjectMacro.next(
           [
