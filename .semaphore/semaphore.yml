@@ -11,53 +11,16 @@ fail_fast:
   cancel:
     when: "true"
 blocks:
-  - name: Lint
-    dependencies: []
-    task:
-      prologue:
-        commands:
-          - checkout
-          - sem-version python 3.7
-          - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
-          - export GIT_COMMIT_SHA_LONG=$(git rev-parse HEAD)
-          - export GIT_COMMIT_MSG=$(git show -s --format=%B ${GIT_COMMIT_SHA})
-      jobs:
-        - name: "Python backend"
-          commands: 
-            - pip install flake8
-            - flake8 ./backend/app/ --exit-zero --tee --output-file=lint_python.txt -v
-        - name: Dockerfiles
-          commands:
-            - printf "\n\nBackend\n------------------\n" >> lint_dockerfiles.txt && make lint-dockerfile f="./test/Dockerfile | tee -a lint_dockerfiles.txt"
-            - printf "\n\nDatabase\n------------------\n" >> lint_dockerfiles.txt && make lint-dockerfile f="./database/Dockerfile | tee -a lint_dockerfiles.txt"
-            - printf "\n\nFrontend\n------------------\n" >> lint_dockerfiles.txt && make lint-dockerfile f="./frontend/Dockerfile | tee -a lint_dockerfiles.txt"
-            - printf "\n\nReverse-proxy\n------------------\n" >> lint_dockerfiles.txt && make lint-dockerfile f="./reverse-proxy/Dockerfile | tee -a lint_dockerfiles.txt"
-      epilogue:
-        always:
-          commands:
-            - artifact push job ./lint_*.txt
-        on_fail:
-          commands:
-            - make notify-gitter level=error
   - name: Unit test
-    dependencies: ["Lint"]
     task:
       prologue:
         commands:
           - checkout
-          - sem-version python 3.7
-          - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
-          - export GIT_COMMIT_SHA_LONG=$(git rev-parse HEAD)
-          - export GIT_COMMIT_MSG=$(git show -s --format=%B ${GIT_COMMIT_SHA})
+          - sem-version java 11
       jobs:
         - name: backend
           commands: 
-           - echo test
-           # - make test-unit
-      epilogue:
-        on_fail:
-          commands:
-            - make notify-gitter level=error
+            - mvn test
   - name: Code analysis
     dependencies: ["Unit test"]
     task:
@@ -80,11 +43,7 @@ blocks:
             - unzip -o $HOME/.sonar/sonar-scanner.zip -d $HOME/.sonar/
             - export PATH=$SONAR_SCANNER_HOME/bin:$PATH
             - export SONAR_SCANNER_OPTS="-server"
-            #- sonar-scanner -Dsonar.organization=bamaas -Dsonar.projectKey=bamaas_FullStackFit -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.branch.name=${GIT_BRANCH}
-      epilogue:
-        on_fail:
-          commands:
-            - make notify-gitter level=error
+            - sonar-scanner -Dsonar.organization=bamaas -Dsonar.projectKey=bamaas_FullStackFit -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.branch.name=${GIT_BRANCH} -Dsonar.java.binaries="backend/target" -Dsonar.exclusions="**/.archive/**, **/test/**, **/.github/**, **/.mergify/**"
   - name: Build
     dependencies: ["Code analysis"]
     task:
@@ -107,9 +66,7 @@ blocks:
         - name: backend
           commands:
             - sem-version java 11
-            - cd ./backend
-            - mvn package -Dmaven.compiler.executable=javac
-            - cd ..
+            - mvn package -Dmaven.compiler.executable=javac -Dmaven.test.skip=true -f ./backend
             - make build s="backend"
             - docker tag fullstackfit_backend:b.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${GIT_COMMIT_SHA}
             - docker push ${DOCKER_USERNAME}/registry:fullstackfit_backend.${GIT_COMMIT_SHA}
@@ -123,10 +80,6 @@ blocks:
             - make build s="reverseproxy"
             - docker tag fullstackfit_reverseproxy:b.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${GIT_COMMIT_SHA}
             - docker push ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${GIT_COMMIT_SHA}
-      epilogue:
-        on_fail:
-          commands:
-            - make notify-gitter level=error
   - name: Integration test
     dependencies: ["Build"]
     task:
@@ -152,9 +105,6 @@ blocks:
         - name: tdee
           commands:
             - "bash ./test/testcontainer robotlooper -v environment:localhost -i tdee testsuites/ws.robot"
-        #- name: bmr
-        #  commands:
-        #    - "bash ./test/testcontainer robotlooper -v environment:localhost -i bmr testsuites/ws.robot"
         - name: bmi
           commands:
             - "bash ./test/testcontainer robotlooper -v environment:localhost -i bmi testsuites/ws.robot"
@@ -165,9 +115,6 @@ blocks:
             - artifact push job ./test/logs/log.html
             - artifact push job ./test/logs/output.xml
             - artifact push job ./test/logs/report.html
-        on_fail:
-          commands:
-            - make notify-gitter level=error
       secrets:
         - name: docker
   - name: E2E test
@@ -201,9 +148,6 @@ blocks:
             - artifact push job ./test/logs/log.html
             - artifact push job ./test/logs/output.xml
             - artifact push job ./test/logs/report.html
-        on_fail:
-          commands:
-            - make notify-gitter level=error
       secrets:
         - name: docker
   - name: Compatibility test
@@ -247,22 +191,6 @@ blocks:
             - artifact push job ./test/logs/log.html
             - artifact push job ./test/logs/output.xml
             - artifact push job ./test/logs/report.html
-        on_fail:
-          commands:
-            - make notify-gitter level=error
-  - name: Release candidate
-    dependencies: ["Integration test", "E2E test", "Compatibility test"]
-    task:
-      prologue:
-        commands:
-          - checkout
-          - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
-          - export GIT_COMMIT_SHA_LONG=$(git rev-parse HEAD)
-          - export GIT_COMMIT_MSG=$(git show -s --format=%B ${GIT_COMMIT_SHA})
-      jobs:
-        - name: notify to Gitter
-          commands:
-            - curl -d message="**[Semaphore[bot]](${SEMAPHORE_ORGANIZATION_URL})** [Release candidate!](${SEMAPHORE_ORGANIZATION_URL}/workflows/${SEMAPHORE_WORKFLOW_ID}) ${SEMAPHORE_JOB_RESULT} — [${GIT_COMMIT_SHA}](github.com/bamaas/FullStackFit/commit/${GIT_COMMIT_SHA_LONG}) *${GIT_COMMIT_MSG}*" -d level=info https://webhooks.gitter.im/e/afa7445bc110e2ed8000
 promotions:
 - name: Deploy
   pipeline_file: deploy-prod.yml

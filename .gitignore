@@ -8,4 +8,6 @@ browserstack.err
 .env
 # Intelij
 .idea
-target/
+backend/target/
+# Sonarqube
+.scannerwork

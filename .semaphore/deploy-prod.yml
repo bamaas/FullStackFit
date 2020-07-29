@@ -45,10 +45,6 @@ blocks:
           commands:
             - gcloud compute ssh instance-2 --project united-watch-268115 --zone us-central1-a --ssh-key-file=google_compute_engine --command='docker images -aq -f 'dangling=true' | xargs docker rmi'
             - gcloud compute ssh instance-2 --project united-watch-268115 --zone us-central1-a --ssh-key-file=google_compute_engine --command='cd FullStackFit && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0  -f docker-compose-run-latest.yml pull && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0  -f docker-compose-run-latest.yml up -d'
-      epilogue:
-        on_fail:
-            commands:
-              - make notify-gitter level=error
       secrets:
         - name: google-cloud-stg
   - name: Test Prod
