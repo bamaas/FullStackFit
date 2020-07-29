@@ -44,6 +44,7 @@ blocks:
             - unzip -o $HOME/.sonar/sonar-scanner.zip -d $HOME/.sonar/
             - export PATH=$SONAR_SCANNER_HOME/bin:$PATH
             - export SONAR_SCANNER_OPTS="-server"
+            - mvn package -Dmaven.compiler.executable=javac -Dmaven.test.skip=true -f ./backend
             - sonar-scanner -Dsonar.organization=bamaas -Dsonar.projectKey=bamaas_FullStackFit -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.branch.name=${GIT_BRANCH} -Dsonar.java.binaries="backend/target" -Dsonar.exclusions="**/.archive/**, **/test/**, **/.github/**, **/.mergify/**"
   - name: Build
     dependencies: ["Code analysis"]
