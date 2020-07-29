@@ -12,6 +12,7 @@ fail_fast:
     when: "true"
 blocks:
   - name: Unit test
+    dependencies: []
     task:
       prologue:
         commands:
