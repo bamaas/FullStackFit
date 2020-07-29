@@ -21,7 +21,7 @@ blocks:
       jobs:
         - name: backend
           commands: 
-            - mvn test
+            - mvn test -f ./backend
   - name: Code analysis
     dependencies: ["Unit test"]
     task:
