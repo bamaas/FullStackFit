@@ -38,6 +38,17 @@ services:
     ports:
      - 4200:4200
 
+  backend:
+    container_name: fit_backend-dev
+    image: fullstackfit_backend:dev
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+     - 5000:5000
+    # depends_on: 
+    #   - database
+
   # backend:
   #   container_name: fit_backend-dev
   #   image: fullstackfit_backend:dev
@@ -56,17 +67,17 @@ services:
   #   ports:
   #     - 5000:5000
 
-  # database:
-  #   container_name: fit_database-dev
-  #   image: fullstackfit_database:dev
-  #   build:
-  #     context: ./database
-  #     dockerfile: Dockerfile
-  #   # This will make the data persistent  
-  #   # volumes:
-  #   #   - '${PWD}/volumes/database:/var/lib/postgresql/data'
-  #   # Not possible to move the database.env file to the /database folder because its a seperate container
-  #   env_file: './backend/database.env'
-  #   # Mapping to host for dev purpose.
-  #   ports:
-  #     - 5432:5432
+  database:
+    container_name: fit_database-dev
+    image: fullstackfit_database:dev
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    # This will make the data persistent  
+    volumes:
+      - '${PWD}/backend/volumes/database:/var/lib/postgresql/data'
+    # Not possible to move the database.env file to the /database folder because its a seperate container
+    env_file: './database/database.env'
+    # Mapping to host for dev purpose.
+    ports:
+      - 5432:5432

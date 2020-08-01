@@ -4,3 +4,4 @@ mat-toolbar{
 .example-spacer {
     flex: 1 1 auto;
   }
+span{padding-right: 20px;}

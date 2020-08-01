@@ -1,5 +1,5 @@
-import app.logic.Person;
-import app.logic.Person.*;
+import app.calculator.User;
+import app.calculator.User.*;
 
 // TestNG
 import org.testng.Assert;
@@ -10,13 +10,13 @@ import java.util.Map;
 
 public class TestPerson{
 
-    private Person john;
-    private Person jane;
+    private User john;
+    private User jane;
 
     @BeforeTest
     public void init(){
-        this.john = new Person(Gender.MALE, 180, 80, 20, ActivityLevel.MEDIUM, Goal.MAINTENANCE);
-        this.jane = new Person(Gender.FEMALE, 160, 60, 20, ActivityLevel.MEDIUM, Goal.MAINTENANCE);
+        this.john = new User(Gender.MALE, 180, 80, 20, ActivityLevel.MEDIUM, Goal.MAINTENANCE);
+        this.jane = new User(Gender.FEMALE, 160, 60, 20, ActivityLevel.MEDIUM, Goal.MAINTENANCE);
     }
 
     // Getters
