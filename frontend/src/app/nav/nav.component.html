@@ -1,18 +1,6 @@
 <mat-toolbar  color="primary">
         <mat-toolbar-row>
-                <!-- <mat-icon aria-hidden="false" aria-label="Share">fitness_center</mat-icon> -->
-                <span style="margin-left: 10px;">TDEE calculator</span>
-                <!--<button mat-button [matMenuTriggerFor]="menu">Home</button>
-                 <mat-menu #menu="matMenu">
-                        <button mat-menu-item>Item 1</button>
-                        <button mat-menu-item>Item 2</button>
-                </mat-menu> -->
-                <span class="example-spacer"></span>
-                <!-- <mat-icon aria-hidden="false" aria-label="Contact" (click)="openDialog()">chat</mat-icon> -->
-                <span style="font-size: 13px; font-weight: normal;">Share with your friends </span>
-                <button mat-icon-button color="foreground" (click)="open_bottom_sheet()" class="nofocus" aria-label="Share icon">
-                        <mat-icon>share</mat-icon>
-                </button>
-                <!-- <mat-icon aria-hidden="false" aria-label="Share">share</mat-icon> -->
+                <a routerLink="/tdee" style="font-size: 13px; font-weight: normal;">Kcal calculator</a>
+                <a routerLink="/progress" style="font-size: 13px; font-weight: normal;">Progress</a>
         </mat-toolbar-row>
 </mat-toolbar>

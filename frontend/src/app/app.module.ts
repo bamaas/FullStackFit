@@ -3,7 +3,8 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from './material/material.module';
-import { AppRoutingModule } from './app-routing.module';
+// See video: https://www.youtube.com/watch?v=Nehk4tBxD4o how this is setup
+import { AppRoutingModule, routingComponents } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { tdeeCalculator } from './tdee-calculator/tdee-calculator.component';
 import { NavComponent } from './nav/nav.component';
@@ -17,6 +18,8 @@ import { DialogDataExampleDialog } from './dialog/dialog.component';
 import { BottomSheetComponent } from './bottom-sheet/bottom-sheet.component';
 import { BottomSheetOverviewExampleSheet } from './bottom-sheet/bottom-sheet.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { HeaderComponent } from './header/header.component';
+import { CalorieCalculatorComponent } from './calorie-calculator/calorie-calculator.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +31,10 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     DialogComponent,
     DialogDataExampleDialog,
     BottomSheetComponent,
-    BottomSheetOverviewExampleSheet
+    BottomSheetOverviewExampleSheet,
+    HeaderComponent,
+    routingComponents,
+    CalorieCalculatorComponent
   ],
   imports: [
     BrowserModule,
