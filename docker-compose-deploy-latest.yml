@@ -21,6 +21,7 @@ services:
     image: bamaas/fullstackfit_frontend:latest
     environment:
       - PORT=4200
+    restart: always
     depends_on:
       - backend
       - database
@@ -35,4 +36,5 @@ services:
   database:
     container_name: fit_database
     image: bamaas/fullstackfit_database:latest
-    #env_file: './backend/database.env'
+    restart: always
+    env_file: './database/database.env'
