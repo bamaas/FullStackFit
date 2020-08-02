@@ -11,13 +11,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class ProgressComponent implements OnInit {
 
+  logs: Object;
+
   constructor(private http: HttpClient, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.getLogs()
   }
-
-  logs = [{}]
 
   logForm = new FormGroup({
     weight: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(200)]),
