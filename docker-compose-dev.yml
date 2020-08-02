@@ -49,23 +49,23 @@ services:
     # depends_on: 
     #   - database
 
-  # backend:
-  #   container_name: fit_backend-dev
-  #   image: fullstackfit_backend:dev
-  #   restart: always
-  #   depends_on: 
-  #     - database
-  #   build:
-  #     context: ./backend
-  #     dockerfile: Dockerfile
-  #   volumes:
-  #     - './backend:/src'
-  #   environment:
-  #     - RELOAD=True
-  #     - PORT=5000
-  #   # Mapping to host for dev purpose.
-  #   ports:
-  #     - 5000:5000
+  backend:
+    container_name: fit_backend-dev
+    image: fullstackfit_backend:dev
+    restart: always
+    depends_on: 
+      - database
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - './backend:/src'
+    environment:
+      - RELOAD=True
+      - PORT=5000
+    # Mapping to host for dev purpose.
+    ports:
+      - 5000:5000
 
   database:
     container_name: fit_database-dev
@@ -75,7 +75,7 @@ services:
       dockerfile: Dockerfile
     # This will make the data persistent  
     volumes:
-      - '${PWD}/backend/volumes/database:/var/lib/postgresql/data'
+      - '${PWD}/database/volumes/database:/var/lib/postgresql/data'
     # Not possible to move the database.env file to the /database folder because its a seperate container
     env_file: './database/database.env'
     # Mapping to host for dev purpose.
