@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin
 @RestController
 public class LogController {
 
@@ -23,7 +24,7 @@ public class LogController {
     }
 
     @PostMapping("/log")
-    public Map<String, Long> addLog(@RequestBody Log log) {
+    public Map<String, String> addLog(@RequestBody Log log) {
         return logService.addLog(log);
     }
 
