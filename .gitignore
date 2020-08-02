@@ -11,3 +11,5 @@ browserstack.err
 backend/target/
 # Sonarqube
 .scannerwork
+# Database
+database/volumes/*
