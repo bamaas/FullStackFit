@@ -3,6 +3,8 @@ package app.log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,12 +26,13 @@ public class LogService {
         return logRepository.findById(id).orElse(null);
     }
 
-    public Map<String, Long> addLog(Log log){
+    public Map<String, String> addLog(Log log){
         Log entry = logRepository.save(log);
-        Map<String, Long> id = Map.of(
-                "id", entry.getId()
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss:SSS");
+        return Map.of(
+                "id", String.valueOf(entry.getId()),
+                "timestamp", dateFormat.format(entry.getTimestamp())
         );
-        return id;
     }
 
     public void deleteLog(long id){
