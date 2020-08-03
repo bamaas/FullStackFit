@@ -37,8 +37,6 @@ Test Teardown       run keywords      close browser if running remotely and repo
 *** Test Cases ***
 Calculate TDEE
     [Tags]                              Critical        TDE001      e2e
-    # Validate home screen
-    element should be visible           //h3[text()='Calculator']
     # Fill form
     input text                          id=name-hb      Bas
     click element                       //mat-radio-button[@value='MALE']
