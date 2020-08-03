@@ -35,7 +35,8 @@ export class ProgressComponent implements OnInit {
 
   getLogs(){
     this.http.get(environment.apiBaseUrl + '/log').subscribe(
-        response => {this.logs = response;}
+        response => {this.logs = response;}, 
+        error => {this.snackBar.open('Error occured while retrieving log data.', 'Dismiss', {duration: 6000})}
     )
   }
 

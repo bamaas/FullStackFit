@@ -20,6 +20,7 @@ import { BottomSheetOverviewExampleSheet } from './bottom-sheet/bottom-sheet.com
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HeaderComponent } from './header/header.component';
 import { CalorieCalculatorComponent } from './calorie-calculator/calorie-calculator.component';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { CalorieCalculatorComponent } from './calorie-calculator/calorie-calcula
     FormsModule,
     HttpClientModule,
     ChartsModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    FlexLayoutModule
   ],
   providers: [],
   bootstrap: [AppComponent],

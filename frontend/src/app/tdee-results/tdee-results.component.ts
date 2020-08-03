@@ -38,7 +38,7 @@ export class TdeeResultsComponent {
   }
 
   // Chart
-  @ViewChild(BaseChartDirective, {static: false}) public chart: BaseChartDirective;
+  @ViewChild(BaseChartDirective) public chart: BaseChartDirective;
   public pieChartData: any[] = [{
     data: [[this.messageServiceMacroTable[0]["percentage"], this.messageServiceMacroTable[1]["percentage"], this.messageServiceMacroTable[2]["percentage"]]]
   }];

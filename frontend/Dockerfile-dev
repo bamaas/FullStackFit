@@ -14,7 +14,7 @@ RUN npm install -g @angular/cli
 # COPY . /app
 
 # start app
-CMD ng serve --host 0.0.0.0
+CMD ng serve --host 0.0.0.0 --live-reload true
 
 # Build
 # docker image build -f Dockerfile-dev -t frontend:dev .

@@ -1,17 +1,17 @@
-<footer class="footer">
-    <div class="row">
-        <div class="col" style="text-align: left;">
-        <span>Current version: 0.1</span>
+<mat-toolbar color="primary" fxLayout="column" class="footer">
+    <mat-toolbar-row fxLayout="row">
+        <div fxFlex="33">
+            <a mat-stroked-button color="basic" target="_blank" href="https://github.com/bamaas/FullStackFit" class="footer-font-size button-version">Version: 0.1</a>
         </div>
-        <div class="col" style="text-align: center;">
-            <span>Made with</span>
+        <div fxFlex="33" fxLayoutAlign="center center">
+            <span class="footer-font-size">Made with</span>
             <button mat-icon-button color="accent" style="cursor: default;" class="nofocus" aria-label="Hearth icon">
                     <mat-icon color="accent">favorites</mat-icon>
             </button>
-            <span>by Bas Maas</span>
+            <span class="footer-font-size">by Bas Maas</span>
         </div>
-        <div class="col" style="text-align: right;">
-            <span (click)="open_privacy_dialog()" style="cursor: pointer;">Privacy Statement</span>
+        <div fxFlex="33" fxLayoutAlign="end center">
+            <button mat-button mat-dialog-close (click)="open_privacy_dialog()" class="footer-font-size">Privacy Statement</button>
         </div>
-    </div>
-</footer>
+    </mat-toolbar-row>
+</mat-toolbar>

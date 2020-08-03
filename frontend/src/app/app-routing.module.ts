@@ -4,8 +4,8 @@ import { ProgressComponent } from './progress/progress.component'
 import { CalorieCalculatorComponent } from './calorie-calculator/calorie-calculator.component';
 
 const routes: Routes = [
-  { path: 'progress', component: ProgressComponent},
-  { path: 'tdee', component: CalorieCalculatorComponent },
+  { path: 'progress-tracker', component: ProgressComponent},
+  { path: 'calorie-calculator', component: CalorieCalculatorComponent },
   { path: '', component: CalorieCalculatorComponent }
 ];
 
