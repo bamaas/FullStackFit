@@ -1,12 +1,19 @@
-<mat-toolbar  color="primary">
-    <mat-toolbar-row>
-            <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+<mat-toolbar color="primary" fxLayout="column">
+    <mat-toolbar-row fxLayout="row">
+        <div fxFlex="20">
+            <!-- <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
                 <mat-icon>menu</mat-icon>
-            </button>
+            </button> -->
             <span style="margin-left: 10px;">FullStackFit</span>
-            <span class="example-spacer"></span>
+        </div>
+        <div fxFlex="80" fxLayoutAlign="end center">
             <button mat-icon-button color="foreground" (click)="open_bottom_sheet()" class="nofocus" aria-label="Share icon">
                     <mat-icon>share</mat-icon>
             </button>
+        </div>
+    </mat-toolbar-row>
+    <mat-toolbar-row class="nav" fxLayoutGap="10px">
+            <button mat-button mat-dialog-close routerLink="/calorie-calculator">Calorie calculator</button>
+            <button mat-button mat-dialog-close routerLink="/progress-tracker">Progress tracker</button>
     </mat-toolbar-row>
 </mat-toolbar>

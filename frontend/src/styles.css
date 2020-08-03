@@ -1,5 +1,8 @@
-/* You can add global styles to this file, and also import other style files */
-.row{margin: 0px;}
+html, body {
+    height: 100%;
+    box-sizing: border-box;
+    margin: 0;
+}
 .nofocus, button{
     outline: none !important;
     border: 0 !important;

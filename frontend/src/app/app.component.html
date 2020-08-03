@@ -1,4 +1,9 @@
-<app-header></app-header>
-<app-nav></app-nav>
-<router-outlet></router-outlet>
-<app-footer></app-footer>
+<div fxLayout="column" fxFlexFill>
+    <app-header></app-header>
+    <div fxFlex fxFlexOffset="30px">
+        <div fxLayout="row" fxLayoutGap="30px">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+    <app-footer fxFlexOffset="auto"></app-footer>
+</div>
