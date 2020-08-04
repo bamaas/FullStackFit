@@ -23,6 +23,7 @@ export class BottomSheetComponent {
 @Component({
   selector: 'bottom-sheet-overview-example-sheet',
   templateUrl: 'bottom-sheet-overview-example-sheet.html',
+  styleUrls: ['./bottom-sheet.component.css']
 })
 export class BottomSheetOverviewExampleSheet {
 
