@@ -8,10 +8,10 @@
             <button mat-icon-button color="accent" style="cursor: default;" class="nofocus" aria-label="Hearth icon">
                     <mat-icon color="accent">favorites</mat-icon>
             </button>
-            <span class="footer-font-size">by Bas Maas</span>
+            <span class="footer-font-size" fxHide.xs="true">by Bas Maas</span>
         </div>
         <div fxFlex="33" fxLayoutAlign="end center">
-            <button mat-button mat-dialog-close (click)="open_privacy_dialog()" class="footer-font-size">Privacy Statement</button>
+            <button mat-button (click)="open_privacy_dialog()" class="footer-font-size">Privacy Statement</button>
         </div>
     </mat-toolbar-row>
 </mat-toolbar>
