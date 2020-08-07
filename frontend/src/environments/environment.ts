@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   // apiBaseUrl: 'http://localhost:5000'
-  apiBaseUrl: window.location.origin + '/api'
+  // apiBaseUrl: window.location.origin + '/api'
+  apiBaseUrl: 'https://fit.basmaas.nl/api/'
 };
 
 /*
