@@ -1,13 +1,21 @@
-<form name="tdee-calculator" class="tdee-calculator" [formGroup]="logForm" #formDirective="ngForm">
-    <mat-form-field>
-        <mat-label>Weight (kg)</mat-label>
-        <input id="weight-hb" matInput type="number" min="30" max="250" formControlName="weight" required>
-        <mat-error *ngIf="!logForm.get('weight').hasError('weight')">Weight should be between 0 and 200 kg</mat-error>
-    </mat-form-field>
-</form>
-<button mat-raised-button color="primary" id="send-log" class="nofocus" (click)="postLog()" [disabled]="!logForm.valid">Add log</button>
-
-<div class="mat-elevation-z8">
+<div fxLayout="column" style="padding: 30px;">
+    <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="left end">
+            <div>
+                <form name="tdee-calculator" class="tdee-calculator" [formGroup]="logForm" #formDirective="ngForm">
+                    <mat-form-field>
+                        <mat-label>Weight (kg)</mat-label>
+                        <input id="weight-hb" matInput type="number" min="30" max="250" formControlName="weight" required>
+                        <mat-error *ngIf="!logForm.get('weight').hasError('weight')">Weight should be between 0 and 200 kg</mat-error>
+                    </mat-form-field>
+                </form>
+            </div>
+            <div>
+                <button mat-raised-button color="primary" id="send-log" class="nofocus" (click)="postLog()" [disabled]="!logForm.valid" style="margin-bottom: 18px;">Add log</button>
+            </div>
+        </div>
+    </div>
+<!-- <div class="mat-elevation-z8"> -->
+<div>
     <table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="desc">
 
         <ng-container matColumnDef="date">
