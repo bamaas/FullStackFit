@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ProgressComponent } from './progress/progress.component'
+import { ProgressTrackerComponent } from './progress-tracker/progress-tracker.component'
 import { CalorieCalculatorComponent } from './calorie-calculator/calorie-calculator.component';
 
 const routes: Routes = [
-  { path: 'progress-tracker', component: ProgressComponent},
+  { path: 'progress-tracker', component: ProgressTrackerComponent},
   { path: 'calorie-calculator', component: CalorieCalculatorComponent },
-  { path: '', component: CalorieCalculatorComponent }
+  { path: '', component: ProgressTrackerComponent }
 ];
 
 @NgModule({
@@ -14,4 +14,4 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
-export const routingComponents = [ProgressComponent, CalorieCalculatorComponent]    // See video: https://www.youtube.com/watch?v=Nehk4tBxD4o how this is setup
+export const routingComponents = [ProgressTrackerComponent, CalorieCalculatorComponent]    // See video: https://www.youtube.com/watch?v=Nehk4tBxD4o how this is setup

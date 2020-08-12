@@ -21,6 +21,10 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HeaderComponent } from './header/header.component';
 import { CalorieCalculatorComponent } from './calorie-calculator/calorie-calculator.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { ProgressTrackerComponent } from './progress-tracker/progress-tracker.component';
+import { EntriesComponent } from './progress-tracker/entries/entries.component';
+import { AddEntryComponent } from './progress-tracker/add-entry/add-entry.component';
+import { AddEntrySheet } from './progress-tracker/add-entry/add-entry.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +39,11 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     BottomSheetOverviewExampleSheet,
     HeaderComponent,
     routingComponents,
-    CalorieCalculatorComponent
+    CalorieCalculatorComponent,
+    ProgressTrackerComponent,
+    EntriesComponent,
+    AddEntryComponent,
+    AddEntrySheet
   ],
   imports: [
     BrowserModule,
@@ -49,8 +57,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     FontAwesomeModule,
     FlexLayoutModule
   ],
-  providers: [],
+  providers: [AddEntryComponent],
   bootstrap: [AppComponent],
-  entryComponents: [DialogDataExampleDialog, BottomSheetOverviewExampleSheet]
+  entryComponents: [DialogDataExampleDialog, BottomSheetOverviewExampleSheet, AddEntrySheet]
 })
 export class AppModule { }
