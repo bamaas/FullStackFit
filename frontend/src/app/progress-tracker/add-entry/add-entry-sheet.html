@@ -1,0 +1,33 @@
+<div fxLayout="column" fxLayoutGap="10px">
+    <div fxLayout="row">
+        <h6>Add entry...</h6>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="left end">
+        <mat-divider fxFlexFill></mat-divider>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="left end">
+        <form name="tdee-calculator" class="tdee-calculator" [formGroup]="entryForm" #formDirective="ngForm" fxFlexFill>
+            <div fxLayout="column" fxLayoutGap="10px">
+            <mat-form-field appearance="fill" fxFlexFill>
+                <mat-label>Weight (kg)</mat-label>
+                <input id="weight-hb" matInput type="number" min="0" formControlName="weight" required>
+                <!-- <mat-error *ngIf="!entryForm.get('weight').hasError('weight')">Weight should be between 0 and 250 kg</mat-error> -->
+            </mat-form-field>
+            <mat-form-field appearance="fill" fxFlexFill>
+                <mat-label>Choose a date</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="date" required>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker touchUi></mat-datepicker>
+            </mat-form-field>
+            </div>
+        </form>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="left end" fxLayoutGap="10px">
+        <div fxFlex="50">
+            <button mat-stroked-button color="primary" (click)="close()" fxFlexFill>Cancel</button>
+        </div>
+        <div fxFlex="50">
+            <button mat-raised-button color="primary" [disabled]="!entryForm.valid" fxFlexFill (click)="add()">Add</button>
+        </div>
+    </div>
+</div>

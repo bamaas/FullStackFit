@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BottomSheetComponent } from '../bottom-sheet/bottom-sheet.component';
+import { AddEntryComponent } from '../progress-tracker/add-entry/add-entry.component';
 
 @Component({
   providers: [BottomSheetComponent],
@@ -9,12 +10,16 @@ import { BottomSheetComponent } from '../bottom-sheet/bottom-sheet.component';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(private bottomsheetcomponent: BottomSheetComponent) { }
+  constructor(private bottomsheetcomponent: BottomSheetComponent, private _addEntryComponent: AddEntryComponent) { }
 
   ngOnInit() {
   }
 
-  open_bottom_sheet(){
+  open_bottom_sheet(): void{
     this.bottomsheetcomponent.openBottomSheet('pieter');
+  }
+
+  openAddEntryDialog(): void{
+    this._addEntryComponent.openAddEntrySheet();
   }
 }
