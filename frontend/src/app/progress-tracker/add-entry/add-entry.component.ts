@@ -67,6 +67,7 @@ export class AddEntrySheet {
     this._entryService.postEntry(weight, date).subscribe(
       body => {
         this.cancel();
+        this._entryService.getEntries();
       }, 
       error => {
         this._snackBar.open('Error occured while adding entry.', 'Dismiss', {duration: 6000})
