@@ -4,8 +4,8 @@ import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 export interface AlertDialogData {
   title: string;
   message: string;
-  confirm_btn: string;
-  cancel_btn: string;
+  btn_confirm: string;
+  btn_cancel: string;
 }
 
 @Component({
