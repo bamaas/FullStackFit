@@ -25,6 +25,7 @@ import { ProgressTrackerComponent } from './progress-tracker/progress-tracker.co
 import { EntriesComponent } from './progress-tracker/entries/entries.component';
 import { AddEntryComponent } from './progress-tracker/add-entry/add-entry.component';
 import { AddEntrySheet } from './progress-tracker/add-entry/add-entry.component';
+import { AlertDialogComponent } from './shared/alert-dialog/alert-dialog.component'
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { AddEntrySheet } from './progress-tracker/add-entry/add-entry.component'
     ProgressTrackerComponent,
     EntriesComponent,
     AddEntryComponent,
-    AddEntrySheet
+    AddEntrySheet,
+    AlertDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -59,6 +61,6 @@ import { AddEntrySheet } from './progress-tracker/add-entry/add-entry.component'
   ],
   providers: [AddEntryComponent],
   bootstrap: [AppComponent],
-  entryComponents: [DialogDataExampleDialog, BottomSheetOverviewExampleSheet, AddEntrySheet]
+  entryComponents: [DialogDataExampleDialog, BottomSheetOverviewExampleSheet, AddEntrySheet, AlertDialogComponent]
 })
 export class AppModule { }
