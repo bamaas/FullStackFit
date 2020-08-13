@@ -70,9 +70,9 @@ Calculate TDEE
 
 Add entry
     [Tags]
-    click element           id=nav-btn-entries
-    click element           id=nav-btn-add-entry
-    input text              id=add-entry-input-weight       99
-    click element           id=add-entry-btn-add
-    page should contain element         //*[text()='99']
+    click element                       id=nav-btn-entries
+    click element                       id=nav-btn-add-entry
+    input text                          id=add-entry-input-weight       25
+    click element                       id=add-entry-btn-add
+    page should contain element         //*[text()=' 25 kg']
     report screenshot
