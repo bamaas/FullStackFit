@@ -13,9 +13,9 @@
         </div>
     </mat-toolbar-row>
     <mat-toolbar-row class="nav" fxLayoutGap="10px">
-            <button mat-button routerLink="/entries">Overview</button>
-            <button mat-button routerLink="/entries">Statistics</button>  
-            <button mat-button routerLink="/entries">Entries</button>
-            <button mat-button (click)="openAddEntryDialog()"><app-add-entry></app-add-entry></button>
+            <!-- <button mat-button routerLink="/entries">Overview</button> -->
+            <!-- <button mat-button routerLink="/entries">Statistics</button>   -->
+            <button mat-button routerLink="/entries" id="nav-btn-entries">Entries</button>
+            <button mat-button (click)="openAddEntryDialog()" id="nav-btn-add-entry"><app-add-entry></app-add-entry></button>
     </mat-toolbar-row>
 </mat-toolbar>

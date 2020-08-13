@@ -57,7 +57,7 @@ export class AddEntrySheet {
     event.preventDefault();
   }
 
-  close(): void{
+  cancel(): void{
     this._bottomSheetRef.dismiss();
   }
 
@@ -66,7 +66,7 @@ export class AddEntrySheet {
     const date: string = moment(new Date(this.entryForm.controls['date'].value)).format("DD-MM-YYYY")
     this._entryService.postEntry(weight, date).subscribe(
       body => {
-        this.close();
+        this.cancel();
       }, 
       error => {
         this._snackBar.open('Error occured while adding entry.', 'Dismiss', {duration: 6000})
