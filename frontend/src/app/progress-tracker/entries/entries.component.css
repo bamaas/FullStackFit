@@ -4,3 +4,8 @@ table {
 .mat-column-select {
   overflow: initial;
 }
+table th{
+	top: 56px !important;  /* should be equal to the height of the mat-tool-bar header */
+	position: sticky; 
+	z-index: 100;
+}

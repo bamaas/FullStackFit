@@ -20,7 +20,7 @@ export class EntryService {
     return this._http.post(environment.apiBaseUrl + '/log', {"weight": weight})
   }
 
-  deleteEntry(id: string): Observable<any>{
+  deleteEntry(id: number): Observable<any>{
     return this._http.delete(environment.apiBaseUrl + '/log/' + id)
   }
 

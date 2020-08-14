@@ -1,9 +1,6 @@
 <mat-toolbar color="primary" fxLayout="column">
-    <mat-toolbar-row fxLayout="row">
+    <!-- <mat-toolbar-row fxLayout="row">
         <div fxFlex="20">
-            <!-- <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
-                <mat-icon>menu</mat-icon>
-            </button> -->
             <span style="margin-left: 10px;">FullStackFit</span>
         </div>
         <div fxFlex="80" fxLayoutAlign="end center">
@@ -11,11 +8,16 @@
                     <mat-icon>share</mat-icon>
             </button>
         </div>
-    </mat-toolbar-row>
-    <mat-toolbar-row class="nav" fxLayoutGap="10px">
+    </mat-toolbar-row> -->
+    <mat-toolbar-row class="nav sticky">
+        <div fxFlex="90" fxLayout="row" fxLayoutGap="10px">
+            <h1>Progress</h1>
             <!-- <button mat-button routerLink="/entries">Overview</button> -->
             <!-- <button mat-button routerLink="/entries">Statistics</button>   -->
             <button mat-button routerLink="/entries" id="nav-btn-entries">Entries</button>
-            <button mat-button (click)="openAddEntryDialog()" id="nav-btn-add-entry"><app-add-entry></app-add-entry></button>
+        </div>
+        <div fxFlex="10" fxLayoutAlign="end center">
+            <button mat-stroked-button (click)="openAddEntryDialog()" id="nav-btn-add-entry"><app-add-entry></app-add-entry></button>
+        </div>
     </mat-toolbar-row>
 </mat-toolbar>

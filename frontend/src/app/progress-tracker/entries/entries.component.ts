@@ -7,6 +7,8 @@ import { MatSort } from '@angular/material/sort';
 import { EntryService } from '../entry.service'
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from 'src/app/shared/alert-dialog/alert-dialog.component'
+import { MatBottomSheet } from '@angular/material';
+import { AddEntrySheet } from 'src/app/progress-tracker/add-entry/add-entry.component'
 
 export interface entry {
   id: number;
@@ -31,7 +33,8 @@ export class EntriesComponent implements OnInit {
   constructor(
     private snackBar: MatSnackBar,
     private _entryService: EntryService,
-    private _dialog: MatDialog
+    private _dialog: MatDialog,
+    private _bottomSheet: MatBottomSheet
   ) {}
 
   ngOnInit() {
@@ -46,7 +49,12 @@ export class EntriesComponent implements OnInit {
     weight: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(200)]),
   });
 
-  deleteEntry(id: string): void{
+  editEntry(id: number): void{
+    console.log(id)
+    const bottomSheetRef = this._bottomSheet.open(AddEntrySheet)
+  }
+
+  deleteEntry(id: number): void{
     const dialogRef = this._dialog.open(AlertDialogComponent, {
       width: '350px',
       data: {title: 'Confirm deletion', message: 'Do you really want to delete this entry?', btn_cancel: 'Cancel', btn_confirm: 'Delete'}
