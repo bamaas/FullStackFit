@@ -1,16 +1,16 @@
-<div fxLayout="column" fxLayoutGap="10px" id="add-entry-sheet">
+<div fxLayout="column" fxLayoutGap="12px" id="add-entry-sheet">
     <div fxLayout="row">
-        <h6>Add entry...</h6>
+        <h6>{{data.title}}</h6>
     </div>
     <div fxLayout="row" fxLayoutAlign="left end">
         <mat-divider fxFlexFill></mat-divider>
     </div>
     <div fxLayout="row" fxLayoutAlign="left end">
         <form name="tdee-calculator" class="tdee-calculator" [formGroup]="entryForm" #formDirective="ngForm" fxFlexFill>
-            <div fxLayout="column" fxLayoutGap="10px">
+            <div fxLayout="column" fxLayoutGap="12px">
             <mat-form-field appearance="fill" fxFlexFill>
                 <mat-label>Weight (kg)</mat-label>
-                <input id="add-entry-input-weight" matInput type="number" min="0" formControlName="weight" required>
+                <input id="add-entry-input-weight" matInput type="number" min="1" (keyup.enter)="add()" #inputWeight formControlName="weight" required>
                 <!-- <mat-error *ngIf="!entryForm.get('weight').hasError('weight')">Weight should be between 0 and 250 kg</mat-error> -->
             </mat-form-field>
             <mat-form-field appearance="fill" fxFlexFill>
@@ -19,15 +19,19 @@
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker touchUi></mat-datepicker>
             </mat-form-field>
+            <mat-form-field appearance="fill" fxFlexFill>
+                <mat-label>Note</mat-label>
+                <input matInput formControlName="note" id="add-entry-input-note">
+            </mat-form-field>
             </div>
         </form>
     </div>
-    <div fxLayout="row" fxLayoutAlign="left end" fxLayoutGap="10px">
+    <div fxLayout="row" fxLayoutAlign="left end" fxLayoutGap="12px">
         <div fxFlex="50">
-            <button mat-stroked-button color="primary" (click)="cancel()" fxFlexFill id="add-entry-btn-cancel">Cancel</button>
+            <button mat-stroked-button color="primary" (click)="cancel()" fxFlexFill id="add-entry-btn-cancel">{{data.btn_cancel}}</button>
         </div>
         <div fxFlex="50">
-            <button mat-raised-button color="primary" [disabled]="!entryForm.valid" fxFlexFill (click)="add()" id="add-entry-btn-add">Add</button>
+            <button mat-raised-button color="primary" [disabled]="!entryForm.valid" fxFlexFill (keyup.enter)="add()" (click)="add()" id="add-entry-btn-add">{{data.btn_confirm}}</button>
         </div>
     </div>
 </div>

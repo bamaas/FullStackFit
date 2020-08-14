@@ -16,8 +16,8 @@
                             <mat-icon>more_vert</mat-icon>
                         </button>
                         <mat-menu #actionsMenu="matMenu">
-                            <button mat-menu-item>
-                                <mat-icon (click)="editEntry(row.id)">edit</mat-icon>Edit
+                            <button mat-menu-item (click)="editEntry(row.weight, row.date, row.note)">
+                                <mat-icon>edit</mat-icon>Edit
                             </button>
                             <button mat-menu-item (click)="deleteEntry(row.id)">
                                 <mat-icon>delete</mat-icon>Delete
@@ -39,7 +39,7 @@
                 <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true;"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
-            <mat-paginator [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons></mat-paginator>
+            <mat-paginator [pageSizeOptions]="[100, 50, 10]" showFirstLastButtons></mat-paginator>
         </div>
     </div>
 </div>

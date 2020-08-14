@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BottomSheetComponent } from '../bottom-sheet/bottom-sheet.component';
-import { AddEntryComponent } from '../progress-tracker/add-entry/add-entry.component';
+import { AddEntryComponent } from '../progress-tracker/entries/add-entry/add-entry.component';
 
 @Component({
   providers: [BottomSheetComponent],

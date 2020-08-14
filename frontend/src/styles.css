@@ -3,7 +3,6 @@ html, body {
     box-sizing: border-box;
     margin: 0;
 }
-/* .nofocus, button{
-    outline: none !important;
-    border: 0 !important;
-} */
+.mat-dialog-container{
+    padding: 0px !important;
+}

@@ -23,8 +23,8 @@ import { CalorieCalculatorComponent } from './calorie-calculator/calorie-calcula
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ProgressTrackerComponent } from './progress-tracker/progress-tracker.component';
 import { EntriesComponent } from './progress-tracker/entries/entries.component';
-import { AddEntryComponent } from './progress-tracker/add-entry/add-entry.component';
-import { AddEntrySheet } from './progress-tracker/add-entry/add-entry.component';
+import { AddEntryComponent } from './progress-tracker/entries/add-entry/add-entry.component';
+import { AddEntrySheet } from './progress-tracker/entries/add-entry/add-entry.component';
 import { AlertDialogComponent } from './shared/alert-dialog/alert-dialog.component'
 
 @NgModule({
