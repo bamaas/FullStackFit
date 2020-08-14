@@ -1,4 +1,14 @@
-.mat-dialog-title {
-    margin: 0 0 10px;
-    display: block;
+.mat-body, .mat-dialog-actions .mat-button-base+.mat-button-base {
+    margin: 0px !important;
+}
+
+.mat-dialog-title{
+    margin: 0px 0px -10px 0px;
+}
+
+.mat-dialog-actions {
+    min-height: auto !important;
+    margin: 0px;
+    align-items: center;
+    padding: 0px !important;
 }

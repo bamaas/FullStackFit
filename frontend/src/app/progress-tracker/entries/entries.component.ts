@@ -8,7 +8,7 @@ import { EntryService } from '../entry.service'
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from 'src/app/shared/alert-dialog/alert-dialog.component'
 import { MatBottomSheet } from '@angular/material';
-import { AddEntrySheet } from 'src/app/progress-tracker/add-entry/add-entry.component'
+import { AddEntrySheet } from 'src/app/progress-tracker/entries/add-entry/add-entry.component'
 
 export interface entry {
   id: number;
@@ -49,14 +49,16 @@ export class EntriesComponent implements OnInit {
     weight: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(200)]),
   });
 
-  editEntry(id: number): void{
-    console.log(id)
-    const bottomSheetRef = this._bottomSheet.open(AddEntrySheet)
+  editEntry(weight: number, date: string, note: string): void{
+    const bottomSheetRef = this._bottomSheet.open(AddEntrySheet, {
+      data: {title: 'Edit entry...', btn_cancel: 'Cancel', btn_confirm: 'Save', weight: weight, date: date, note: note}
+    });
   }
 
   deleteEntry(id: number): void{
     const dialogRef = this._dialog.open(AlertDialogComponent, {
       width: '350px',
+      autoFocus: false,
       data: {title: 'Confirm deletion', message: 'Do you really want to delete this entry?', btn_cancel: 'Cancel', btn_confirm: 'Delete'}
     });
     dialogRef.afterClosed().subscribe(confirmed => {
