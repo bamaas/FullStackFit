@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FormControl, FormGroup, Validators } from '@angular/forms';
