@@ -10,7 +10,10 @@ import { AddEntryComponent } from '../progress-tracker/entries/add-entry/add-ent
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(private bottomsheetcomponent: BottomSheetComponent, private _addEntryComponent: AddEntryComponent) { }
+  constructor(
+    private bottomsheetcomponent: BottomSheetComponent, 
+    private _addEntryComponent: AddEntryComponent)
+  {}
 
   ngOnInit() {
   }

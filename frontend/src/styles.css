@@ -4,5 +4,5 @@ html, body {
     margin: 0;
 }
 .mat-dialog-container{
-    padding: 0px !important;
+    padding: 24px !important;
 }

@@ -46,10 +46,6 @@ export class AddEntrySheet implements OnInit{
 
   @ViewChild('inputWeight') inputWeightElement: ElementRef;
 
-  date: any;
-  weight: number = this.data.weight
-  note: string = this.data.note
-
   constructor(
     private _bottomSheetRef: MatBottomSheetRef<AddEntrySheet>, 
     private _entryService: EntryService,
@@ -57,26 +53,26 @@ export class AddEntrySheet implements OnInit{
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any
   ) {}
 
+  public entryForm: FormGroup;
+
   ngOnInit(): void{
-    console.log(this.data.date)
-    if (this.data.date == null){
-      console.log("debug")
-      this.date = new Date();
-    } else {
-      this.date = this.data.date
+    this.entryForm = this.initEntryForm(this.data.weight, this.data.date, this.data.note);
+  }
+
+  initEntryForm(weight: number, date: any, note: string): FormGroup{
+    if (date == null){
+      date = new Date();
     }
-    console.log(this.date)
+    return new FormGroup({
+      weight: new FormControl(weight, [Validators.required, Validators.min(0), Validators.max(200)]),
+      date: new FormControl(date),
+      note: new FormControl(note)
+    });
   }
 
   ngAfterViewInit(): void {
     setTimeout(() => this.inputWeightElement.nativeElement.focus());
   }
-
-  public entryForm = new FormGroup({
-    weight: new FormControl(this.weight, [Validators.required, Validators.min(0), Validators.max(200)]),
-    date: new FormControl(new Date()),
-    note: new FormControl(this.note)
-  });
 
   openLink(event: MouseEvent): void {
     this._bottomSheetRef.dismiss();
@@ -92,7 +88,8 @@ export class AddEntrySheet implements OnInit{
       this.inputWeightElement.nativeElement.focus();
       const weight: number = this.entryForm.controls['weight'].value  
       const date: string = moment(new Date(this.entryForm.controls['date'].value)).format("DD-MM-YYYY")
-      this._entryService.postEntry(weight, date).subscribe(
+      const note: string = this.entryForm.controls['note'].value  
+      this._entryService.postEntry(weight, date, note).subscribe(
         body => {
           this.cancel();
           this._entryService.getEntries();
