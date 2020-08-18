@@ -1,0 +1,10 @@
+<fa-icon [icon]="faFilter" [matMenuTriggerFor]="actionsMenu"></fa-icon>
+<mat-menu #actionsMenu="matMenu" style="z-index: 999999999 !important;">
+    <div fxLayout="column">
+        <form [formGroup]="columnFilterFormGroup">
+            <mat-checkbox *ngFor="let columnDefinition of columnDefinitions;"  [formControlName]="columnDefinition.def">{{columnDefinition.label}}</mat-checkbox>
+        </form>
+    </div>    
+  </mat-menu>
+
+

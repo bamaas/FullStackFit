@@ -19,7 +19,9 @@ export class AppComponent implements OnInit, AfterViewInit{
 
   ngOnInit(){
     this.mediaSub = this.mediaObserver.media$.subscribe(
-      (change: MediaChange) => {console.log(change.mqAlias)}
+      (change: MediaChange) => {
+        console.log(change.mqAlias);
+      }
     )
   }
 
@@ -28,6 +30,5 @@ export class AppComponent implements OnInit, AfterViewInit{
   }
 
   private mediaSub: Subscription;
-
 
 }
