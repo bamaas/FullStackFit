@@ -32,4 +32,9 @@ public class LogController {
     public void deleteLog(@PathVariable long id){
         logService.deleteLog(id);
     }
+
+    @PutMapping("/log")
+    public void putLog(@RequestBody Log log){
+        logService.putLog(log);
+    }
 }

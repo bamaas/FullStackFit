@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -28,14 +27,18 @@ public class LogService {
 
     public Map<String, String> addLog(Log log){
         Log entry = logRepository.save(log);
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss:SSS");
-        return Map.of(
-                "id", String.valueOf(entry.getId()),
-                "timestamp", dateFormat.format(entry.getTimestamp())
-        );
+        return Map.of("id", String.valueOf(entry.getId()));
     }
 
     public void deleteLog(long id){
         logRepository.deleteById(id);
+    }
+
+    public void editLog(long id){
+        System.out.println("editing log");
+    }
+
+    public void putLog(Log log){
+        logRepository.save(log);
     }
 }

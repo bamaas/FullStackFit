@@ -23,7 +23,7 @@ export interface entry {
 })
 export class EntriesComponent implements OnInit {
 
-  displayedColumns: string[] = ['date', 'weight', 'actions'];
+  displayedColumns: string[] = ['date', 'weight', 'note', 'actions'];
   data: entry[] = [];
   dataSource = new MatTableDataSource<entry>(this.data);
 
@@ -49,9 +49,9 @@ export class EntriesComponent implements OnInit {
     weight: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(200)]),
   });
 
-  editEntry(weight: number, date: string, note: string): void{
+  editEntry(id: number, weight: number, date: string, note: string): void{
     const bottomSheetRef = this._bottomSheet.open(AddEntrySheet, {
-      data: {title: 'Edit entry...', btn_cancel: 'Cancel', btn_confirm: 'Save', weight: weight, date: date, note: note}
+      data: {title: 'Edit entry...', btn_cancel: 'Cancel', btn_confirm: 'Save', id: id, weight: weight, date: date, note: note}
     });
   }
 

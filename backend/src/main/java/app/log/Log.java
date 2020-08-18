@@ -1,5 +1,6 @@
 package app.log;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -13,10 +14,12 @@ public class Log {
 
     }
 
-    public Log(long id, int weight) {
+    public Log(long id, float weight, Date date, String note) {
         super();
         this.id = id;
         this.weight = weight;
+        this.date = date;
+        this.note = note;
     }
 
     @Id
@@ -24,26 +27,37 @@ public class Log {
     @Column(name="\"id\"",unique=true,nullable=false)
     private long id;
 
-    private int weight;
+    @Column(name="\"weight\"")
+    private float weight;
 
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="timestamp")
-    private Date timestamp;
+    @Column(name="\"note\"")
+    private String note;
 
-    public Date getTimestamp() {
-        return timestamp;
+    @JsonFormat(pattern="dd-MM-yyyy")
+    @Column(name="\"date\"")
+    private Date date;
+
+    public String getNote() {
+        return note;
     }
 
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
+    public void setNote(String note) {
+        this.note = note;
     }
 
-    public int getWeight() {
-        return weight;
+    public Date getDate() {
+        return date;
     }
 
-    public void setWeight(int weight) {
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public float getWeight() {
+        return this.weight;
+    }
+
+    public void setWeight(float weight) {
         this.weight = weight;
     }
 

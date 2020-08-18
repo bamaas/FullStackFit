@@ -16,8 +16,12 @@ export class EntryService {
   private entriesSubject = new Subject();
   public entriesObservable = this.entriesSubject.asObservable();
 
-  postEntry(weight: number, date: string): Observable<any>{
-    return this._http.post(environment.apiBaseUrl + '/log', {"weight": weight})
+  postEntry(weight: number, date: string, note: string): Observable<any>{
+    return this._http.post(environment.apiBaseUrl + '/log', {"weight": weight, "date": date, "note": note} )
+  }
+
+  editEntry(id:number, weight: number, date: string, note: string): Observable<any>{
+    return this._http.put(environment.apiBaseUrl + '/log', {"id": id, "weight": weight, "date": date, "note": note} )
   }
 
   deleteEntry(id: number): Observable<any>{
