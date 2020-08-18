@@ -16,7 +16,8 @@
             <!-- <button mat-button routerLink="/entries">Statistics</button>   -->
             <button mat-button routerLink="/entries" id="nav-btn-entries">Entries</button>
         </div>
-        <div fxFlex="10" fxLayoutAlign="end center">
+        <div fxFlex="10" fxLayoutAlign="end center" fxLayoutGap="10px">
+            <!-- <button mat-stroked-button id="nav-btn-add-entry"><app-filter-columns></app-filter-columns></button> -->
             <button mat-stroked-button (click)="openAddEntryDialog()" id="nav-btn-add-entry"><app-add-entry></app-add-entry></button>
         </div>
     </mat-toolbar-row>

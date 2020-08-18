@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -9,6 +9,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from 'src/app/shared/alert-dialog/alert-dialog.component'
 import { MatBottomSheet } from '@angular/material';
 import { AddEntrySheet } from 'src/app/progress-tracker/entries/add-entry/add-entry.component'
+import { MediaObserver, MediaChange } from '@angular/flex-layout';
+import { Subscription, Observable, merge } from 'rxjs';
 
 export interface entry {
   id: number;
@@ -21,11 +23,13 @@ export interface entry {
   templateUrl: './entries.component.html',
   styleUrls: ['./entries.component.css']
 })
-export class EntriesComponent implements OnInit {
+export class EntriesComponent implements OnInit, OnDestroy {
 
   displayedColumns: string[] = ['date', 'weight', 'note', 'actions'];
   data: entry[] = [];
   dataSource = new MatTableDataSource<entry>(this.data);
+  private mediaSub: Subscription;
+  private activeMediaQuery: any;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
@@ -34,7 +38,8 @@ export class EntriesComponent implements OnInit {
     private snackBar: MatSnackBar,
     private _entryService: EntryService,
     private _dialog: MatDialog,
-    private _bottomSheet: MatBottomSheet
+    private _bottomSheet: MatBottomSheet,
+    private mediaObserver: MediaObserver
   ) {}
 
   ngOnInit() {
@@ -43,11 +48,15 @@ export class EntriesComponent implements OnInit {
       )
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+    this.mediaSub = this.mediaObserver.media$.subscribe(
+      (change: MediaChange) => {
+        if (change.mqAlias == 'xs'){
+          this.columnFilterNoteControl.setValue(false);
+        } else if (change.mqAlias != 'xs'){
+          this.columnFilterNoteControl.setValue(true);
+        }
+      });
   }
-
-  logForm = new FormGroup({
-    weight: new FormControl(null, [Validators.required, Validators.min(0), Validators.max(200)]),
-  });
 
   editEntry(id: number, weight: number, date: string, note: string): void{
     const bottomSheetRef = this._bottomSheet.open(AddEntrySheet, {
@@ -74,6 +83,49 @@ export class EntriesComponent implements OnInit {
         )
       }
     });
+  }
+
+  public columnFilterFormGroup: FormGroup = new FormGroup({
+    weight: new FormControl(true),
+    date: new FormControl(true),
+    note: new FormControl(true),
+    actions: new FormControl(true)
+  });
+
+  columnFilterWeightControl: AbstractControl = this.columnFilterFormGroup.get('weight');
+  columnFilterDateControl: AbstractControl = this.columnFilterFormGroup.get('date');
+  columnFilterNoteControl: AbstractControl = this.columnFilterFormGroup.get('note');
+  columnFilterActionsControl: AbstractControl = this.columnFilterFormGroup.get('actions');
+
+  columnDefinitions = [
+    { def: 'weight', label: 'Weight', show: this.columnFilterWeightControl.value},
+    { def: 'date', label: 'Date', show: this.columnFilterDateControl.value},
+    { def: 'note', label: 'Note', show: this.columnFilterNoteControl.value},
+    { def: 'actions', label: 'Actions', show: this.columnFilterActionsControl.value}
+  ]
+
+  // Returns an array of all the columnDefinitions objects that have the key 'show' set to true
+  getDisplayedColumns(): string[] {
+    return this.columnDefinitions.filter(cd=>cd.show).map(cd=>cd.def);
+  }
+
+  ngAfterViewInit() {
+    let o1:Observable<boolean> = this.columnFilterWeightControl.valueChanges;
+    let o2:Observable<boolean> = this.columnFilterDateControl.valueChanges;
+    let o3:Observable<boolean> = this.columnFilterNoteControl.valueChanges;
+    let o4:Observable<boolean> = this.columnFilterActionsControl.valueChanges;
+ 
+    merge(o1, o2, o3, o4).subscribe( v=>{
+    this.columnDefinitions[0].show = this.columnFilterWeightControl.value;
+    this.columnDefinitions[1].show = this.columnFilterDateControl.value;
+    this.columnDefinitions[2].show = this.columnFilterNoteControl.value;
+    this.columnDefinitions[3].show = this.columnFilterActionsControl.value;
+      //  console.log(this.columnDefinitions);
+     });
+   }
+
+  ngOnDestroy() {
+    this.mediaSub.unsubscribe();
   }
 
 }

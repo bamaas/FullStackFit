@@ -10,7 +10,7 @@
             <div fxLayout="column" fxLayoutGap="12px">
             <mat-form-field appearance="fill" fxFlexFill>
                 <mat-label>Weight (kg)</mat-label>
-                <input id="add-entry-input-weight" matInput type="number" min="1" (keyup.enter)="submit()" #inputWeight formControlName="weight" required>
+                <input id="add-entry-input-weight" matInput type="number" min="1" lang="en_EN" (keyup.enter)="submit()" #inputWeight step="0.1" formControlName="weight" required>
                 <!-- <mat-error *ngIf="!entryForm.get('weight').hasError('weight')">Weight should be between 0 and 250 kg</mat-error> -->
             </mat-form-field>
             <mat-form-field appearance="fill" fxFlexFill>

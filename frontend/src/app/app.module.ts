@@ -25,7 +25,8 @@ import { ProgressTrackerComponent } from './progress-tracker/progress-tracker.co
 import { EntriesComponent } from './progress-tracker/entries/entries.component';
 import { AddEntryComponent } from './progress-tracker/entries/add-entry/add-entry.component';
 import { AddEntrySheet } from './progress-tracker/entries/add-entry/add-entry.component';
-import { AlertDialogComponent } from './shared/alert-dialog/alert-dialog.component'
+import { AlertDialogComponent } from './shared/alert-dialog/alert-dialog.component';
+import { FilterColumnsComponent } from './progress-tracker/entries/filter-columns/filter-columns.component'
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { AlertDialogComponent } from './shared/alert-dialog/alert-dialog.compone
     EntriesComponent,
     AddEntryComponent,
     AddEntrySheet,
-    AlertDialogComponent
+    AlertDialogComponent,
+    FilterColumnsComponent
   ],
   imports: [
     BrowserModule,
@@ -59,7 +61,7 @@ import { AlertDialogComponent } from './shared/alert-dialog/alert-dialog.compone
     FontAwesomeModule,
     FlexLayoutModule
   ],
-  providers: [AddEntryComponent],
+  providers: [AddEntryComponent, FilterColumnsComponent],
   bootstrap: [AppComponent],
   entryComponents: [DialogDataExampleDialog, BottomSheetOverviewExampleSheet, AddEntrySheet, AlertDialogComponent]
 })
