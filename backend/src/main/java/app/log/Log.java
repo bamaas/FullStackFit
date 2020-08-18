@@ -14,7 +14,7 @@ public class Log {
 
     }
 
-    public Log(long id, int weight, Date date, String note) {
+    public Log(long id, float weight, Date date, String note) {
         super();
         this.id = id;
         this.weight = weight;
@@ -28,7 +28,7 @@ public class Log {
     private long id;
 
     @Column(name="\"weight\"")
-    private int weight;
+    private float weight;
 
     @Column(name="\"note\"")
     private String note;
@@ -53,11 +53,11 @@ public class Log {
         this.date = date;
     }
 
-    public int getWeight() {
+    public float getWeight() {
         return this.weight;
     }
 
-    public void setWeight(int weight) {
+    public void setWeight(float weight) {
         this.weight = weight;
     }
 

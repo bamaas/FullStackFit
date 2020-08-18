@@ -10,7 +10,7 @@
             <div fxLayout="column" fxLayoutGap="12px">
             <mat-form-field appearance="fill" fxFlexFill>
                 <mat-label>Weight (kg)</mat-label>
-                <input id="add-entry-input-weight" matInput type="number" min="1" (keyup.enter)="add()" #inputWeight formControlName="weight" required>
+                <input id="add-entry-input-weight" matInput type="number" min="1" (keyup.enter)="submit()" #inputWeight formControlName="weight" required>
                 <!-- <mat-error *ngIf="!entryForm.get('weight').hasError('weight')">Weight should be between 0 and 250 kg</mat-error> -->
             </mat-form-field>
             <mat-form-field appearance="fill" fxFlexFill>
@@ -31,7 +31,7 @@
             <button mat-stroked-button color="primary" (click)="cancel()" fxFlexFill id="add-entry-btn-cancel">{{data.btn_cancel}}</button>
         </div>
         <div fxFlex="50">
-            <button mat-raised-button color="primary" [disabled]="!entryForm.valid" fxFlexFill (keyup.enter)="add()" (click)="add()" id="add-entry-btn-add">{{data.btn_confirm}}</button>
+            <button mat-raised-button color="primary" [disabled]="!entryForm.valid" fxFlexFill (keyup.enter)="submit()" (click)="submit()" id="add-entry-btn-add">{{data.btn_confirm}}</button>
         </div>
     </div>
 </div>

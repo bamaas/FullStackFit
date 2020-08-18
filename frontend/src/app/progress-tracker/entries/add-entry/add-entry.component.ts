@@ -62,6 +62,8 @@ export class AddEntrySheet implements OnInit{
   initEntryForm(weight: number, date: any, note: string): FormGroup{
     if (date == null){
       date = new Date();
+    } else {
+      date = moment(date, 'DD-MM-YYYY').toDate();
     }
     return new FormGroup({
       weight: new FormControl(weight, [Validators.required, Validators.min(0), Validators.max(200)]),
@@ -83,12 +85,34 @@ export class AddEntrySheet implements OnInit{
     this._bottomSheetRef.dismiss();
   }
 
-  add(): void{
+  submit(): void{
     if (!this.entryForm.invalid){
-      this.inputWeightElement.nativeElement.focus();
-      const weight: number = this.entryForm.controls['weight'].value  
-      const date: string = moment(new Date(this.entryForm.controls['date'].value)).format("DD-MM-YYYY")
-      const note: string = this.entryForm.controls['note'].value  
+      const id: number = this.data.id;
+      const weight: number = this.entryForm.controls['weight'].value;
+      const date: string = moment(new Date(this.entryForm.controls['date'].value)).format("DD-MM-YYYY");
+      const note: string = this.entryForm.controls['note'].value;
+      if (id != null){
+        this.edit(id, weight, date, note);
+      } else {
+        this.add(weight, date, note);
+      }
+    }
+  }
+
+  edit(id:number, weight:number, date:string, note:string): void{
+    this._entryService.editEntry(id, weight, date, note).subscribe(
+      body => {
+        this.cancel();
+        this._entryService.getEntries();
+      }, 
+      error => {
+        this._snackBar.open('Error occured while updating entry.', 'Dismiss', {duration: 6000})
+        console.log(error)
+      }
+    ) 
+  }
+
+  add(weight:number, date:string, note:string): void{
       this._entryService.postEntry(weight, date, note).subscribe(
         body => {
           this.cancel();
@@ -100,5 +124,4 @@ export class AddEntrySheet implements OnInit{
         }
       )
     } 
-  }
 }

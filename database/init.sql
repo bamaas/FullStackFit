@@ -1,4 +1,4 @@
-CREATE TABLE log (id BIGSERIAL, date TIMESTAMP, weight INT, note TEXT);
+CREATE TABLE log (id BIGSERIAL, date TIMESTAMP, weight REAL, note TEXT);
 INSERT INTO log (id,date, weight, note) VALUES (1, current_timestamp, 1, 'test note'); 
 INSERT INTO log (id,date, weight, note) VALUES (2, current_timestamp, 2, 'test note'); 
 INSERT INTO log (id,date, weight, note) VALUES (3, current_timestamp, 3, 'test note'); 
@@ -6,7 +6,7 @@ INSERT INTO log (id,date, weight, note) VALUES (4, current_timestamp, 4, 'test n
 INSERT INTO log (id,date, weight, note) VALUES (5, current_timestamp, 5, 'test note'); 
 INSERT INTO log (id,date, weight, note) VALUES (6, current_timestamp, 6, 'test note'); 
 INSERT INTO log (id,date, weight, note) VALUES (7, current_timestamp, 7, 'test note'); 
-INSERT INTO log (id,date, weight, note) VALUES (8, current_timestamp, 8, 'test note'); 
+INSERT INTO log (id,date, weight, note) VALUES (8, current_timestamp, 8, 'test note');
 INSERT INTO log (id,date, weight, note) VALUES (9, current_timestamp, 9, 'test note'); 
 INSERT INTO log (id,date, weight, note) VALUES (10, current_timestamp, 10, 'test note');
 INSERT INTO log (id,date, weight, note) VALUES (11, current_timestamp, 11, 'test note');
