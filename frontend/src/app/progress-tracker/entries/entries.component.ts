@@ -1,7 +1,5 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
+import { Component, OnInit, ViewChild, OnDestroy, HostListener, ChangeDetectorRef } from '@angular/core';
+import { FormControl, FormGroup, AbstractControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { EntryService } from '../entry.service'
@@ -11,11 +9,14 @@ import { MatBottomSheet } from '@angular/material';
 import { AddEntrySheet } from 'src/app/progress-tracker/entries/add-entry/add-entry.component'
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
 import { Subscription, Observable, merge } from 'rxjs';
+import { TableVirtualScrollDataSource } from 'ng-table-virtual-scroll'; 
+import { StyleService } from 'src/app/style.service'
 
 export interface entry {
-  id: number;
-  weight: number;
-  timestamp: string;
+  id: number,
+  weight: number,
+  date: string,
+  note: string
 }
 
 @Component({
@@ -27,11 +28,11 @@ export class EntriesComponent implements OnInit, OnDestroy {
 
   displayedColumns: string[] = ['date', 'weight', 'note', 'actions'];
   data: entry[] = [];
-  dataSource = new MatTableDataSource<entry>(this.data);
+  dataSource = new TableVirtualScrollDataSource<entry>(this.data);
   private mediaSub: Subscription;
-  private activeMediaQuery: any;
+  public screenHeight: number;
+  public tableBodyHeight: number; // initalized in ngAfterViewInit
 
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
   
   constructor(
@@ -39,14 +40,15 @@ export class EntriesComponent implements OnInit, OnDestroy {
     private _entryService: EntryService,
     private _dialog: MatDialog,
     private _bottomSheet: MatBottomSheet,
-    private mediaObserver: MediaObserver
+    private mediaObserver: MediaObserver,
+    private _styleService: StyleService,
+    private _cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
     this._entryService.entriesObservable.subscribe(
       (entries: entry[]) => {this.dataSource.data = entries}
       )
-    this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
     this.mediaSub = this.mediaObserver.media$.subscribe(
       (change: MediaChange) => {
@@ -56,7 +58,14 @@ export class EntriesComponent implements OnInit, OnDestroy {
           this.columnFilterNoteControl.setValue(true);
         }
       });
+      this.onResize();
   }
+
+  @HostListener('window:resize', ['$event'])
+    onResize(event?) {
+      this.screenHeight = window.innerHeight;
+      // this.tableBodyHeight = this.screenHeight - this._styleService.headerHeight; // this doesn't work for some reason. Need to retrigger something else.
+    }
 
   editEntry(id: number, weight: number, date: string, note: string): void{
     const bottomSheetRef = this._bottomSheet.open(AddEntrySheet, {
@@ -98,8 +107,8 @@ export class EntriesComponent implements OnInit, OnDestroy {
   columnFilterActionsControl: AbstractControl = this.columnFilterFormGroup.get('actions');
 
   columnDefinitions = [
-    { def: 'weight', label: 'Weight', show: this.columnFilterWeightControl.value},
     { def: 'date', label: 'Date', show: this.columnFilterDateControl.value},
+    { def: 'weight', label: 'Weight', show: this.columnFilterWeightControl.value},
     { def: 'note', label: 'Note', show: this.columnFilterNoteControl.value},
     { def: 'actions', label: 'Actions', show: this.columnFilterActionsControl.value}
   ]
@@ -122,6 +131,9 @@ export class EntriesComponent implements OnInit, OnDestroy {
     this.columnDefinitions[3].show = this.columnFilterActionsControl.value;
       //  console.log(this.columnDefinitions);
      });
+    // this.tableBodyHeight = 300;
+     this.tableBodyHeight = this.screenHeight - this._styleService.headerHeight;
+     this._cdr.detectChanges(); // Handles ExpressionChangedAfterItHasBeenCheckedError
    }
 
   ngOnDestroy() {
