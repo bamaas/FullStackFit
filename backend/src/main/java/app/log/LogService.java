@@ -1,6 +1,10 @@
 package app.log;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
@@ -34,11 +38,20 @@ public class LogService {
         logRepository.deleteById(id);
     }
 
-    public void editLog(long id){
-        System.out.println("editing log");
-    }
-
     public void putLog(Log log){
         logRepository.save(log);
+    }
+
+    public List<Log> getAllEntries(Integer pageNo, Integer pageSize, String sortBy)
+    {
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+
+        Page<Log> pagedResult = logRepository.findAll(paging);
+
+        if(pagedResult.hasContent()) {
+            return pagedResult.getContent();
+        } else {
+            return new ArrayList<Log>();
+        }
     }
 }

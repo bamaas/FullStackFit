@@ -6,44 +6,46 @@
 <div fxLayout="column">
     <div fxLayout="row" fxLayoutAlign="left end">
         <div fxFill>
-            <table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="desc">
+            <cdk-virtual-scroll-viewport tvsItemSize [style.height.px]="tableBodyHeight">
+                <table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="desc">
 
-                <ng-container matColumnDef="actions">
-                    <th mat-header-cell *matHeaderCellDef>Actions</th>
-                    <td mat-cell *matCellDef="let entry">
-                        <button mat-icon-button [matMenuTriggerFor]="actionsMenu">
-                            <mat-icon>more_vert</mat-icon>
-                        </button>
-                        <mat-menu #actionsMenu="matMenu">
-                            <button mat-menu-item (click)="editEntry(entry.id, entry.weight, entry.date, entry.note)">
-                                <mat-icon>edit</mat-icon>Edit
+                    <ng-container matColumnDef="actions">
+                        <th mat-header-cell *matHeaderCellDef>Actions</th>
+                        <td mat-cell *matCellDef="let entry">
+                            <button mat-icon-button [matMenuTriggerFor]="actionsMenu">
+                                <mat-icon>more_vert</mat-icon>
                             </button>
-                            <button mat-menu-item (click)="deleteEntry(entry.id)">
-                                <mat-icon>delete</mat-icon>Delete
-                            </button>
-                          </mat-menu>
-                    </td>
-                </ng-container>
+                            <mat-menu #actionsMenu="matMenu">
+                                <button mat-menu-item (click)="editEntry(entry.id, entry.weight, entry.date, entry.note)">
+                                    <mat-icon>edit</mat-icon>Edit
+                                </button>
+                                <button mat-menu-item (click)="deleteEntry(entry.id)">
+                                    <mat-icon>delete</mat-icon>Delete
+                                </button>
+                            </mat-menu>
+                        </td>
+                    </ng-container>
 
-                <ng-container matColumnDef="date">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header="date">Date</th>
-                    <td mat-cell *matCellDef="let entry">{{entry.date}}</td>
-                </ng-container>
-            
-                <ng-container matColumnDef="weight">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header="weight">Weight</th>
-                    <td mat-cell *matCellDef="let entry">{{entry.weight}} kg</td>
-                </ng-container>
+                    <ng-container matColumnDef="date">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header="date">Date</th>
+                        <td mat-cell *matCellDef="let entry">{{entry.date}}</td>
+                    </ng-container>
+                
+                    <ng-container matColumnDef="weight">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header="weight">Weight</th>
+                        <td mat-cell *matCellDef="let entry">{{entry.weight}} kg</td>
+                    </ng-container>
 
-                <ng-container matColumnDef="note">
-                    <th mat-header-cell *matHeaderCellDef>Note</th>
-                    <td mat-cell *matCellDef="let entry"> {{entry.note | slice:0:25}}</td>
-                </ng-container>
-            
-                <tr mat-header-row *matHeaderRowDef="getDisplayedColumns(); sticky: true;"></tr>
-                <tr mat-row *matRowDef="let row; columns: getDisplayedColumns();"></tr>
-            </table>
-            <mat-paginator [pageSizeOptions]="[100, 50, 10]" showFirstLastButtons></mat-paginator>
+                    <ng-container matColumnDef="note">
+                        <th mat-header-cell *matHeaderCellDef>Note</th>
+                        <!-- <td mat-cell *matCellDef="let entry">{{entry.note | slice:0:25}}</td> -->
+                        <td mat-cell *matCellDef="let entry">{{ entry.note | slice: 0:30 }}{{entry.note.length > 30 ? '...' : ''}}</td>
+                    </ng-container>
+                    <!-- sticky: true; -->
+                    <tr mat-header-row *matHeaderRowDef="getDisplayedColumns(); sticky: true"></tr>
+                    <tr mat-row *matRowDef="let row; columns: getDisplayedColumns();"></tr>
+                </table>
+            </cdk-virtual-scroll-viewport>
         </div>
     </div>
 </div>

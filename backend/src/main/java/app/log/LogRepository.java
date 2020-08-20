@@ -1,7 +1,9 @@
 package app.log;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
 
-public interface LogRepository extends CrudRepository<Log, Long> {
+@Repository
+public interface LogRepository extends PagingAndSortingRepository<Log, Long> {
 
 }

@@ -1,6 +1,7 @@
 package app.log;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,5 +37,14 @@ public class LogController {
     @PutMapping("/log")
     public void putLog(@RequestBody Log log){
         logService.putLog(log);
+    }
+
+    @GetMapping("/bas")
+    public List<Log> getAllEntries(
+            @RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(defaultValue = "id") String sortBy
+    ){
+        return logService.getAllEntries(pageNo, pageSize, sortBy);
     }
 }

@@ -27,6 +27,8 @@ import { AddEntryComponent } from './progress-tracker/entries/add-entry/add-entr
 import { AddEntrySheet } from './progress-tracker/entries/add-entry/add-entry.component';
 import { AlertDialogComponent } from './shared/alert-dialog/alert-dialog.component';
 import { FilterColumnsComponent } from './progress-tracker/entries/filter-columns/filter-columns.component'
+import { ScrollingModule } from '@angular/cdk/scrolling'
+import { TableVirtualScrollModule } from 'ng-table-virtual-scroll';
 
 @NgModule({
   declarations: [
@@ -59,7 +61,9 @@ import { FilterColumnsComponent } from './progress-tracker/entries/filter-column
     HttpClientModule,
     ChartsModule,
     FontAwesomeModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    ScrollingModule,
+    TableVirtualScrollModule
   ],
   providers: [AddEntryComponent, FilterColumnsComponent],
   bootstrap: [AppComponent],
