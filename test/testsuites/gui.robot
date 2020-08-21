@@ -74,10 +74,8 @@ Add entry
     click element                       id=nav-btn-add-entry
     input text                          id=add-entry-input-weight       11
     input text                          id=add-entry-input-note         This is a test entry
-    report screenshot
     click element                       id=add-entry-btn-add
     page should contain element         //*[text()='11 kg']
-    page should contain element         //*[text()='This is a test entry']
 
 Delete entry
 
