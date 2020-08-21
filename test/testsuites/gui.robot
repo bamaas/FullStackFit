@@ -3,7 +3,7 @@ Resource          ../keywords/all.robot
 
 *** Variables ***
 # The value in 'environment' is used to load the config file containing variables for the specific environment.
-${ENVIRONMENT}                  localhost
+${ENVIRONMENT}                  docker
 
 
 ########################
@@ -13,7 +13,7 @@ ${ENVIRONMENT}                  localhost
 # set remote_webdriver to False and provide a remote_url and capabilities dictionary
 ########################
 # Remote vs local
-${REMOTE_WEBDRIVER}             #True
+${REMOTE_WEBDRIVER}             #False
 # Local
 ${BROWSER}                      #Chrome
 # Remote
@@ -35,10 +35,10 @@ Test Teardown       run keywords      close browser if running remotely and repo
 
 
 *** Test Cases ***
-Calculate TDEE
-    [Tags]                              Critical        TDE001      e2e
-    # # Fill form
-    log to console      test 1 2 3
+# Calculate TDEE
+#     [Tags]                              Critical        TDE001      e2e
+#     # # Fill form
+#     log to console      test 1 2 3
     # input text                          id=name-hb      Bas
     # click element                       //mat-radio-button[@value='MALE']
     # input text                          id=weight-hb    80
@@ -72,7 +72,21 @@ Add entry
     [Tags]
     click element                       id=nav-btn-entries
     click element                       id=nav-btn-add-entry
-    input text                          id=add-entry-input-weight       25
+    input text                          id=add-entry-input-weight       11
+    input text                          id=add-entry-input-note         This is a test entry
     click element                       id=add-entry-btn-add
-    #page should contain element         //*[text()=' 25 kg']
-    #report screenshot
+    page should contain element         //*[text()='11 kg']
+
+# Edit entry
+#     click element                       //mat-icon[text()='more_vert']
+#     click element                       //*[text()='edit']
+#     input text                          id=add-entry-input-weight       15
+#     click element                       id=add-entry-btn-add
+#     page should contain element         //*[text()='15 kg']
+#     page should not contain element         //*[text()='11 kg']
+
+# Delete entry
+#     click element                           //mat-icon[text()='more_vert']
+#     click element                             //*[text()='delete']
+#     click element                           //button/span[text()='Delete']
+#     page should not contain element         //*[text()='15 kg']
