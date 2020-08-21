@@ -77,16 +77,16 @@ Add entry
     click element                       id=add-entry-btn-add
     page should contain element         //*[text()='11 kg']
 
-Edit entry
-    click element                       //mat-icon[text()='more_vert']
-    click element                       //*[text()='edit']
-    input text                          id=add-entry-input-weight       15
-    click element                       id=add-entry-btn-add
-    page should contain element         //*[text()='15 kg']
-    page should not contain element         //*[text()='11 kg']
+# Edit entry
+#     click element                       //mat-icon[text()='more_vert']
+#     click element                       //*[text()='edit']
+#     input text                          id=add-entry-input-weight       15
+#     click element                       id=add-entry-btn-add
+#     page should contain element         //*[text()='15 kg']
+#     page should not contain element         //*[text()='11 kg']
 
-Delete entry
-    click element                           //mat-icon[text()='more_vert']
-    click element                             //*[text()='delete']
-    click element                           //button/span[text()='Delete']
-    page should not contain element         //*[text()='15 kg']
+# Delete entry
+#     click element                           //mat-icon[text()='more_vert']
+#     click element                             //*[text()='delete']
+#     click element                           //button/span[text()='Delete']
+#     page should not contain element         //*[text()='15 kg']
