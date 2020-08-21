@@ -29,6 +29,7 @@ import { AlertDialogComponent } from './shared/alert-dialog/alert-dialog.compone
 import { FilterColumnsComponent } from './progress-tracker/entries/filter-columns/filter-columns.component'
 import { ScrollingModule } from '@angular/cdk/scrolling'
 import { TableVirtualScrollModule } from 'ng-table-virtual-scroll';
+import { TruncatePipe } from 'src/app/pipes/truncate.pipe'
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { TableVirtualScrollModule } from 'ng-table-virtual-scroll';
     AddEntryComponent,
     AddEntrySheet,
     AlertDialogComponent,
-    FilterColumnsComponent
+    FilterColumnsComponent,
+    TruncatePipe
   ],
   imports: [
     BrowserModule,
