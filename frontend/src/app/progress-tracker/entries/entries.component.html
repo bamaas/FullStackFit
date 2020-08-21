@@ -38,8 +38,7 @@
 
                     <ng-container matColumnDef="note">
                         <th mat-header-cell *matHeaderCellDef>Note</th>
-                        <!-- <td mat-cell *matCellDef="let entry">{{entry.note | slice:0:25}}</td> -->
-                        <td mat-cell *matCellDef="let entry">{{ entry.note | slice: 0:30 }}{{entry.note.length > 30 ? '...' : ''}}</td>
+                        <td mat-cell *matCellDef="let entry">{{ entry.note !== null && entry.note.length > 30 ? (entry.note | slice: 0:30) + '...' : '' }}</td>
                     </ng-container>
                     <!-- sticky: true; -->
                     <tr mat-header-row *matHeaderRowDef="getDisplayedColumns(); sticky: true"></tr>
