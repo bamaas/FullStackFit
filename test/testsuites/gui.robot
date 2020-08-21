@@ -13,9 +13,9 @@ ${ENVIRONMENT}                  docker
 # set remote_webdriver to False and provide a remote_url and capabilities dictionary
 ########################
 # Remote vs local
-${REMOTE_WEBDRIVER}             False
+${REMOTE_WEBDRIVER}             #False
 # Local
-${BROWSER}                      Chrome      #Chrome
+${BROWSER}                      #Chrome
 # Remote
 ${REMOTE_URL}                   #%{BROWSERSTACK_REMOTE_URL}
 ${CAPABILITIES}                 #w10_chrome
@@ -77,6 +77,16 @@ Add entry
     click element                       id=add-entry-btn-add
     page should contain element         //*[text()='11 kg']
 
-# Delete entry
+Edit entry
+    click element                       //mat-icon[text()='more_vert']
+    click element                       //*[text()='edit']
+    input text                          id=add-entry-input-weight       15
+    click element                       id=add-entry-btn-add
+    page should contain element         //*[text()='15 kg']
+    page should not contain element         //*[text()='11 kg']
 
-# Edit entry
+Delete entry
+    click element                           //mat-icon[text()='more_vert']
+    click element                             //*[text()='delete']
+    click element                           //button/span[text()='Delete']
+    page should not contain element         //*[text()='15 kg']
