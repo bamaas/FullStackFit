@@ -35,10 +35,10 @@ Test Teardown       run keywords      close browser if running remotely and repo
 
 
 *** Test Cases ***
-Calculate TDEE
-    [Tags]                              Critical        TDE001      e2e
-    # # Fill form
-    log to console      test 1 2 3
+# Calculate TDEE
+#     [Tags]                              Critical        TDE001      e2e
+#     # # Fill form
+#     log to console      test 1 2 3
     # input text                          id=name-hb      Bas
     # click element                       //mat-radio-button[@value='MALE']
     # input text                          id=weight-hb    80
@@ -77,6 +77,6 @@ Add entry
     click element                       id=add-entry-btn-add
     page should contain element         //*[text()='11 kg']
 
-Delete entry
+# Delete entry
 
-Edit entry
+# Edit entry
