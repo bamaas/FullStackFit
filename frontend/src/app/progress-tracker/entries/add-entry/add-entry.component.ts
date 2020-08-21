@@ -68,7 +68,7 @@ export class AddEntrySheet implements OnInit{
     return new FormGroup({
       weight: new FormControl(weight, [Validators.required, Validators.min(0), Validators.max(200), Validators.pattern(new RegExp(/^\d{0,3}(?:\.\d)?$/))]),
       date: new FormControl(date),
-      note: new FormControl(note)
+      note: new FormControl(note, Validators.maxLength(50))
     });
   }
 

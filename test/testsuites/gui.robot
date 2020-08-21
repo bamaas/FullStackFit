@@ -3,7 +3,7 @@ Resource          ../keywords/all.robot
 
 *** Variables ***
 # The value in 'environment' is used to load the config file containing variables for the specific environment.
-${ENVIRONMENT}                  localhost
+${ENVIRONMENT}                  docker
 
 
 ########################
@@ -13,9 +13,9 @@ ${ENVIRONMENT}                  localhost
 # set remote_webdriver to False and provide a remote_url and capabilities dictionary
 ########################
 # Remote vs local
-${REMOTE_WEBDRIVER}             #True
+${REMOTE_WEBDRIVER}             False
 # Local
-${BROWSER}                      #Chrome
+${BROWSER}                      Chrome      #Chrome
 # Remote
 ${REMOTE_URL}                   #%{BROWSERSTACK_REMOTE_URL}
 ${CAPABILITIES}                 #w10_chrome
@@ -72,7 +72,12 @@ Add entry
     [Tags]
     click element                       id=nav-btn-entries
     click element                       id=nav-btn-add-entry
-    input text                          id=add-entry-input-weight       25
+    input text                          id=add-entry-input-weight       11
+    input text                          id=add-entry-input-note         This is a test entry
+    report screenshot
     click element                       id=add-entry-btn-add
-    #page should contain element         //*[text()=' 25 kg']
-    #report screenshot
+    page should contain element         //*[text()='11 kg']
+
+Delete entry
+
+Edit entry
