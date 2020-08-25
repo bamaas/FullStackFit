@@ -91,27 +91,19 @@ export class EntriesComponent implements OnInit, OnDestroy {
 
     this.pageSize = this.virtualScroll.getRenderedRange().end-this.itemsRenderedAtViewport;
     
-    this._http.get('http://localhost:5000/bas?pageNo=' + this.pageNo + '&?pageSize=' + Math.abs(this.pageSize)).subscribe(
-      (entries: entry[]) => {
-        this.dataSource.data = entries;
-        this.pageNo ++;
-      },
-      (error) => {
-        console.log(error)
-      }
-    );
+    this.onScroll();
     this.dataSource.sort = this.sort;
     // Handles ExpressionChangedAfterItHasBeenCheckedError
     this._cdr.detectChanges(); 
    }
 
    public index: number;
-   public unload: boolean = false;
    countIndex(index): void{
      this.index = index;
    }
 
    onScroll(): void{
+     console.log(this.pageNo);
     this._http.get('http://localhost:5000/bas?pageNo=' + this.pageNo + '&?pageSize=' + Math.abs(this.pageSize)).subscribe(
       (entries: entry[]) => {
         const data = this.dataSource.data;
