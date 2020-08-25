@@ -42,8 +42,8 @@ public class LogController {
     @GetMapping("/bas")
     public List<Log> getAllEntries(
             @RequestParam(defaultValue = "0") Integer pageNo,
-            @RequestParam(defaultValue = "10") Integer pageSize,
-            @RequestParam(defaultValue = "id") String sortBy
+            @RequestParam(defaultValue = "30") Integer pageSize,
+            @RequestParam(defaultValue = "date") String sortBy
     ){
         return logService.getAllEntries(pageNo, pageSize, sortBy);
     }

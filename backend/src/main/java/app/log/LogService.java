@@ -44,7 +44,7 @@ public class LogService {
 
     public List<Log> getAllEntries(Integer pageNo, Integer pageSize, String sortBy)
     {
-        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, sortBy));
 
         Page<Log> pagedResult = logRepository.findAll(paging);
 

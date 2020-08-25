@@ -30,6 +30,7 @@ import { FilterColumnsComponent } from './progress-tracker/entries/filter-column
 import { ScrollingModule } from '@angular/cdk/scrolling'
 import { TableVirtualScrollModule } from 'ng-table-virtual-scroll';
 import { TruncatePipe } from 'src/app/pipes/truncate.pipe'
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 @NgModule({
   declarations: [
@@ -65,7 +66,8 @@ import { TruncatePipe } from 'src/app/pipes/truncate.pipe'
     FontAwesomeModule,
     FlexLayoutModule,
     ScrollingModule,
-    TableVirtualScrollModule
+    TableVirtualScrollModule,
+    InfiniteScrollModule
   ],
   providers: [AddEntryComponent, FilterColumnsComponent],
   bootstrap: [AppComponent],

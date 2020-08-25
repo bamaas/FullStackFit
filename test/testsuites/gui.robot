@@ -3,7 +3,7 @@ Resource          ../keywords/all.robot
 
 *** Variables ***
 # The value in 'environment' is used to load the config file containing variables for the specific environment.
-${ENVIRONMENT}                  docker
+${ENVIRONMENT}                  localhost
 
 
 ########################
@@ -13,9 +13,9 @@ ${ENVIRONMENT}                  docker
 # set remote_webdriver to False and provide a remote_url and capabilities dictionary
 ########################
 # Remote vs local
-${REMOTE_WEBDRIVER}             #False
+${REMOTE_WEBDRIVER}             False     
 # Local
-${BROWSER}                      #Chrome
+${BROWSER}                      Chrome
 # Remote
 ${REMOTE_URL}                   #%{BROWSERSTACK_REMOTE_URL}
 ${CAPABILITIES}                 #w10_chrome
@@ -70,12 +70,12 @@ Test Teardown       run keywords      close browser if running remotely and repo
 
 Add entry
     [Tags]
-    click element                       id=nav-btn-entries
-    click element                       id=nav-btn-add-entry
-    input text                          id=add-entry-input-weight       11
-    # input text                          id=add-entry-input-note         This is a test entry
-    # click element                       id=add-entry-btn-add
-    # page should contain element         //*[text()='11 kg']
+    Add entry  weight=80  date=18-10-1993  note=This is a test
+
+bas
+    ${value}=       search value in table  entries-table  Date      18-10-1993      Note
+    should be equal     ${value}        This is a test
+
 
 # Edit entry
 #     click element                       //mat-icon[text()='more_vert']
@@ -90,3 +90,37 @@ Add entry
 #     click element                             //*[text()='delete']
 #     click element                           //button/span[text()='Delete']
 #     page should not contain element         //*[text()='15 kg']
+
+*** Keywords ***
+Add entry
+    [Arguments]                         ${weight}                       ${date}      ${note}
+    click element                       id=nav-btn-entries
+    click element                       id=nav-btn-add-entry
+    input text                          id=add-entry-input-weight       ${weight}
+    input text                          id=add-entry-input-note         ${note}
+    click element                       id=add-entry-btn-add
+
+search value in table
+    [Arguments]             ${table_id}     ${search_column}    ${search_value}     ${value_column}
+    [Documentation]         Searches a value in a table with headers and any number of rows.\n\n
+    ...                     The search is based on finding a row with a specified value in a specified column and returning the value that is in
+    ...                     that same row in a different column. The keyword returns the value based on the first occurance of the search value.
+    ...                     If the search value is not found, the keyword will fail.\n\n
+    ...                     ``div_form_id`` is the id of the grandparent div that wraps around the table.\n\n
+    ...                     ``search_column`` is the text in the header of the column where we want to find the search value.\n\n
+    ...                     ``search_value`` is the text in a cell of the search column that will determine the row we get the value from.\n\n
+    ...                     ``value_column`` is the text in the header of the column that we want to retrieve the value from.
+    # determine the column numbers for the search column and value column by searching the header table
+    ${columns}=         get webelements          //table[@id='${table_id}']/thead/tr/th
+    ${column_labels}=   Create List     ${EMPTY}    
+    FOR    ${column}    IN    @{columns}
+        ${text}=    get text       ${column}
+        Append To List  ${column_labels}  ${text}
+    END
+    # get index from list returns -1 when the item is not found, in this case use an xpath that gives meaningful error
+    ${search_index}=    get Index from list      ${column_labels}        ${search_column}
+    run keyword if      ${search_index}==-1      get text       //table[@id='${table_id}']//th//*[text()='${search_column}']
+    ${value_index}=     get Index from list      ${column_labels}        ${value_column}
+    run keyword if      ${value_index}==-1       get text       //table[@id='${table_id}']//th//*[text()='${value_column}']
+    ${value}=               get text             //table[@id='${table_id}']//tr[td[${search_index}][normalize-space(.)='${search_value}']]/td[${value_index}]
+    return from keyword     ${value}

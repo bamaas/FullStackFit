@@ -4,12 +4,22 @@ import { environment } from '../../environments/environment';
 import { Observable, Subject } from 'rxjs';
 import { MatSnackBar } from '@angular/material'
 
+export interface entry {
+  id: number,
+  weight: number,
+  date: string,
+  note: string
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class EntryService {
 
-  constructor(private _http: HttpClient, private _snackBar: MatSnackBar) { 
+  constructor(
+    private _http: HttpClient, 
+    private _snackBar: MatSnackBar
+  ){ 
     this.getEntries()
   }
 
@@ -38,6 +48,10 @@ export class EntryService {
         console.log(error)
       }
     )
+  }
+
+  getEntryPage(pageNo: number): Observable<any>{
+    return this._http.get(environment.apiBaseUrl + '/bas?pageNo=' + pageNo)
   }
   
 }

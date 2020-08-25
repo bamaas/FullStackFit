@@ -11,6 +11,8 @@ import { MediaObserver, MediaChange } from '@angular/flex-layout';
 import { Subscription, Observable, merge } from 'rxjs';
 import { TableVirtualScrollDataSource } from 'ng-table-virtual-scroll'; 
 import { StyleService } from 'src/app/style.service'
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { HttpClient } from '@angular/common/http';
 
 export interface entry {
   id: number,
@@ -28,13 +30,20 @@ export class EntriesComponent implements OnInit, OnDestroy {
 
   displayedColumns: string[] = ['date', 'weight', 'note', 'actions'];
   data: entry[] = [];
-  dataSource = new TableVirtualScrollDataSource<entry>(this.data);
+  
   private mediaSub: Subscription;
   public screenHeight: number;
   public tableBodyHeight: number; // initalized in ngAfterViewInit
 
   @ViewChild(MatSort, {static: true}) sort: MatSort;
-  
+  @ViewChild(CdkVirtualScrollViewport) virtualScroll: CdkVirtualScrollViewport;
+
+  public ietsdata: Array<Object> = [];
+  dataSource = new TableVirtualScrollDataSource<any>(this.ietsdata);
+  public pageNo: number = 0;
+  public rowHeight: number = 48;
+  public itemsRenderedAtViewport: number;
+
   constructor(
     private snackBar: MatSnackBar,
     private _entryService: EntryService,
@@ -42,14 +51,15 @@ export class EntriesComponent implements OnInit, OnDestroy {
     private _bottomSheet: MatBottomSheet,
     private mediaObserver: MediaObserver,
     private _styleService: StyleService,
-    private _cdr: ChangeDetectorRef
+    private _cdr: ChangeDetectorRef,
+    private _http: HttpClient
   ) {}
 
+    public searchPageNumber: number;
+    public pageSize: number;
+    public searchResults: Array<any>;
+
   ngOnInit() {
-    this._entryService.entriesObservable.subscribe(
-      (entries: entry[]) => {this.dataSource.data = entries}
-      )
-    this.dataSource.sort = this.sort;
     this.mediaSub = this.mediaObserver.media$.subscribe(
       (change: MediaChange) => {
         if (change.mqAlias == 'xs'){
@@ -59,6 +69,64 @@ export class EntriesComponent implements OnInit, OnDestroy {
         }
       });
       this.onResize();
+      this.searchPageNumber = 0;
+      this.searchResults = [];
+  }
+
+  ngAfterViewInit() {
+    let o1:Observable<boolean> = this.columnFilterWeightControl.valueChanges;
+    let o2:Observable<boolean> = this.columnFilterDateControl.valueChanges;
+    let o3:Observable<boolean> = this.columnFilterNoteControl.valueChanges;
+    let o4:Observable<boolean> = this.columnFilterActionsControl.valueChanges;
+ 
+    merge(o1, o2, o3, o4).subscribe( v=>{
+    this.columnDefinitions[0].show = this.columnFilterWeightControl.value;
+    this.columnDefinitions[1].show = this.columnFilterDateControl.value;
+    this.columnDefinitions[2].show = this.columnFilterNoteControl.value;
+    this.columnDefinitions[3].show = this.columnFilterActionsControl.value;
+      //  console.log(this.columnDefinitions);
+     });
+     this.tableBodyHeight = this.screenHeight - this._styleService.headerHeight;
+     this.itemsRenderedAtViewport = Math.round((this.tableBodyHeight - 56) / this.rowHeight);
+
+    this.pageSize = this.virtualScroll.getRenderedRange().end-this.itemsRenderedAtViewport;
+    
+    this._http.get('http://localhost:5000/bas?pageNo=' + this.pageNo + '&?pageSize=' + Math.abs(this.pageSize)).subscribe(
+      (entries: entry[]) => {
+        this.dataSource.data = entries;
+        this.pageNo ++;
+      },
+      (error) => {
+        console.log(error)
+      }
+    );
+    this.dataSource.sort = this.sort;
+    // Handles ExpressionChangedAfterItHasBeenCheckedError
+    this._cdr.detectChanges(); 
+   }
+
+   public index: number;
+   public unload: boolean = false;
+   countIndex(index): void{
+     this.index = index;
+     this.dataSource.data.pop()
+     console.log(index);
+   }
+
+   onScroll(): void{
+    this._http.get('http://localhost:5000/bas?pageNo=' + this.pageNo + '&?pageSize=' + Math.abs(this.pageSize)).subscribe(
+      (entries: entry[]) => {
+        const data = this.dataSource.data;
+        this.pageNo ++;
+        entries.forEach(item => data.push(item));
+        this.dataSource.data = data;
+        this.virtualScroll.scrollToIndex(this.index+1);        
+        
+      },
+      (error) => {
+        console.log(error)
+      }
+    );
   }
 
   @HostListener('window:resize', ['$event'])
@@ -117,24 +185,6 @@ export class EntriesComponent implements OnInit, OnDestroy {
   getDisplayedColumns(): string[] {
     return this.columnDefinitions.filter(cd=>cd.show).map(cd=>cd.def);
   }
-
-  ngAfterViewInit() {
-    let o1:Observable<boolean> = this.columnFilterWeightControl.valueChanges;
-    let o2:Observable<boolean> = this.columnFilterDateControl.valueChanges;
-    let o3:Observable<boolean> = this.columnFilterNoteControl.valueChanges;
-    let o4:Observable<boolean> = this.columnFilterActionsControl.valueChanges;
- 
-    merge(o1, o2, o3, o4).subscribe( v=>{
-    this.columnDefinitions[0].show = this.columnFilterWeightControl.value;
-    this.columnDefinitions[1].show = this.columnFilterDateControl.value;
-    this.columnDefinitions[2].show = this.columnFilterNoteControl.value;
-    this.columnDefinitions[3].show = this.columnFilterActionsControl.value;
-      //  console.log(this.columnDefinitions);
-     });
-    // this.tableBodyHeight = 300;
-     this.tableBodyHeight = this.screenHeight - this._styleService.headerHeight;
-     this._cdr.detectChanges(); // Handles ExpressionChangedAfterItHasBeenCheckedError
-   }
 
   ngOnDestroy() {
     this.mediaSub.unsubscribe();
