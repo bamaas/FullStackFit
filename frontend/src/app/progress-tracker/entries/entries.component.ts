@@ -109,8 +109,6 @@ export class EntriesComponent implements OnInit, OnDestroy {
    public unload: boolean = false;
    countIndex(index): void{
      this.index = index;
-     this.dataSource.data.pop()
-     console.log(index);
    }
 
    onScroll(): void{
