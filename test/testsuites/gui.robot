@@ -15,7 +15,7 @@ ${ENVIRONMENT}                  localhost
 # Remote vs local
 ${REMOTE_WEBDRIVER}             False     
 # Local
-${BROWSER}                      Chrome
+${BROWSER}                      #Chrome
 # Remote
 ${REMOTE_URL}                   #%{BROWSERSTACK_REMOTE_URL}
 ${CAPABILITIES}                 #w10_chrome
