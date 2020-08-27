@@ -1,7 +1,6 @@
 package app.log;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -33,7 +32,8 @@ public class Log {
     @Column(name="\"note\"")
     private String note;
 
-    @JsonFormat(pattern="dd-MM-yyyy")
+//    @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     @Column(name="\"date\"")
     private Date date;
 

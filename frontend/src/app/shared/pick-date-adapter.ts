@@ -22,8 +22,8 @@ export class PickDateAdapter extends NativeDateAdapter {
           return date.toDateString();
       }
   }
-  parse(value: any): Date | null {
-    const date = moment(value, 'DD-MM-yyyy');
+  parse(value: string): Date | null {
+    const date = moment(value, 'DD-MM-YYYY');
     return date.isValid() ? date.toDate() : null;
 }
 }

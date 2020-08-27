@@ -68,6 +68,7 @@ blocks:
         - name: backend
           commands:
             - sem-version java 11
+            - sed -i .backup 's/localhost/database/g' ./src/main/resources/application.properties
             - mvn package -Dmaven.compiler.executable=javac -Dmaven.test.skip=true -f ./backend
             - make build s="backend"
             - docker tag fullstackfit_backend:b.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${GIT_COMMIT_SHA}

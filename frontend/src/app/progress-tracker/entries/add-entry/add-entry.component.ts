@@ -61,9 +61,12 @@ export class AddEntrySheet implements OnInit{
 
   initEntryForm(weight: number, date: any, note: string): FormGroup{
     if (date == null){
+      // If new entry
       date = new Date();
     } else {
-      date = moment(date, 'DD-MM-YYYY').toDate();
+      // If editing entry
+      date = moment(date, 'YYYY-MM-DD[T]HH:mm:ss').toDate();
+      console.log(date)
     }
     return new FormGroup({
       weight: new FormControl(weight, [Validators.required, Validators.min(0), Validators.max(200), Validators.pattern(new RegExp(/^\d{0,3}(?:\.\d)?$/))]),
@@ -89,12 +92,18 @@ export class AddEntrySheet implements OnInit{
     if (!this.entryForm.invalid){
       const id: number = this.data.id;
       const weight: number = this.entryForm.controls['weight'].value;
-      const date: string = moment(new Date(this.entryForm.controls['date'].value)).format("DD-MM-YYYY");
       const note: string = this.entryForm.controls['note'].value;
       if (id != null){
-        this.edit(id, weight, date, note);
+        // If editing etry
+        const datetime: string = moment(new Date(this.entryForm.controls['date'].value)).format("YYYY-MM-DD[T]HH:mm:ss");
+        this.edit(id, weight, datetime, note);
       } else {
-        this.add(weight, date, note);
+        // If new entry
+        // Get current time and add it to the date
+        const date: string = moment(new Date(this.entryForm.controls['date'].value)).format("YYYY-MM-DD");
+        const time:string = moment().format("HH:mm:ss")
+        const datetime: string = date + 'T' + time;
+        this.add(weight, datetime, note);
       }
     }
   }

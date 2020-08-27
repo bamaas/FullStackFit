@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { BottomSheetComponent } from '../bottom-sheet/bottom-sheet.component';
 import { AddEntryComponent } from '../progress-tracker/entries/add-entry/add-entry.component';
-import { StyleService } from 'src/app/style.service'
+import { StyleService } from 'src/app/services/style.service'
 
 @Component({
   providers: [BottomSheetComponent],
