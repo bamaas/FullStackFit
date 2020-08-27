@@ -29,22 +29,22 @@ public class LogService {
         return logRepository.findById(id).orElse(null);
     }
 
-    public Map<String, String> addLog(Log log){
-        Log entry = logRepository.save(log);
-        return Map.of("id", String.valueOf(entry.getId()));
+    public Log addLog(Log log){
+        return logRepository.save(log);
+//        return Map.of("id", String.valueOf(entry.getId()));
     }
 
     public void deleteLog(long id){
         logRepository.deleteById(id);
     }
 
-    public void putLog(Log log){
-        logRepository.save(log);
+    public Log putLog(Log log){
+        return logRepository.save(log);
     }
 
-    public List<Log> getAllEntries(Integer pageNo, Integer pageSize, String sortBy)
+    public List<Log> getAllEntries(Integer pageNumber, Integer pageSize, String sortBy)
     {
-        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        Pageable paging = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, sortBy));
 
         Page<Log> pagedResult = logRepository.findAll(paging);
 

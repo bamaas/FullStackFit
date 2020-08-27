@@ -5,9 +5,11 @@
 </div> -->
 <div fxLayout="column">
     <div fxLayout="row" fxLayoutAlign="left end">
-        <div fxFill>
-            <cdk-virtual-scroll-viewport tvsItemSize [style.height.px]="tableBodyHeight">
-                <table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="desc">
+        <div fxFill> 
+            <!-- <cdk-virtual-scroll-viewport itemSize="48" tvsItemSize [style.height.px]="tableBodyHeight" infiniteScroll [scrollWindow]="false" [alwaysCallback]="true" [infiniteScrollDistance]="2" [infiniteScrollThrottle]="60" (scrolledUp)="onScrollUp()" (scrolled)="onScrollDown()"> -->
+            <cdk-virtual-scroll-viewport itemSize="48" tvsItemSize [style.height.px]="tableBodyHeight" infiniteScroll [scrollWindow]="false" [infiniteScrollDistance]="2" [infiniteScrollThrottle]="60" (scrolled)="onScrollDown()">
+                <!-- <table id="entries-table" mat-table [dataSource]="dataSource" matSort matSortActive="date" matSortDirection="desc"> -->
+                    <table id="entries-table" mat-table [dataSource]="dataSource" matSort>
 
                     <ng-container matColumnDef="actions">
                         <th mat-header-cell *matHeaderCellDef>Actions</th>
@@ -38,8 +40,9 @@
 
                     <ng-container matColumnDef="note">
                         <th mat-header-cell *matHeaderCellDef>Note</th>
-                        <td mat-cell *matCellDef="let entry">{{ entry.note | truncate:[30, '...'] }}</td>
+                        <td mat-cell *matCellDef="let entry">{{ entry.note | truncate:[40, '...'] }}</td>
                     </ng-container>
+
                     <tr mat-header-row *matHeaderRowDef="getDisplayedColumns(); sticky: true"></tr>
                     <tr mat-row *matRowDef="let row; columns: getDisplayedColumns();"></tr>
                 </table>

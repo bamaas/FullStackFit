@@ -4,3 +4,35 @@ table {
 .mat-column-select {
   overflow: initial;
 }
+
+.mat-column-custom{
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
+.mat-column-date {
+  flex: 0 0 20% !important;
+  width: 20% !important;
+}
+
+.mat-column-weight {
+  flex: 0 0 20% !important;
+  width: 20% !important;
+}
+
+.mat-column-note {
+  flex: 0 0 50% !important;
+  width: 50% !important;
+}
+
+.mat-column-actions {
+  flex: 0 0 15% !important;
+  width: 15% !important;
+}
