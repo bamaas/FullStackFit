@@ -6,9 +6,10 @@
 <div fxLayout="column">
     <div fxLayout="row" fxLayoutAlign="left end">
         <div fxFill> 
-            <!-- infiniteScroll [scrollWindow]="false" [infiniteScrollDistance]="1" [infiniteScrollThrottle]="125" (scrolled)="onScroll()" -->
-            <cdk-virtual-scroll-viewport itemSize="48" tvsItemSize [style.height.px]="tableBodyHeight"  (scrolledIndexChange)="countIndex($event)" infiniteScroll [scrollWindow]="false" [infiniteScrollDistance]="1" [infiniteScrollThrottle]="0" (scrolled)="onScroll()">
-                <table id="entries-table" mat-table [dataSource]="dataSource" matSort matSortActive="date" matSortDirection="desc">
+            <!-- <cdk-virtual-scroll-viewport itemSize="48" tvsItemSize [style.height.px]="tableBodyHeight" infiniteScroll [scrollWindow]="false" [alwaysCallback]="true" [infiniteScrollDistance]="2" [infiniteScrollThrottle]="60" (scrolledUp)="onScrollUp()" (scrolled)="onScrollDown()"> -->
+            <cdk-virtual-scroll-viewport itemSize="48" tvsItemSize [style.height.px]="tableBodyHeight" infiniteScroll [scrollWindow]="false" [infiniteScrollDistance]="2" [infiniteScrollThrottle]="60" (scrolled)="onScrollDown()">
+                <!-- <table id="entries-table" mat-table [dataSource]="dataSource" matSort matSortActive="date" matSortDirection="desc"> -->
+                    <table id="entries-table" mat-table [dataSource]="dataSource" matSort>
 
                     <ng-container matColumnDef="actions">
                         <th mat-header-cell *matHeaderCellDef>Actions</th>

@@ -14,10 +14,10 @@ public class LogController {
     @Autowired
     private LogService logService;
 
-    @GetMapping("/log")
-    public List<Log> getAll(){
-        return logService.getAllLogEntries();
-    }
+//    @GetMapping("/log")
+//    public List<Log> getAll(){
+//        return logService.getAllLogEntries();
+//    }
 
     @GetMapping("/log/{id}")
     public Log getLog(@PathVariable long id){
@@ -25,7 +25,7 @@ public class LogController {
     }
 
     @PostMapping("/log")
-    public Map<String, String> addLog(@RequestBody Log log) {
+    public Log addLog(@RequestBody Log log) {
         return logService.addLog(log);
     }
 
@@ -35,16 +35,16 @@ public class LogController {
     }
 
     @PutMapping("/log")
-    public void putLog(@RequestBody Log log){
-        logService.putLog(log);
+    public Log putLog(@RequestBody Log log){
+        return logService.putLog(log);
     }
 
-    @GetMapping("/bas")
+    @GetMapping("/log")
     public List<Log> getAllEntries(
-            @RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "0") Integer pageNumber,
             @RequestParam(defaultValue = "30") Integer pageSize,
             @RequestParam(defaultValue = "date") String sortBy
     ){
-        return logService.getAllEntries(pageNo, pageSize, sortBy);
+        return logService.getAllEntries(pageNumber, pageSize, sortBy);
     }
 }

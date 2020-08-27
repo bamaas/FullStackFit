@@ -100,28 +100,12 @@ export class AddEntrySheet implements OnInit{
   }
 
   edit(id:number, weight:number, date:string, note:string): void{
-    this._entryService.editEntry(id, weight, date, note).subscribe(
-      body => {
-        this.cancel();
-        this._entryService.getEntries();
-      }, 
-      error => {
-        this._snackBar.open('Error occured while updating entry.', 'Dismiss', {duration: 6000})
-        console.log(error)
-      }
-    ) 
+    this._entryService.editEntryOnTable(id, weight, date, note);
+    this._bottomSheetRef.dismiss();
   }
-
+  
   add(weight:number, date:string, note:string): void{
-      this._entryService.postEntry(weight, date, note).subscribe(
-        body => {
-          this.cancel();
-          this._entryService.getEntries();
-        }, 
-        error => {
-          this._snackBar.open('Error occured while adding entry.', 'Dismiss', {duration: 6000})
-          console.log(error)
-        }
-      )
+      this._entryService.addEntryToPage(weight, date, note);
+      this._bottomSheetRef.dismiss();
     } 
 }
