@@ -72,9 +72,9 @@ Add entry
     [Tags]
     Add entry  weight=80  date=18-10-1993  note=This is a test
 
-bas
-    ${value}=       search value in table  entries-table  Date      18-10-1993      Note
-    should be equal     ${value}        This is a test
+# bas
+#     ${value}=       search value in table  entries-table  Date      18-10-1993      Note
+#     should be equal     ${value}        This is a test
 
 
 # Edit entry
