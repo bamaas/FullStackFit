@@ -44,7 +44,6 @@ export class EntryService {
   }
 
   emitEntries(): void{
-    console.log(this.entries)
     this.entriesSubject.next(this.entries);
   }
 

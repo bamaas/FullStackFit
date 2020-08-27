@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { TDEEService } from '../tdee.service';
+import { TDEEService } from '../_archive/tdee.service';
 
 // Typescript to declare the variable types
 export interface activityLevel {
