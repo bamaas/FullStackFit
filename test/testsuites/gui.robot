@@ -68,9 +68,9 @@ Test Teardown       run keywords      close browser if running remotely and repo
     # click element                       //button[contains(.,'Reset')]
     # wait until element is visible       //h3[text()='Calculator']
 
-Add entry
-    [Tags]
-    Add entry  weight=80  date=18-10-1993  note=This is a test
+# Add entry
+#     [Tags]
+#     Add entry  weight=80  date=18-10-1993  note=This is a test
 
 # bas
 #     ${value}=       search value in table  entries-table  Date      18-10-1993      Note
