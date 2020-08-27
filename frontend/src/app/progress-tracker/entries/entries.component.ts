@@ -10,8 +10,9 @@ import { AddEntrySheet } from 'src/app/progress-tracker/entries/add-entry/add-en
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
 import { Subscription, Observable, merge } from 'rxjs';
 import { TableVirtualScrollDataSource } from 'ng-table-virtual-scroll'; 
-import { StyleService } from 'src/app/style.service'
+import { StyleService } from 'src/app/services/style.service'
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-entries',
@@ -91,8 +92,6 @@ export class EntriesComponent implements OnInit, OnDestroy {
     // Handles ExpressionChangedAfterItHasBeenCheckedError
     this._cdr.detectChanges(); 
    }
-
-
   
   public nextPageNumber: number = 0;
   public maxPagesToRender: number = 3;
