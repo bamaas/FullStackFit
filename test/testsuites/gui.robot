@@ -15,7 +15,7 @@ ${ENVIRONMENT}                  localhost
 # Remote vs local
 ${REMOTE_WEBDRIVER}             False     
 # Local
-${BROWSER}                      Chrome
+${BROWSER}                      #Chrome
 # Remote
 ${REMOTE_URL}                   #%{BROWSERSTACK_REMOTE_URL}
 ${CAPABILITIES}                 #w10_chrome
@@ -68,19 +68,18 @@ Test Teardown       run keywords      close browser if running remotely and repo
     # click element                       //button[contains(.,'Reset')]
     # wait until element is visible       //h3[text()='Calculator']
 
-# Add entry
-#     [Tags]
-#     Add entry  weight=80  date=18-10-1993  note=This is a test
-
-# bas
-#     ${value}=       search value in table  entries-table  Date      18-10-1993      Note
-#     should be equal     ${value}        This is a test
+Add entry
+    [Tags]      Critical
+    # Test script
+    ${today}=           get current date       
+    Add entry           weight=15      date=${today}  note=This is a test
+    verify value in table  entries-table       Weight     15 kg      Note       This is a test
 
 
 # Edit entry
 #     click element                       //mat-icon[text()='more_vert']
 #     click element                       //*[text()='edit']
-#     input text                          id=add-entry-input-weight       15
+#     input text                          id=add-entry-input-weight       11
 #     click element                       id=add-entry-btn-add
 #     page should contain element         //*[text()='15 kg']
 #     page should not contain element         //*[text()='11 kg']
@@ -99,6 +98,11 @@ Add entry
     input text                          id=add-entry-input-weight       ${weight}
     input text                          id=add-entry-input-note         ${note}
     click element                       id=add-entry-btn-add
+
+verify value in table
+    [Arguments]             ${table_id}     ${search_column}    ${search_value}     ${value_column}     ${expected_value}
+    ${actual_value}=        search value in table           ${table_id}     ${search_column}    ${search_value}     ${value_column}
+    should be equal         ${actual_value}         ${expected_value}
 
 search value in table
     [Arguments]             ${table_id}     ${search_column}    ${search_value}     ${value_column}
