@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { TDEEService } from '../tdee.service';
+import { TDEEService } from '../_archive/tdee.service';
 import { Subscription } from 'rxjs';
 import { ChartType } from 'chart.js'
 import { BaseChartDirective, Label } from 'ng2-charts';

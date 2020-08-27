@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, OnDestroy, HostListener, ChangeDetectorRe
 import { FormControl, FormGroup, AbstractControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
-import { EntryService, Entry } from '../entry.service'
+import { EntryService, Entry } from '../../services/entry.service'
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from 'src/app/shared/alert-dialog/alert-dialog.component'
 import { MatBottomSheet, MatTableDataSource } from '@angular/material';

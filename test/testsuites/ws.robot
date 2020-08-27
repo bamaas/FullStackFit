@@ -3,53 +3,54 @@ Resource          ../keywords/all.robot
 
 *** Variables ***
 # The value in 'environment' is used to load the config file containing variables for the specific environment, such as the GUI_URL.
-${ENVIRONMENT}                  localhost
+${ENVIRONMENT}                  prod            #localhostnodocker
 
 *** Settings *** 
 #Suite Setup                     load env file       ${CURDIR}/../.env
 Test Teardown                   report last output message on failure
 
 *** Test Cases ***
-Calculate TDEE
-    [Tags]                 WS       tdee
-    # Test Data
-    set test variable        ${gender}          MALE
-    set test variable        ${age}             27
-    set test variable        ${weight}          80
-    set test variable        ${length}          180
-    set test variable        ${goal}            MUSCLE_GROWTH
-    set test variable        ${activityLevel}   HIGH
-    # Sent the request & assert
-    ${response}=        send GET request   ${BACKEND_URL}/calc?gender=${gender}&length=${length}&weight=${weight}&age=${age}&activityLevel=${activityLevel}&goal=${goal}     expected_status=200
-    assert JSON         ${response}         $.bmr                                       1885      
-    assert JSON         ${response}         $.macronutrients.carbohydrates.gram         339      
-    assert JSON         ${response}         $.macronutrients.carbohydrates.kcal         1354      
-    assert JSON         ${response}         $.macronutrients.carbohydrates.percentage   50      
-    assert JSON         ${response}         $.macronutrients.fat.gram                   80       
-    assert JSON         ${response}         $.macronutrients.fat.kcal                   720       
-    assert JSON         ${response}         $.macronutrients.fat.percentage             27       
-    assert JSON         ${response}         $.macronutrients.protein.gram               160       
-    assert JSON         ${response}         $.macronutrients.protein.kcal               640       
-    assert JSON         ${response}         $.macronutrients.protein.percentage         24
-    assert JSON         ${response}         $.tdee                                      2714
+Bas
+    FOR     ${index}        IN RANGE        200
+            Send POST entry request
+    END
 
-Calculate BMI for an {DATATAG} person
-    [Tags]                      WS       bmi
-    # Test Data
-    Data tags                   healthy     overweight      underweight
-    ${weight}=  data row        80          100             60
-    ${length}=  data row        180         160             200
-    ${expected_bmi}=  data row  25          39              15
-    # Test Script
+Post entry
+    Send POST entry request
+
+Get entries
+    send POST entry request
+    ${entries}=                        Send GET entries request
+    ${entry}=                          get from list     ${entries}     0
+    dictionary should contain key      ${entry}          id
+    dictionary should contain key      ${entry}          weight
+    dictionary should contain key      ${entry}          note
+    dictionary should contain key      ${entry}          date
+
+Delete entry
+    ${id}=                          send POST entry request
+    send DELETE entry request       ${id}
+
+*** Keywords ***
+Send POST entry request
+    [Arguments]                 ${date}=2020-05-10T19:03:22        ${weight}=80.0            ${note}=This is a test note
     ${body}=                    create dictionary   
     ...                         weight=${weight}
-    ...                         length=${length}
-    ${response}=                Send GET request  ${BACKEND_URL}/calc/bmi?&length=${length}&weight=${weight}  expected_status=200
-    should be equal             '${response}'       '${expected_bmi}'
-    ...                         Assertion failed. Expected the BMI response to be "25". Actual: "${response}".
+    ...                         note=${note}
+    ...                         date=${date}
+    ${response}=                send POST request        ${BACKEND_URL}/log     ${body}         200 
+    assert JSON                 ${response}              $.weight               ${weight}       number
+    assert JSON                 ${response}              $.date                 ${date}         string
+    assert JSON                 ${response}              $.note                 ${note}         string
+    dictionary should contain key      ${response}       id
+    ${id}=                      get value from dictionary       ${response}     id
+    [Return]                    ${id}
 
-Send wrong POST request and assert the status
-    [Tags]                 WS       tdee
-    [Documentation]                         Wrong gender given. Return status should be equal to 500
-    # Sent the request & assert
-    ${response}=        send GET request   ${BACKEND_URL}/calc/all?gender=nogender&length=80&weight=180&activityLevel=LOW&goal=FAT_LOSS         expected_status=404    
+Send DELETE entry request
+    [Arguments]                 ${id}
+    ${response}=                send DELETE request        ${BACKEND_URL}/log/${id}         
+
+Send GET entries request
+    [Arguments]                 ${page_number}=0        ${page_size}=20
+    ${response}=                send GET request        ${BACKEND_URL}/log/?pageNo=${page_number}&pageSize=${page_size}
+    [Return]                    ${response}

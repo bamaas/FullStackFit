@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, Input, Inject } from '@angula
 import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { EntryService } from '../../entry.service'
+import { EntryService } from '../../../services/entry.service'
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({

@@ -292,3 +292,69 @@ class BrowserHelper(object):
         # this is set when by the orig command and is needed to make the switch_to_window work
         # new_driver.w3c = False
         return new_driver
+    
+    def click_on_element(self, locator, error_msg=None):
+        selib = BuiltIn().get_library_instance('SeleniumLibrary')
+        # This 'wait_until_element_is_visible' is only used to create the posiblity to give an custom error msg.
+        selib.wait_until_element_is_visible("{}".format(locator), error="{}".format(error_msg))
+        element = selib.find_element("{}".format(locator))
+        driver = selib.driver
+        driver.execute_script("arguments[0].click();", element)
+        logger.info("Clicking element '{}'.".format(locator))
+    
+    def verify_element_is_in_view(self, locator):
+        """ 
+            This function first checks if the element is logically visible (i.e. display != none)
+            and then it verifies that the element is in viewport.
+        """
+        verify_element_is_in_view = """var elem = arguments[0],"""\
+                                    """box = elem.getBoundingClientRect(),"""\
+                                    """cx = box.left + box.width / 2,"""\
+                                    """cy = box.top + box.height / 2,"""\
+                                    """e = document.elementFromPoint(cx, cy);"""\
+                                    """for (; e; e = e.parentElement) {"""\
+                                    """if (e === elem)"""\
+                                    """return true;"""\
+                                    """}"""\
+                                    """return false;"""
+        selib = BuiltIn().get_library_instance('SeleniumLibrary')
+        selib.element_should_be_visible("{}".format(locator))   # Verify the element is logically visible
+        driver = selib.driver
+        element = selib.find_element(locator)
+        in_view = driver.execute_script(verify_element_is_in_view, element)
+        if in_view is True:
+            logger.info("Element '{}' is in viewport.".format(locator))
+        else:
+            BuiltIn().fail("Element '{}' is not in viewport.".format(locator))
+    
+    def scroll_to_element(self, locator, disable_smooth_scroll=True):
+        selib = BuiltIn().get_library_instance('SeleniumLibrary')
+        driver = selib.driver
+        selib.wait_until_page_contains_element("{}".format(locator))
+        element = selib.find_element(locator)
+        logger.info("Scrolling to element '{}'.".format(locator))
+        # The below javascript code scrolls the element in center of screen
+        scroll_element_into_center = """var viewPortHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);"""\
+                                     """var elementTop = arguments[0].getBoundingClientRect().top;"""\
+                                     """window.scrollBy(0, elementTop-(viewPortHeight/2));"""
+        if disable_smooth_scroll is True:
+            driver.execute_script("""document.documentElement.style.scrollBehavior="auto";""", element)
+            driver.execute_script(scroll_element_into_center, element)
+            driver.execute_script("""document.documentElement.style.scrollBehavior="smooth";""", element)
+        else:        
+            # Created kind of a hacky solution right here because we don't get any feedback from the scrolling animation.
+            # We need to do a try and except and give the script a little sleep to be sure that the animation is done and the element is in view.
+            from time import sleep
+            in_view = False
+            for index in range (0,20):
+                try:
+                    self.verify_element_is_in_view(locator)
+                    in_view = True
+                except:
+                    driver.execute_script(scroll_element_into_center, element)
+                    time.sleep(0.8)     # 0.8 seconds
+                finally:
+                    if in_view is True:
+                        break
+        # Final check, here it has to be in view or we fail the script.
+        self.verify_element_is_in_view(locator)
