@@ -118,40 +118,7 @@ blocks:
       secrets:
         - name: docker
   - name: E2E test
-    dependencies: ["Build"]
-    task:
-      jobs:
-        - name: crud
-          commands:
-            - bash ./test/testcontainer robotlooper -v environment:localhost -v remote_webdriver:false -v browser:Chrome testsuites/e2e.robot
-      prologue:
-        commands:
-          - checkout
-          - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
-          - export GIT_COMMIT_SHA_LONG=$(git rev-parse HEAD)
-          - export GIT_COMMIT_MSG=$(git show -s --format=%B ${GIT_COMMIT_SHA})
-          # create .env file from environment variables
-          - echo GIT_COMMIT_SHA=${GIT_COMMIT_SHA} >> ./test/.env
-          - echo GIT_COMMIT_MSG=${GIT_COMMIT_MSG} >> ./test/.env
-          # Docker
-          - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
-          # Pull images from bamaas/registry (private container registry)
-          - echo ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_database.${GIT_COMMIT_SHA} | xargs -n 1 docker pull
-          # Retag to latest
-          - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/registry:fullstackfit_backend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/registry:fullstackfit_database.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:latest | xargs -n 2 docker tag
-          # Start application with 'make latest'. In this way we start the application the same was as we do in production.
-          - make latest
-      epilogue:
-        always:
-          commands:
-            - make shutdown
-            - artifact push job ./test/logs/log.html
-            - artifact push job ./test/logs/output.xml
-            - artifact push job ./test/logs/report.html
-      secrets:
-        - name: docker
-  - name: Compatibility test
-    dependencies: ["Build"]
+    dependencies: ["Integration test"]
     task:
       secrets:
         - name: docker
@@ -180,10 +147,10 @@ blocks:
       jobs:
         - name: Windows 10 - Chrome
           commands:
-            - bash ./test/rerunner.sh robotlooper -v environment:localhost -v remote_webdriver:true -v capabilities:w10_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/gui.robot
+            - bash ./test/rerunner.sh robotlooper -v environment:localhost -v remote_webdriver:true -v capabilities:w10_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/e2e.robot
         - name: MacOS - Chrome
           commands:
-            - bash ./test/rerunner.sh robotlooper -v environment:localhost -v remote_webdriver:true -v capabilities:mac_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/gui.robot
+            - bash ./test/rerunner.sh robotlooper -v environment:localhost -v remote_webdriver:true -v capabilities:mac_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/e2e.robot
       epilogue:
         always:
           commands:

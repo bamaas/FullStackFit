@@ -3,7 +3,7 @@ Resource          ../keywords/all.robot
 
 *** Variables ***
 # The value in 'environment' is used to load the config file containing variables for the specific environment.
-${ENVIRONMENT}                  localhostnodocker
+${ENVIRONMENT}                  localhost
 
 
 ########################
@@ -25,7 +25,6 @@ ${MAXIMIZE_WINDOW}              True
 
 *** Settings ***
 Suite Setup         set suite tags      environment=${ENVIRONMENT}      remote_webdriver=${REMOTE_WEBDRIVER}      capabilities=${CAPABILITIES}          browser=${BROWSER}
-#...                 AND               load env file       ${CURDIR}/../.env
 
 Test Setup          setup browser     remote_webdriver=${REMOTE_WEBDRIVER}      browser=${BROWSER}                        remote_url=${REMOTE_URL}    
 ...                                   capabilities=${CAPABILITIES}              setup_url=${FRONTEND_URL}                 maximize_window=${MAXIMIZE_WINDOW}   
@@ -36,56 +35,53 @@ Test Teardown       run keywords      close browser if running remotely and repo
 
 *** Test Cases ***
 Add entry in frontend
-    [Tags]      Critical
-    # Test Data
-    set test variable           ${note}             This is a test note
+    [Tags]                      Critical
     # Test script
-    ${weight}=                  evaluate         (random.randint(1, 9)/10)+(random.randint(1,199))    modules=random
-    Add entry                   ${weight}  ${note}
+    ${note}=                    get current date
+    ${weight}=                  evaluate            (random.randint(1, 9)/10)+(random.randint(1,199))    modules=random
+    Add entry                   weight=${weight}    note=${note}
     verify value in table       entries-table       Weight     ${weight} kg      Note       ${note}
 
 Edit entry in frontend
-    # Test Data
-    set test variable            ${note}          updated entry
+    [Tags]                      Critical
     # Setup
-    ${weight}=                  evaluate         (random.randint(1, 9)/10)+(random.randint(1,199))    modules=random
-    ${weight}=                   convert to string               ${weight}
-    Send POST ENTRY request     datetime=now        weight=${weight}        note=Edit entry in frontend
+    Send POST ENTRY request
     reload page
     # Test Script
     click element                //mat-icon[text()='more_vert']
     click on element             //mat-icon[text()='edit']
-    input text                   id=add-entry-input-weight       ${weight}
-    input text                   id=add-entry-input-note         ${note}
+    ${weight}=                   evaluate                       (random.randint(1, 9)/10)+(random.randint(1,199))    modules=random
+    ${weight}=                   convert to string              ${weight}
+    ${note}=                     get current date
+    input text                   id=add-entry-input-weight      ${weight}
+    input text                   id=add-entry-input-note        ${note}
     click on element             id=add-entry-btn-add
     verify value in table        entries-table       Weight     ${weight} kg      Note       ${note}
 
-# Edit entry in frontend if there are multiple entries
-
 Delete entry in frontend
+    [Tags]                      Critical
     # Setup
     ${weight}=                  evaluate         (random.randint(1, 9)/10)+(random.randint(1,199))    modules=random
-    Send POST ENTRY request     datetime=now     weight=${weight}      note=Delete entry in frontend
+    ${weight}=                  convert to string       ${weight}
+    Send POST ENTRY request     weight=${weight}
     reload page
     # Test Script
+    wait until page contains element            //*[text()='${weight} kg']
     click element                               //mat-icon[text()='more_vert']
     click on element                            //mat-icon[text()='delete']
     click button                                Delete
     wait until page does not contain element    //*[text()='${weight} kg']
-    
 
 *** Keywords ***
 Add entry
-    [Arguments]                         ${weight}                       ${note}
+    [Arguments]                         ${weight}                ${note}
+    ${weight}=                          convert to string               ${weight}
+    ${note}=                            convert to string               ${note}
     click element                       id=nav-btn-entries
     click element                       id=nav-btn-add-entry
-    ${weight}=                          convert to string               ${weight}
     input text                          id=add-entry-input-weight       ${weight}
     input text                          id=add-entry-input-note         ${note}
     click element                       id=add-entry-btn-add
-
-verify entry in table
-    log to console          test
 
 verify value in table
     [Arguments]             ${table_id}     ${search_column}    ${search_value}     ${value_column}     ${expected_value}
