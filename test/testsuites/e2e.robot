@@ -35,42 +35,55 @@ Test Teardown       run keywords      close browser if running remotely and repo
 
 
 *** Test Cases ***
-Add entry in GUI
+Add entry in frontend
     [Tags]      Critical
     # Test Data
     set test variable           ${weight}           80
     set test variable           ${note}             This is a test note
-    set test variable           ${date}             18-09-2001
     # Test script
-    ${today}=                   get current date       
-    Add entry                   ${weight}      ${date}  ${note}
+    Add entry                   ${weight}  ${note}
     verify value in table       entries-table       Weight     ${weight} kg      Note       ${note}
 
+Edit entry in frontend
+    # Test Data
+    set test variable            ${weight}       11
+    set test variable            ${note}          updated entry
+    # Setup
+    Send POST ENTRY request
+    reload page
+    # Test Script
+    click element                //mat-icon[text()='more_vert']
+    click on element             //mat-icon[text()='edit']
+    input text                   id=add-entry-input-weight       ${weight}
+    input text                   id=add-entry-input-note         ${note}
+    click on element             id=add-entry-btn-add
+    verify value in table        entries-table       Weight     ${weight} kg      Note       ${note}
 
-# Edit entry in GUI
-#     # Test Data
-#     set test variable            ${weight}       11
-#     # Test Script
-#     click element                //mat-icon[text()='more_vert']
-#     click on element             //mat-icon[text()='edit']
-#     input text                   id=add-entry-input-weight       ${weight}
-#     click on element             id=add-entry-btn-add
+# Edit entry in frontend if there are multiple entries
 
-# Delete entry
-#     click element                           //mat-icon[text()='more_vert']
-#     click on element                        //mat-icon[text()='delete']
-#     click button                                Delete
-#     wait until page does not contain element    //*[text()='80 kg']
+Delete entry in frontend
+    # Setup
+    # Setup
+    Send POST ENTRY request     weight=33.3
+    reload page
+    # Test Script
+    click element                               //mat-icon[text()='more_vert']
+    click on element                            //mat-icon[text()='delete']
+    click button                                Delete
+    wait until page does not contain element    //*[text()='33.3 kg']
     
 
 *** Keywords ***
 Add entry
-    [Arguments]                         ${weight}                       ${date}      ${note}
+    [Arguments]                         ${weight}                       ${note}
     click element                       id=nav-btn-entries
     click element                       id=nav-btn-add-entry
     input text                          id=add-entry-input-weight       ${weight}
     input text                          id=add-entry-input-note         ${note}
     click element                       id=add-entry-btn-add
+
+verify entry in table
+    log to console          test
 
 verify value in table
     [Arguments]             ${table_id}     ${search_column}    ${search_value}     ${value_column}     ${expected_value}

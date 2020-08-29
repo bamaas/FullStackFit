@@ -26,6 +26,17 @@ Send POST request
     ${response}=        output       response body      
     [Return]            ${response}
 
+Send PUT request
+    [Arguments]         ${url}       ${body}        ${expected_status}=200
+    [Documentation]     Sends a PUT request and asserts the statuscode for status 200 Returns the response in JSON.
+    REST.PUT           ${url}       ${body}
+    ${output}=          output
+    # Make a variable at test level so it is accessible for the function 'get_last_output_message'
+    set test variable   ${output}    ${output}
+    assert dictionary   ${output}    {"status":${expected_status}}
+    ${response}=        output       response body      
+    [Return]            ${response}
+
 Send DELETE request
     [Arguments]         ${url}      ${expected_status}=200
     [Documentation]     Sends a DELETE request and asserts the statuscode for status 200. Returns the response in JSON.
@@ -35,4 +46,4 @@ Send DELETE request
     set test variable   ${output}   ${output}
     assert dictionary   ${output}   {"status":${expected_status}}
     ${response}=        output      response body      
-    [Return]            ${response}
+    [Return]            ${response} 

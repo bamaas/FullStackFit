@@ -105,12 +105,9 @@ blocks:
           # Start application with 'make latest'. In this way we start the application the same was as we do in production.
           - make latest
       jobs:
-        - name: tdee
+        - name: api
           commands:
-            - "bash ./test/testcontainer robotlooper -v environment:localhost -i tdee testsuites/ws.robot"
-        - name: bmi
-          commands:
-            - "bash ./test/testcontainer robotlooper -v environment:localhost -i bmi testsuites/ws.robot"
+            - "bash ./test/testcontainer robotlooper -v environment:localhost testsuites/api.robot"
       epilogue:
         always:
           commands:
@@ -124,9 +121,9 @@ blocks:
     dependencies: ["Build"]
     task:
       jobs:
-        - name: tdee
+        - name: crud
           commands:
-            - bash ./test/testcontainer robotlooper -v environment:localhost -v remote_webdriver:false -v browser:Chrome testsuites/gui.robot
+            - bash ./test/testcontainer robotlooper -v environment:localhost -v remote_webdriver:false -v browser:Chrome testsuites/e2e.robot
       prologue:
         commands:
           - checkout

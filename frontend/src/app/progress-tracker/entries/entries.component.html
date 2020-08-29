@@ -9,7 +9,7 @@
             <!-- <cdk-virtual-scroll-viewport itemSize="48" tvsItemSize [style.height.px]="tableBodyHeight" infiniteScroll [scrollWindow]="false" [alwaysCallback]="true" [infiniteScrollDistance]="2" [infiniteScrollThrottle]="60" (scrolledUp)="onScrollUp()" (scrolled)="onScrollDown()"> -->
             <cdk-virtual-scroll-viewport itemSize="48" tvsItemSize [style.height.px]="tableBodyHeight" infiniteScroll [scrollWindow]="false" [infiniteScrollDistance]="2" [infiniteScrollThrottle]="60" (scrolled)="onScrollDown()">
                 <!-- <table id="entries-table" mat-table [dataSource]="dataSource" matSort matSortActive="date" matSortDirection="desc"> -->
-                    <table id="entries-table" mat-table [dataSource]="dataSource" matSort>
+                    <table id="entries-table" mat-table [dataSource]="dataSource">
 
                     <ng-container matColumnDef="actions">
                         <th mat-header-cell *matHeaderCellDef>Actions</th>
@@ -29,12 +29,14 @@
                     </ng-container>
 
                     <ng-container matColumnDef="date">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header="date">Date</th>
+                        <th mat-header-cell *matHeaderCellDef>Date</th>
+                        <!-- <th mat-header-cell *matHeaderCellDef mat-sort-header="date">Date</th> -->
                         <td mat-cell *matCellDef="let entry">{{ entry.date | date:'dd-MM-yyyy' }}</td>
                     </ng-container>
                 
                     <ng-container matColumnDef="weight">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header="weight">Weight</th>
+                        <th mat-header-cell *matHeaderCellDef>Weight</th>
+                        <!-- <th mat-header-cell *matHeaderCellDef mat-sort-header="weight">Weight</th> -->
                         <td mat-cell *matCellDef="let entry">{{entry.weight}} kg</td>
                     </ng-container>
 

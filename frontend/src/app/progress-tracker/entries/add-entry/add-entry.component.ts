@@ -66,7 +66,6 @@ export class AddEntrySheet implements OnInit{
     } else {
       // If editing entry
       date = moment(date, 'YYYY-MM-DD[T]HH:mm:ss').toDate();
-      console.log(date)
     }
     return new FormGroup({
       weight: new FormControl(weight, [Validators.required, Validators.min(0), Validators.max(200), Validators.pattern(new RegExp(/^\d{0,3}(?:\.\d)?$/))]),

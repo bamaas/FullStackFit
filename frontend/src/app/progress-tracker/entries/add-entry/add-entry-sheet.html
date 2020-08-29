@@ -15,13 +15,13 @@
             </mat-form-field>
             <mat-form-field appearance="fill" fxFlexFill>
                 <mat-label>Choose a date</mat-label>
-                <input matInput [matDatepicker]="picker" formControlName="date" id="add-entry-input-date" required>
+                <input matInput [matDatepicker]="picker" (keyup.enter)="submit()" formControlName="date" id="add-entry-input-date" required>
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker touchUi></mat-datepicker>
             </mat-form-field>
             <mat-form-field appearance="fill" fxFlexFill>
                 <mat-label>Note</mat-label>
-                <input matInput formControlName="note" id="add-entry-input-note">
+                <input matInput formControlName="note" (keyup.enter)="submit()" id="add-entry-input-note">
             </mat-form-field>
             </div>
         </form>

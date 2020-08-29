@@ -17,6 +17,7 @@ Library          REST
 Resource        special_keywords.robot
 Resource        generic_gui_keywords.robot
 Resource        generic_rest_keywords.robot
+Resource        lowlevel_rest_keywords.robot
 
 # Helpers/Handlers
 Library         ../helpers/SetupHelper.py
