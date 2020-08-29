@@ -61,18 +61,35 @@ Edit entry in frontend
 Delete entry in frontend
     [Tags]                      Smoke
     # Setup
-    ${weight}=                  evaluate         (random.randint(1, 9)/10)+(random.randint(1,199))    modules=random
+    ${weight}=                  evaluate                (random.randint(1, 9)/10)+(random.randint(1,199))    modules=random
     ${weight}=                  convert to string       ${weight}
-    Send POST ENTRY request     weight=${weight}
+    ${datetime}=                get current date        result_format=%Y-%m-%dT%H:%M:%S
+    ${randomint}=               evaluate                random.randint(4, 1000)    modules=random
+    ${datetime}=                add time to date        ${datetime}     ${randomint} days            result_format=%Y-%m-%dT%H:%M:%S
+    ${date}=                    convert date            ${datetime}     result_format=%d-%m-%Y
+    Send POST ENTRY request     datetime=${datetime}        weight=${weight}
     reload page
     # Test Script
-    wait until page contains element            //*[text()='${weight} kg']
-    click element                               //mat-icon[text()='more_vert']
-    click on element                            //mat-icon[text()='delete']
-    click button                                Delete
-    wait until page does not contain element    //*[text()='${weight} kg']
+    Delete entry                ${date}  ${weight} 
 
 *** Keywords ***
+Delete entry
+    [Arguments]                 ${date}             ${weight}
+    ${entry_xpath}=             Get entry xpath     ${date}     ${weight}
+    Open actions menu of entry  ${date}  ${weight}
+    click on element            //mat-icon[text()='delete']
+    click button                Delete
+    wait until page does not contain element        ${entry_xpath}
+
+Open actions menu of entry
+    [Arguments]         ${date}     ${weight}
+    ${entry_xpath}=     Get entry xpath     ${date}  ${weight}
+    click on element    ${entry_xpath}//mat-icon[text()='more_vert']
+
+Get entry xpath
+    [Arguments]                 ${date}     ${weight}
+    return from keyword         //table[@id='entries-table']//tr[td[1][normalize-space(.)='${date}'] and td[2][normalize-space(.)='${weight} kg']]
+
 Add entry
     [Arguments]                         ${weight}                ${note}
     ${weight}=                          convert to string               ${weight}
