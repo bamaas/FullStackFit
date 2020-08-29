@@ -38,18 +38,19 @@ Test Teardown       run keywords      close browser if running remotely and repo
 Add entry in frontend
     [Tags]      Critical
     # Test Data
-    set test variable           ${weight}           80
     set test variable           ${note}             This is a test note
     # Test script
+    ${weight}=                  evaluate         (random.randint(1, 9)/10)+(random.randint(1,199))    modules=random
     Add entry                   ${weight}  ${note}
     verify value in table       entries-table       Weight     ${weight} kg      Note       ${note}
 
 Edit entry in frontend
     # Test Data
-    set test variable            ${weight}       11
     set test variable            ${note}          updated entry
     # Setup
-    Send POST ENTRY request
+    ${weight}=                  evaluate         (random.randint(1, 9)/10)+(random.randint(1,199))    modules=random
+    ${weight}=                   convert to string               ${weight}
+    Send POST ENTRY request     datetime=now        weight=${weight}        note=Edit entry in frontend
     reload page
     # Test Script
     click element                //mat-icon[text()='more_vert']
@@ -63,14 +64,14 @@ Edit entry in frontend
 
 Delete entry in frontend
     # Setup
-    # Setup
-    Send POST ENTRY request     weight=33.3
+    ${weight}=                  evaluate         (random.randint(1, 9)/10)+(random.randint(1,199))    modules=random
+    Send POST ENTRY request     datetime=now     weight=${weight}      note=Delete entry in frontend
     reload page
     # Test Script
     click element                               //mat-icon[text()='more_vert']
     click on element                            //mat-icon[text()='delete']
     click button                                Delete
-    wait until page does not contain element    //*[text()='33.3 kg']
+    wait until page does not contain element    //*[text()='${weight} kg']
     
 
 *** Keywords ***
@@ -78,6 +79,7 @@ Add entry
     [Arguments]                         ${weight}                       ${note}
     click element                       id=nav-btn-entries
     click element                       id=nav-btn-add-entry
+    ${weight}=                          convert to string               ${weight}
     input text                          id=add-entry-input-weight       ${weight}
     input text                          id=add-entry-input-note         ${note}
     click element                       id=add-entry-btn-add
