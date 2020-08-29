@@ -35,7 +35,7 @@ Test Teardown       run keywords      close browser if running remotely and repo
 
 *** Test Cases ***
 Add entry in frontend
-    [Tags]                      Critical
+    [Tags]                      Smoke
     # Test script
     ${note}=                    get current date
     ${weight}=                  evaluate            (random.randint(1, 9)/10)+(random.randint(1,199))    modules=random
@@ -43,7 +43,7 @@ Add entry in frontend
     verify value in table       entries-table       Weight     ${weight} kg      Note       ${note}
 
 Edit entry in frontend
-    [Tags]                      Critical
+    [Tags]                      Smoke
     # Setup
     Send POST ENTRY request
     reload page
@@ -59,7 +59,7 @@ Edit entry in frontend
     verify value in table        entries-table       Weight     ${weight} kg      Note       ${note}
 
 Delete entry in frontend
-    [Tags]                      Critical
+    [Tags]                      Smoke
     # Setup
     ${weight}=                  evaluate         (random.randint(1, 9)/10)+(random.randint(1,199))    modules=random
     ${weight}=                  convert to string       ${weight}
