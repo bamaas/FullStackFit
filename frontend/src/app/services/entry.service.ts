@@ -16,8 +16,6 @@ export interface Entry {
 })
 export class EntryService {
 
-  public entries: Entry[] = [];
-
   constructor(
     private _http: HttpClient, 
     private _snackBar: MatSnackBar
@@ -25,6 +23,8 @@ export class EntryService {
 
   private entriesSubject = new Subject();
   public entriesObservable = this.entriesSubject.asObservable();
+  public entries: Entry[] = [];
+  public lastPageReached: boolean = false;
 
   // Low level
   postEntry(weight: number, date: string, note: string): Observable<any>{
@@ -47,18 +47,30 @@ export class EntryService {
     this.entriesSubject.next(this.entries);
   }
 
+  sortEntriesByDate(): void{
+    this.entries.sort(function(a,b){
+      // @ts-ignore
+      return new Date(b.date) - new Date(a.date);
+    });
+  }
+
   // High level
   addEntryPageToTable(pageNumber: number, pageSize: number): void{
-    this.getEntries(pageNumber, pageSize).subscribe(
-      (data: Entry[]) => {
-        data.forEach(entry => this.entries.push(entry));
-        this.emitEntries();
-      },
-      error => {
-        this._snackBar.open('Error occured while getting entries.', 'Dismiss', {duration: 6000})
-        console.log(error)
-      }
-    );
+    if (!this.lastPageReached){
+      this.getEntries(pageNumber, pageSize).subscribe(
+        (entries: Entry[]) => {
+          entries.forEach(entry => this.entries.push(entry));
+          if (entries.length != pageSize){
+            this.lastPageReached = true;
+          }
+          this.emitEntries();
+        },
+        error => {
+          this._snackBar.open('Error occured while getting entries.', 'Dismiss', {duration: 6000})
+          console.log(error)
+        }
+      );
+    }
   }
 
   deleteEntryFromTable(id: number): void{
@@ -74,23 +86,12 @@ export class EntryService {
     )
   }
 
-  refetchEntryTable(startRange: number = 0, endRange: number = this.entries.length): void{
-    this.getEntries(startRange, endRange).subscribe(
-      (data: Entry[]) => {
-        this.entries = data;
-        this.emitEntries();
-      },
-      error => {
-        this._snackBar.open('Error occured while refetching table.', 'Dismiss', {duration: 6000})
-        console.log(error)
-      }
-    )
-  }
-
   addEntryToPage(weight: number, date: string, note: string): void{
     this.postEntry(weight, date, note).subscribe(
-      response => {
-        this.refetchEntryTable(0, this.entries.length + 1)
+      entry => {
+        this.entries.push(entry);
+        this.sortEntriesByDate()
+        this.emitEntries();
       }, 
       error => {
         this._snackBar.open('Error occured while adding entry.', 'Dismiss', {duration: 6000})
@@ -102,22 +103,28 @@ export class EntryService {
   editEntryOnTable(id:number, weight: number, date: string, note: string): void{
     this.putEntry(id, weight, date, note).subscribe(
       updatedEntry => {
-        this.refetchEntryTable();
-      }, 
+        this.entries = this.entries.filter(entry => entry['id'] != id);
+        if (this.entries.length != 0){    // If there are multiple entries
+          let lastEntry = this.entries[this.entries.length-1]
+          // @ts-ignore
+          if ((new Date(updatedEntry['date']) - new Date(lastEntry['date'])) > 0){
+            this.entries.push(updatedEntry);
+          } else if (this.lastPageReached) {
+            // If last page reached and this entry will not be pushed, it will be gone because frontend will not fetch
+            // So, if last page reached -> push to entries array.
+            this.entries.push(updatedEntry);
+          }
+        } else {    // If there is only 1 entry
+          this.entries.push(updatedEntry);
+        }
+        this.sortEntriesByDate()
+        this.emitEntries();
+      },
       error => {
         this._snackBar.open('Error occured while updating entry.', 'Dismiss', {duration: 6000})
         console.log(error)
       }
     ) 
   }
-
-  // this.entries = this.entries.map(
-    //   entry => {
-    //     if (updatedEntry['id'] == entry['id']){
-    //       return updatedEntry;
-    //     } else {
-    //       return entry;
-    //     }
-    //   }
 
 }

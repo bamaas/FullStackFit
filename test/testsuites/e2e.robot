@@ -3,7 +3,7 @@ Resource          ../keywords/all.robot
 
 *** Variables ***
 # The value in 'environment' is used to load the config file containing variables for the specific environment.
-${ENVIRONMENT}                  localhostnodocker
+${ENVIRONMENT}                  localhost
 
 
 ########################
@@ -25,7 +25,6 @@ ${MAXIMIZE_WINDOW}              True
 
 *** Settings ***
 Suite Setup         set suite tags      environment=${ENVIRONMENT}      remote_webdriver=${REMOTE_WEBDRIVER}      capabilities=${CAPABILITIES}          browser=${BROWSER}
-#...                 AND               load env file       ${CURDIR}/../.env
 
 Test Setup          setup browser     remote_webdriver=${REMOTE_WEBDRIVER}      browser=${BROWSER}                        remote_url=${REMOTE_URL}    
 ...                                   capabilities=${CAPABILITIES}              setup_url=${FRONTEND_URL}                 maximize_window=${MAXIMIZE_WINDOW}   
@@ -35,37 +34,66 @@ Test Teardown       run keywords      close browser if running remotely and repo
 
 
 *** Test Cases ***
-Add entry in GUI
-    [Tags]      Critical
-    # Test Data
-    set test variable           ${weight}           80
-    set test variable           ${note}             This is a test note
-    set test variable           ${date}             18-09-2001
+Add entry in frontend
+    [Tags]                      Smoke
     # Test script
-    ${today}=                   get current date       
-    Add entry                   ${weight}      ${date}  ${note}
+    ${note}=                    get current date
+    ${weight}=                  evaluate            (random.randint(1, 9)/10)+(random.randint(1,199))    modules=random
+    Add entry                   weight=${weight}    note=${note}
     verify value in table       entries-table       Weight     ${weight} kg      Note       ${note}
 
+Edit entry in frontend
+    [Tags]                      Smoke
+    # Setup
+    Send POST ENTRY request
+    reload page
+    # Test Script
+    click element                //mat-icon[text()='more_vert']
+    click on element             //mat-icon[text()='edit']
+    ${weight}=                   evaluate                       (random.randint(1, 9)/10)+(random.randint(1,199))    modules=random
+    ${weight}=                   convert to string              ${weight}
+    ${note}=                     get current date
+    input text                   id=add-entry-input-weight      ${weight}
+    input text                   id=add-entry-input-note        ${note}
+    click on element             id=add-entry-btn-add
+    verify value in table        entries-table       Weight     ${weight} kg      Note       ${note}
 
-# Edit entry in GUI
-#     # Test Data
-#     set test variable            ${weight}       11
-#     # Test Script
-#     click element                //mat-icon[text()='more_vert']
-#     click on element             //mat-icon[text()='edit']
-#     input text                   id=add-entry-input-weight       ${weight}
-#     click on element             id=add-entry-btn-add
-
-# Delete entry
-#     click element                           //mat-icon[text()='more_vert']
-#     click on element                        //mat-icon[text()='delete']
-#     click button                                Delete
-#     wait until page does not contain element    //*[text()='80 kg']
-    
+Delete entry in frontend
+    [Tags]                      Smoke
+    # Setup
+    ${weight}=                  evaluate                (random.randint(1, 9)/10)+(random.randint(1,199))    modules=random
+    ${weight}=                  convert to string       ${weight}
+    ${datetime}=                get current date        result_format=%Y-%m-%dT%H:%M:%S
+    ${randomint}=               evaluate                random.randint(4, 1000)    modules=random
+    ${datetime}=                add time to date        ${datetime}     ${randomint} days            result_format=%Y-%m-%dT%H:%M:%S
+    ${date}=                    convert date            ${datetime}     result_format=%d-%m-%Y
+    Send POST ENTRY request     datetime=${datetime}        weight=${weight}
+    reload page
+    # Test Script
+    Delete entry                ${date}  ${weight} 
 
 *** Keywords ***
+Delete entry
+    [Arguments]                 ${date}             ${weight}
+    ${entry_xpath}=             Get entry xpath     ${date}     ${weight}
+    Open actions menu of entry  ${date}  ${weight}
+    click on element            //mat-icon[text()='delete']
+    click button                Delete
+    wait until page does not contain element        ${entry_xpath}
+
+Open actions menu of entry
+    [Arguments]         ${date}     ${weight}
+    ${entry_xpath}=     Get entry xpath     ${date}  ${weight}
+    click on element    ${entry_xpath}//mat-icon[text()='more_vert']
+
+Get entry xpath
+    [Arguments]                 ${date}     ${weight}
+    return from keyword         //table[@id='entries-table']//tr[td[1][normalize-space(.)='${date}'] and td[2][normalize-space(.)='${weight} kg']]
+
 Add entry
-    [Arguments]                         ${weight}                       ${date}      ${note}
+    [Arguments]                         ${weight}                ${note}
+    ${weight}=                          convert to string               ${weight}
+    ${note}=                            convert to string               ${note}
     click element                       id=nav-btn-entries
     click element                       id=nav-btn-add-entry
     input text                          id=add-entry-input-weight       ${weight}

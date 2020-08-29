@@ -62,10 +62,10 @@ blocks:
       jobs:
         - name: api
           commands:
-            - bash testcontainer robot -v environment:prod testsuites/ws.robot
+            - bash testcontainer robot -v environment:prod testsuites/api.robot
         - name: e2e
           commands:
-            - bash testcontainer robot -v environment:prod -v remote_webdriver:false -v browser:Chrome testsuites/gui.robot
+            - bash testcontainer robot -v environment:prod -v remote_webdriver:false -v browser:Chrome testsuites/e2e.robot
       epilogue:
         always:
           commands:

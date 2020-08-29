@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, OnDestroy, HostListener, ChangeDetectorRef } from '@angular/core';
 import { FormControl, FormGroup, AbstractControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatSort } from '@angular/material/sort';
+// import { MatSort } from '@angular/material/sort';
 import { EntryService, Entry } from '../../services/entry.service'
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from 'src/app/shared/alert-dialog/alert-dialog.component'
@@ -12,7 +12,7 @@ import { Subscription, Observable, merge } from 'rxjs';
 import { TableVirtualScrollDataSource } from 'ng-table-virtual-scroll'; 
 import { StyleService } from 'src/app/services/style.service'
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { DatePipe } from '@angular/common';
+import {MatTable} from '@angular/material';
 
 @Component({
   selector: 'app-entries',
@@ -27,7 +27,8 @@ export class EntriesComponent implements OnInit, OnDestroy {
   public screenHeight: number;
   public tableBodyHeight: number; // initalized in ngAfterViewInit
 
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
+  // @ViewChild(MatSort, {static: true}) sort: MatSort;
+  @ViewChild(MatTable) table: MatTable<any>;
   @ViewChild(CdkVirtualScrollViewport) virtualScroll: CdkVirtualScrollViewport;
 
   
@@ -47,7 +48,8 @@ export class EntriesComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this._entryService.entriesObservable.subscribe(
       (entries: Entry[]) => {
-        this.dataSource.data = entries;
+        // this.dataSource.data = entries;    Use this when enabled sorting
+        this.dataSource.data = [...entries];
       }
     );
     this.mediaSub = this.mediaObserver.media$.subscribe(
@@ -81,9 +83,11 @@ export class EntriesComponent implements OnInit, OnDestroy {
     this.tableBodyHeight = this.screenHeight - this._styleService.headerHeight;
     this.itemsRenderedAtViewport = Math.round((this.tableBodyHeight - 56) / this.rowHeight);
     this.pageSize = this.itemsRenderedAtViewport * 2; 
-    this.dataSource.sort = this.sort;
+   // this.dataSource.sort = this.sort;      //COMMENTED TO DISABLE SORTING AS THIS IS CAUSING ISSUES WITH PAGINATION. This is a new feature.
     this.onScrollDown()
     // this.dataSource.sortingDataAccessor = (item, property) => {
+    //   console.log(item)
+    //   console.log(property)
     //   switch (property) {
     //     case 'Date': return new Date(item.date);
     //     default: return item[property];
