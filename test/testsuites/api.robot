@@ -25,8 +25,8 @@ Get entries
 
 Delete entry
     [Tags]      Smoke
-    ${id}=                          send POST entry request
-    send DELETE ENTRY request       ${id}
+    ${response}=                        send POST entry request
+    send DELETE ENTRY request           ${response}[id]
 
 Update entry
     [Tags]      Smoke

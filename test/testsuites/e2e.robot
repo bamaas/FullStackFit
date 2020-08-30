@@ -36,27 +36,29 @@ Test Teardown       run keywords      close browser if running remotely and repo
 *** Test Cases ***
 Add entry in frontend
     [Tags]                      Smoke
+    # Setup - determine the latest entry and create one that has the same date
+    ${response}=                send GET ENTRIES request
+    ${latest_entry}=            get from list      ${response}      0      
+    ${date}=                    convert date            ${latest_entry}[date]     result_format=%d-%m-%Y
     # Test script
     ${note}=                    get current date
     ${weight}=                  evaluate            (random.randint(1, 9)/10)+(random.randint(1,199))    modules=random
-    Add entry                   weight=${weight}    note=${note}
-    verify value in table       entries-table       Weight     ${weight} kg      Note       ${note}
+    Add entry                   weight=${weight}    note=${note}        date=${date}
 
 Edit entry in frontend
     [Tags]                      Smoke
     # Setup
-    Send POST ENTRY request
+    send POST ENTRY request      # post entry to be sure there is at least 1 entry to edit
+    ${response}=                 send GET ENTRIES request
+    ${latest_entry}=             get from list      ${response}      0           # edit the top entry, so get the date and weight to be able to select it
+    ${date_old}=                 convert date            ${latest_entry}[date]     result_format=%d-%m-%Y
+    ${weight_old}=               set variable            ${latest_entry}[weight]
     reload page
     # Test Script
-    click element                //mat-icon[text()='more_vert']
-    click on element             //mat-icon[text()='edit']
-    ${weight}=                   evaluate                       (random.randint(1, 9)/10)+(random.randint(1,199))    modules=random
-    ${weight}=                   convert to string              ${weight}
-    ${note}=                     get current date
-    input text                   id=add-entry-input-weight      ${weight}
-    input text                   id=add-entry-input-note        ${note}
-    click on element             id=add-entry-btn-add
-    verify value in table        entries-table       Weight     ${weight} kg      Note       ${note}
+    ${note_new}=                get current date
+    ${weight_new}=              evaluate            (random.randint(1, 9)/10)+(random.randint(1,199))    modules=random
+    Edit entry                  date_old=${date_old}         weight_old=${weight_old}      date_new=${date_old}  weight_new=${weight_new}  note_new=${note_new}
+
 
 Delete entry in frontend
     [Tags]                      Smoke
@@ -73,12 +75,30 @@ Delete entry in frontend
     Delete entry                ${date}  ${weight} 
 
 *** Keywords ***
+Edit entry
+    [Arguments]                 ${date_old}         ${weight_old}       ${date_new}     ${weight_new}      ${note_new}
+    Open actions menu of entry  ${date_old}         ${weight_old}
+    click on element            //mat-icon[text()='edit']
+    Fill entry sheet            weight=${weight_new}    note=${note_new}        date=${date_new}
+    ${entry_xpath}=             Get entry xpath     ${date_new}         ${weight_new}
+    wait until page contains element    ${entry_xpath}
+
+Fill entry sheet
+    [Arguments]                         ${weight}                ${note}            ${date}=None
+    ${weight}=                          convert to string        ${weight}
+    input text                          id=add-entry-input-weight       ${weight}
+    run keyword if                      '${date}' != 'None'             set element value           id=add-entry-input-date         ${EMPTY}
+    run keyword if                      '${date}' != 'None'             input text                  id=add-entry-input-date         ${date}
+    input text                          id=add-entry-input-note         ${note}
+    click element                       id=add-entry-btn-add
+
 Delete entry
     [Arguments]                 ${date}             ${weight}
     ${entry_xpath}=             Get entry xpath     ${date}     ${weight}
     Open actions menu of entry  ${date}  ${weight}
     click on element            //mat-icon[text()='delete']
     click button                Delete
+    # verify entry is added
     wait until page does not contain element        ${entry_xpath}
 
 Open actions menu of entry
@@ -88,44 +108,19 @@ Open actions menu of entry
 
 Get entry xpath
     [Arguments]                 ${date}     ${weight}
+    ${weight}=                  convert to string       ${weight}
+    ${lastchars}=               evaluate            $weight[-2:]
+    ${weight}=                  run keyword if          '${lastchars}' == '.0'      evaluate       $weight[:-2]
+    ...  ELSE                   set variable            ${weight}
     return from keyword         //table[@id='entries-table']//tr[td[1][normalize-space(.)='${date}'] and td[2][normalize-space(.)='${weight} kg']]
 
 Add entry
-    [Arguments]                         ${weight}                ${note}
+    [Arguments]                         ${weight}                ${note}            ${date}
     ${weight}=                          convert to string               ${weight}
     ${note}=                            convert to string               ${note}
     click element                       id=nav-btn-entries
     click element                       id=nav-btn-add-entry
-    input text                          id=add-entry-input-weight       ${weight}
-    input text                          id=add-entry-input-note         ${note}
-    click element                       id=add-entry-btn-add
-
-verify value in table
-    [Arguments]             ${table_id}     ${search_column}    ${search_value}     ${value_column}     ${expected_value}
-    ${actual_value}=        search value in table           ${table_id}     ${search_column}    ${search_value}     ${value_column}
-    should be equal         ${actual_value}         ${expected_value}
-
-search value in table
-    [Arguments]             ${table_id}     ${search_column}    ${search_value}     ${value_column}
-    [Documentation]         Searches a value in a table with headers and any number of rows.\n\n
-    ...                     The search is based on finding a row with a specified value in a specified column and returning the value that is in
-    ...                     that same row in a different column. The keyword returns the value based on the first occurance of the search value.
-    ...                     If the search value is not found, the keyword will fail.\n\n
-    ...                     ``div_form_id`` is the id of the grandparent div that wraps around the table.\n\n
-    ...                     ``search_column`` is the text in the header of the column where we want to find the search value.\n\n
-    ...                     ``search_value`` is the text in a cell of the search column that will determine the row we get the value from.\n\n
-    ...                     ``value_column`` is the text in the header of the column that we want to retrieve the value from.
-    # determine the column numbers for the search column and value column by searching the header table
-    ${columns}=         get webelements          //table[@id='${table_id}']/thead/tr/th
-    ${column_labels}=   Create List     ${EMPTY}    
-    FOR    ${column}    IN    @{columns}
-        ${text}=    get text       ${column}
-        Append To List  ${column_labels}  ${text}
-    END
-    # get index from list returns -1 when the item is not found, in this case use an xpath that gives meaningful error
-    ${search_index}=    get Index from list      ${column_labels}        ${search_column}
-    run keyword if      ${search_index}==-1      get text       //table[@id='${table_id}']//th//*[text()='${search_column}']
-    ${value_index}=     get Index from list      ${column_labels}        ${value_column}
-    run keyword if      ${value_index}==-1       get text       //table[@id='${table_id}']//th//*[text()='${value_column}']
-    ${value}=               get text             //table[@id='${table_id}']//tr[td[${search_index}][normalize-space(.)='${search_value}']]/td[${value_index}]
-    return from keyword     ${value}
+    Fill entry sheet                    ${weight}  ${note}  ${date}
+    # verify entry is added
+    ${entry_xpath}=                     Get entry xpath     ${date}     ${weight}
+    wait until page contains element    ${entry_xpath}

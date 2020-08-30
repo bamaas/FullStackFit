@@ -327,6 +327,14 @@ class BrowserHelper(object):
         else:
             BuiltIn().fail("Element '{}' is not in viewport.".format(locator))
     
+    def set_element_value(self, locator, value):
+        selib = BuiltIn().get_library_instance('SeleniumLibrary')
+        driver = selib.driver
+        element = selib.find_element(locator)
+        logger.info("Setting value of element '{}'.".format(locator))
+        # driver.execute_script("""document.documentElement.value='{}'""".format(value), element)
+        driver.execute_script("arguments[0].value='{}';".format(value), element);
+    
     def scroll_to_element(self, locator, disable_smooth_scroll=True):
         selib = BuiltIn().get_library_instance('SeleniumLibrary')
         driver = selib.driver

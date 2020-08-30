@@ -29,8 +29,7 @@ Send POST ENTRY request
     assert JSON                 ${response}              $.date                 ${datetime}     string
     assert JSON                 ${response}              $.note                 ${note}         string
     dictionary should contain key      ${response}       id
-    ${id}=                      get value from dictionary       ${response}     id
-    [Return]                    ${id}
+    [Return]                    ${response}
 
 Send DELETE ENTRY request
     [Arguments]                 ${id}
