@@ -58,3 +58,7 @@ Update entry
     should be equal                    ${entry}[weight]         ${updated_entry}[weight]
     should be equal                    ${entry}[date]           ${updated_entry}[date]
     should be equal                    ${updated_entry}[note]   My updated entry!
+
+*** Keywords ***
+Insert entry into db
+    [Arguments]         ${weight}
