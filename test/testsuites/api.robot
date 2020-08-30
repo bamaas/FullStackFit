@@ -13,7 +13,7 @@ Test Teardown                   report last output message on failure
 *** Test Cases ***
 Get entries new
     delete all rows from table         log
-    execute sql string                 INSERT INTO log (id,date, weight, note) VALUES (9, current_timestamp, 9, 'test note'); 
+    execute sql string                 INSERT INTO log (id,date, weight, note) VALUES (9, current_timestamp + interval '5' day, 9, 'test note'); 
     ${entries}=                        Send GET entries request
     ${entry}=                          get from list     ${entries}     -1
     dictionary should contain key      ${entry}          id
