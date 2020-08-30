@@ -6,9 +6,26 @@ Resource          ../keywords/all.robot
 ${ENVIRONMENT}                  localhostnodocker
 
 *** Settings *** 
+Suite Setup                     connect to database using custom params     psycopg2 	database='postgres', user='postgres', password='postgres', host='${DATABASE_HOST}', port=5432
+Suite Teardown                  disconnect from database
 Test Teardown                   report last output message on failure
 
 *** Test Cases ***
+Get entries new
+    delete all rows from table         log
+    execute sql string                 INSERT INTO log (id,date, weight, note) VALUES (9, current_timestamp, 9, 'test note'); 
+    ${entries}=                        Send GET entries request
+    ${entry}=                          get from list     ${entries}     -1
+    dictionary should contain key      ${entry}          id
+    dictionary should contain key      ${entry}          weight
+    dictionary should contain key      ${entry}          note
+    dictionary should contain key      ${entry}          date
+
+Delete entry new
+    delete all rows from table         log
+    execute sql string                 INSERT INTO log (id,date, weight, note) VALUES (9, current_timestamp, 9, 'test note'); 
+    send DELETE ENTRY request          9
+
 Post entry
     [Tags]      Smoke
     Send POST ENTRY request
