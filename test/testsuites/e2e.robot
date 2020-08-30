@@ -37,6 +37,7 @@ Test Teardown       run keywords      close browser if running remotely and repo
 Add entry in frontend
     [Tags]                      Smoke
     # Setup - determine the latest entry and create one that has the same date
+    send POST ENTRY request     
     ${response}=                send GET ENTRIES request
     ${latest_entry}=            get from list      ${response}      0      
     ${date}=                    convert date            ${latest_entry}[date]     result_format=%d-%m-%Y
