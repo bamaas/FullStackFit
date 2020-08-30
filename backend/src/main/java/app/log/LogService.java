@@ -19,19 +19,12 @@ public class LogService {
     @Autowired
     private LogRepository logRepository;
 
-    public List<Log> getAllLogEntries(){
-        List<Log> entries = new ArrayList<>();
-        logRepository.findAll().forEach(entries::add);
-        return entries;
-    }
-
     public Log getLog(Long id){
         return logRepository.findById(id).orElse(null);
     }
 
     public Log addLog(Log log){
         return logRepository.save(log);
-//        return Map.of("id", String.valueOf(entry.getId()));
     }
 
     public void deleteLog(long id){
@@ -45,13 +38,13 @@ public class LogService {
     public List<Log> getAllEntries(Integer pageNumber, Integer pageSize, String sortBy)
     {
         Pageable paging = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, sortBy));
-
         Page<Log> pagedResult = logRepository.findAll(paging);
-
         if(pagedResult.hasContent()) {
             return pagedResult.getContent();
         } else {
             return new ArrayList<Log>();
         }
     }
+
+    
 }
