@@ -9,6 +9,7 @@ execute query
     log         ${rc}       console=True
 
 get rows from query
+    [Documentation]     Returns all the found rows from a query.
     [Arguments]         @{args}
     ${query}        set variable    ${EMPTY}
     FOR     ${arg}      IN      @{args}
@@ -18,6 +19,7 @@ get rows from query
     [Return]     ${rows}
 
 get row from query
+    [Documentation]     Returns the first row from a query.
     [Arguments]         @{args}
     ${rows}=            get rows from query      @{args}
     ${row}=             get from list            ${rows}        0
@@ -29,11 +31,3 @@ get value from query
     ${row}=             get row from query     @{args}
     ${value}=           get from list          ${row}       0
     [Return]            ${value}
-
-verify value in db table
-    [Arguments]                 ${table}    ${key}      ${expected_value}
-    ${actual_value}=            get value from query    select VALUE
-    ...                                                 from ${table}
-    ...                                                 where KEY = '${key}'
-    should be equal             '${actual_value}'       '${expected_value}'
-    ...                         Validation failed. Expected to find value '${expected_value}' for key '${key}' in table '${table}'. Actual value: '${actual_value}'.

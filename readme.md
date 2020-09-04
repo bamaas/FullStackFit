@@ -16,7 +16,7 @@ Container Registry @ [DockerHub](https://hub.docker.com/u/bamaas)
 
 Uptime Monitoring @ [Uptime Robot](https://stats.uptimerobot.com/zp8vnhRRwy)
 
-E2E Test Reports (latest build only) @ [BrowserStack](https://automate.browserstack.com/public-build/akVNb2w4dERMSzR0TEZFM0RmZTgzVGx1cTZRcnNRcmUrQm5oSXBiZFdCST0tLTBWdDlBNTRhdFRBa1hGK2IyWXU5cFE9PQ==--f354e3356bca1abe114cd7767b85d2a8fa540768?redirect=true)
+E2E Test Reports (latest build only) @ [BrowserStack](https://automate.browserstack.com/badge.svg?badge_key=SFlpQ0s5WW1GaWlJYjVjL3R4TGpRZHBUei9lY1J5Sng5QnY3NjdQSlhSQT0tLW5vY1FwamkyTituZDRldG1DOG0wNXc9PQ==--9bfa6e5f0a81668369f9ebb1ba200bc64ef3191f)
 
 Notifications @ [Gitter](https://gitter.im/FullStackFit/community?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
 

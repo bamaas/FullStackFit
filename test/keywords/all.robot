@@ -16,10 +16,11 @@ Library          DatabaseLibrary
 
 # Keywords
 Resource        special_keywords.robot
-Resource        generic_gui_keywords.robot
+Resource        generic_fe_keywords.robot
 Resource        generic_rest_keywords.robot
 Resource        lowlevel_rest_keywords.robot
-Resource        database_keywords.robot
+Resource        generic_db_keywords.robot
+Resource        lowlevel_db_keywords.robot
 
 # Helpers/Handlers
 Library         ../helpers/SetupHelper.py

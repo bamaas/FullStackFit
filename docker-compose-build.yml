@@ -48,7 +48,6 @@ services:
     image: "fullstackfit_database:b.${GIT_COMMIT_SHA}"
     build:
       context: ./database
-      dockerfile: Dockerfile
-    #env_file: './backend/database.env'    
+      dockerfile: Dockerfile 
     ports:
       - 5432:5432
