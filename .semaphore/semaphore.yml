@@ -145,12 +145,12 @@ blocks:
           # Start application with 'make latest'. In this way we start the application the same was as we do in production.
           - make latest
       jobs:
-        # - name: Windows 10 - Chrome
-        #   commands:
-        #     - bash ./test/rerunner.sh robotlooper -v environment:localhost -v remote_webdriver:true -v capabilities:w10_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/e2e.robot
         - name: MacOS - Chrome
           commands:
             - bash ./test/rerunner.sh robotlooper -v environment:localhost -v remote_webdriver:true -v capabilities:mac_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/e2e.robot
+        - name: Android - Samsung S10
+          commands:
+            - bash ./test/rerunner.sh robotlooper -v environment:localhost -v remote_webdriver:true -v capabilities:samsung_s10_plus maximize_window:false -v remote_url:${BROWSERSTACK_URL} testsuites/e2e.robot  
       epilogue:
         always:
           commands:
