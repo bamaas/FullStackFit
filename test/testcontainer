@@ -23,7 +23,7 @@ if [ $CURDIR = 'test' ]; then
 elif [ $CURDIR = 'FullStackFit' ]; then
     f="docker-compose-test.yml"
 else
-    printf "Please run this script from ./test or ./FullStackfit (root). \nCURDIR: $CURDIR"
+    printf "Please run this script from ./test or root. \nCURDIR: $CURDIR"
     exit 1
 fi
 docker-compose -f $f run --rm test $runner -d logs "${@:2}"

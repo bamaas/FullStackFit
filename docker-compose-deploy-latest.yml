@@ -1,9 +1,9 @@
 version: '3.3'
 services:
 
-  ###########################################################################
-  # Deploy the latest version of the app: https://hub.docker.com/u/bamaas
-  ###########################################################################
+  #################################################################################
+  # Deploy the latest version of the app: https://github.com/bamaas/FullStackFit
+  #################################################################################
 
   reverseproxy:
     container_name: fit_reverseproxy
@@ -37,4 +37,7 @@ services:
     container_name: fit_database
     image: bamaas/fullstackfit_database:latest
     restart: always
+    ports:
+    # This mapping is needed to make the api test in the pipeline work that rely on a db connection
+      - 5432:5432   
     env_file: './database/database.env'

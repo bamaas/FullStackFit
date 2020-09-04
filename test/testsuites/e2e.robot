@@ -60,7 +60,6 @@ Edit entry in frontend
     ${weight_new}=              evaluate            (random.randint(1, 9)/10)+(random.randint(1,199))    modules=random
     Edit entry                  date_old=${date_old}         weight_old=${weight_old}      date_new=${date_old}  weight_new=${weight_new}  note_new=${note_new}
 
-
 Delete entry in frontend
     [Tags]                      Smoke
     # Setup
@@ -70,58 +69,7 @@ Delete entry in frontend
     ${randomint}=               evaluate                random.randint(4, 1000)    modules=random
     ${datetime}=                add time to date        ${datetime}     ${randomint} days            result_format=%Y-%m-%dT%H:%M:%S
     ${date}=                    convert date            ${datetime}     result_format=%d-%m-%Y
-    Send POST ENTRY request     datetime=${datetime}        weight=${weight}
+    Send POST ENTRY request     date=${datetime}        weight=${weight}
     reload page
     # Test Script
-    Delete entry                ${date}  ${weight} 
-
-*** Keywords ***
-Edit entry
-    [Arguments]                 ${date_old}         ${weight_old}       ${date_new}     ${weight_new}      ${note_new}
-    Open actions menu of entry  ${date_old}         ${weight_old}
-    click on element            //mat-icon[text()='edit']
-    Fill entry sheet            weight=${weight_new}    note=${note_new}        date=${date_new}
-    ${entry_xpath}=             Get entry xpath     ${date_new}         ${weight_new}
-    wait until page contains element    ${entry_xpath}
-
-Fill entry sheet
-    [Arguments]                         ${weight}                ${note}            ${date}=None
-    ${weight}=                          convert to string        ${weight}
-    input text                          id=add-entry-input-weight       ${weight}
-    run keyword if                      '${date}' != 'None'             set element value           id=add-entry-input-date         ${EMPTY}
-    run keyword if                      '${date}' != 'None'             input text                  id=add-entry-input-date         ${date}
-    input text                          id=add-entry-input-note         ${note}
-    click element                       id=add-entry-btn-add
-
-Delete entry
-    [Arguments]                 ${date}             ${weight}
-    ${entry_xpath}=             Get entry xpath     ${date}     ${weight}
-    Open actions menu of entry  ${date}  ${weight}
-    click on element            //mat-icon[text()='delete']
-    click button                Delete
-    # verify entry is added
-    wait until page does not contain element        ${entry_xpath}
-
-Open actions menu of entry
-    [Arguments]         ${date}     ${weight}
-    ${entry_xpath}=     Get entry xpath     ${date}  ${weight}
-    click on element    ${entry_xpath}//mat-icon[text()='more_vert']
-
-Get entry xpath
-    [Arguments]                 ${date}     ${weight}
-    ${weight}=                  convert to string       ${weight}
-    ${lastchars}=               evaluate            $weight[-2:]
-    ${weight}=                  run keyword if          '${lastchars}' == '.0'      evaluate       $weight[:-2]
-    ...  ELSE                   set variable            ${weight}
-    return from keyword         //table[@id='entries-table']//tr[td[1][normalize-space(.)='${date}'] and td[2][normalize-space(.)='${weight} kg']]
-
-Add entry
-    [Arguments]                         ${weight}                ${note}            ${date}
-    ${weight}=                          convert to string               ${weight}
-    ${note}=                            convert to string               ${note}
-    click element                       id=nav-btn-entries
-    click element                       id=nav-btn-add-entry
-    Fill entry sheet                    ${weight}  ${note}  ${date}
-    # verify entry is added
-    ${entry_xpath}=                     Get entry xpath     ${date}     ${weight}
-    wait until page contains element    ${entry_xpath}
+    Delete entry                ${date}  ${weight}

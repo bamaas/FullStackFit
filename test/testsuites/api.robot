@@ -6,38 +6,66 @@ Resource          ../keywords/all.robot
 ${ENVIRONMENT}                  localhostnodocker
 
 *** Settings *** 
+Suite Setup                     connect to db
+Suite Teardown                  disconnect from database
+Test Setup                      delete all rows from table         log
 Test Teardown                   report last output message on failure
 
 *** Test Cases ***
-Post entry
-    [Tags]      Smoke
-    Send POST ENTRY request
+Get entries through api
+    [Tags]                      API     DBconnection
+    # Test Data
+    set test variable           ${id}                   1
+    ${date}=                    get current date        result_format=%Y-%m-%dT%H:%M:%S
+    set test variable           ${weight}               80.0
+    set test variable           ${note}                 ${TEST_NAME}
+    # Test Script
+    insert entry into db        id=${id}     date=${date}       weight=${weight}        note=${note}
+    ${response}=                Send GET entries request    page_number=0           page_size=10
+    ${entry}=                   get from list               ${response}             -1
+    assert JSON                 ${entry}                    $.id                    ${id}           number
+    assert JSON                 ${entry}                    $.date                  ${date}         string
+    assert JSON                 ${entry}                    $.weight                ${weight}       number
+    assert JSON                 ${entry}                    $.note                  ${note}         string
 
-Get entries
-    [Tags]      Smoke
-    send POST ENTRY request
-    ${entries}=                        Send GET entries request
-    ${entry}=                          get from list     ${entries}     -1
-    dictionary should contain key      ${entry}          id
-    dictionary should contain key      ${entry}          weight
-    dictionary should contain key      ${entry}          note
-    dictionary should contain key      ${entry}          date
+Delete entry through api
+    [Tags]                             API     DBconnection
+    # Test Data
+    set test variable                  ${id}                1
+    ${date}=                           get current date     result_format=%Y-%m-%dT%H:%M:%S
+    set test variable                  ${weight}            80.0
+    set test variable                  ${note}              This is a test note
+    # Test Script
+    insert entry into db               id=${id}         date=${date}      weight=${weight}       note=${note}
+    send DELETE ENTRY request          id=${id}
+    # validate the table is empty
+    ${rows}	                           get rows from query 	        SELECT * FROM log
+    ${rows_length}=                    get length      ${rows}
+    should be equal                    '${rows_length}'        '0'  Entry is not deleted in database.
 
-Delete entry
-    [Tags]      Smoke
-    ${response}=                        send POST entry request
-    send DELETE ENTRY request           ${response}[id]
+Post entry through api
+    [Tags]                            API     DBconnection
+    # Test Data
+    set test variable                 ${weight}         80.0
+    set test variable                 ${note}           Post entry api test
+    ${current_date}=                  get current date  result_format=%Y-%m-%dT%H:%M:%S
+    # Test Script
+    ${response}=                      Send POST ENTRY request       date=${current_date}     weight=${weight}    note=${note}      
+    Verify entry in db                id=${response}[id]            date=${current_date}     weight=${weight}    note=${note}         
 
-Update entry
-    [Tags]      Smoke
-    send POST entry request
-    ${entries}=                        send GET entries request
-    ${entry}=                          get from list     ${entries}      -1
-    Send UPDATE ENTRY request          ${entry}[id]      ${entry}[date]  ${entry}[weight]   My updated entry!
-    # Verify the entry is updated
-    ${entries}=                        Send GET entries request
-    ${updated_entry}=                  get from list            ${entries}     -1
-    should be equal                    ${entry}[id]             ${updated_entry}[id]
-    should be equal                    ${entry}[weight]         ${updated_entry}[weight]
-    should be equal                    ${entry}[date]           ${updated_entry}[date]
-    should be equal                    ${updated_entry}[note]   My updated entry!
+Update entry through api
+    [Tags]                              API     DBconnection
+    # Test Data
+        # inserted
+    set test variable                  ${id}                1
+    ${date}=                           get current date     result_format=%Y-%m-%dT%H:%M:%S
+    set test variable                  ${weight}            80.0
+    set test variable                  ${note}              This is a test note
+        # updated
+    ${updated_date}=                   add time to date     ${date}     2 days   result_format=%Y-%m-%dT%H:%M:%S
+    set test variable                  ${updated_weight}    20.0
+    set test variable                  ${updated_note}      My updated note
+    # Test Script
+    insert entry into db               id=${id}     date=${date}              weight=${weight}              note=${note}
+    send UPDATE ENTRY request          id=${id}     date=${updated_date}      weight=${updated_weight}      note=${updated_note}
+    verify entry in db                 id=${id}     date=${updated_date}      weight=${updated_weight}      note=${updated_note}
