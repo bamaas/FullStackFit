@@ -31,7 +31,7 @@ blocks:
       prologue:
         commands:
           - checkout
-          - bash ./.semaphore/prologue.sh
+          - bash ./.semaphore/scripts/export-git-env-vars.sh
           - sem-version java 11
       jobs:
         - name: sonarcloud
