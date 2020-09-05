@@ -81,7 +81,7 @@ blocks:
         - name: test
           commands:
             - bash ./.semaphore/scripts/create-test-env-file.sh
-            - docker-compose -f docker-compose-test build
+            - docker-compose -f docker-compose-test.yml build
             - docker push ${DOCKER_USERNAME}/fullstackfit_test:latest
   - name: Integration test
     dependencies: ["Build"]
