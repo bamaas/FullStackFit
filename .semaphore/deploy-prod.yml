@@ -12,8 +12,7 @@ blocks:
       prologue:
         commands:
           - checkout
-          - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
-          - echo $GIT_COMMIT_SHA
+          - bash ./.semaphore/scripts/export-git-env-vars.sh
           - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
       secrets:
         - name: docker
@@ -54,18 +53,12 @@ blocks:
         commands:
           - checkout
           - docker pull $DOCKER_USERNAME/fullstackfit_test:latest
-          # create .env file from environment variables
-          - echo BROWSERSTACK_URL=${BROWSERSTACK_URL} >> ./test/.env
-          - echo BROWSERSTACK_USER=${BROWSERSTACK_USER} >> ./test/.env
-          - echo BROWSERSTACK_KEY=${BROWSERSTACK_KEY} >> ./test/.env
+          - ./.semaphore/scripts/create-test-env-file.sh
           - cd test
       jobs:
-        - name: api
-          commands:
-            - bash testcontainer robot -v environment:prod testsuites/api.robot
         - name: e2e
           commands:
-            - bash testcontainer robot -v environment:prod -v remote_webdriver:false -v browser:Chrome testsuites/e2e.robot
+            - bash testcontainer robot -v environment:prod -v remote_webdriver:false -e DBconnection -i smoke -v browser:Chrome testsuites/e2e.robot
       epilogue:
         always:
           commands:
@@ -77,15 +70,3 @@ blocks:
       secrets:
         - name: docker
         - name: browserstack
-  - name: Notify
-    task:
-      prologue:
-        commands:
-          - checkout
-          - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
-          - export GIT_COMMIT_SHA_LONG=$(git rev-parse HEAD)
-          - export GIT_COMMIT_MSG=$(git show -s --format=%B ${GIT_COMMIT_SHA})
-      jobs:
-        - name: to Gitter
-          commands:
-            - curl -d message="**[Semaphore[bot]](${SEMAPHORE_ORGANIZATION_URL})** _new release now live_ @ https://basmaas.nl/fit" -d level=info https://webhooks.gitter.im/e/afa7445bc110e2ed8000
