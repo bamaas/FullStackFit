@@ -17,7 +17,7 @@ blocks:
       prologue:
         commands:
           - checkout
-          - bash ./.semaphore/scripts/export-git-env-vars.sh
+          - source ./.semaphore/scripts/export-git-env-vars.sh
           - sem-version java 11
       jobs:
         - name: backend
@@ -31,7 +31,7 @@ blocks:
       prologue:
         commands:
           - checkout
-          - bash ./.semaphore/scripts/export-git-env-vars.sh
+          - source ./.semaphore/scripts/export-git-env-vars.sh
           - sem-version java 11
       jobs:
         - name: sonarcloud
@@ -52,7 +52,7 @@ blocks:
       prologue:
         commands:
           - checkout
-          - bash ./.semaphore/scripts/export-git-env-vars.sh
+          - source ./.semaphore/scripts/export-git-env-vars.sh
           - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
       jobs:
         - name: database
@@ -120,8 +120,8 @@ blocks:
       prologue:
         commands:
           - checkout
-          - bash ./.semaphore/scripts/export-git-env-vars.sh
-          - bash ./.semaphore/scripts/create-test-env-file.sh
+          - source ./.semaphore/scripts/export-git-env-vars.sh
+          - source ./.semaphore/scripts/create-test-env-file.sh
           # Docker
           - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
           # Pull images from bamaas/registry (private container registry)

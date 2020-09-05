@@ -12,7 +12,7 @@ blocks:
       prologue:
         commands:
           - checkout
-          - bash ./.semaphore/scripts/export-git-env-vars.sh
+          - source ./.semaphore/scripts/export-git-env-vars.sh
           - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
       secrets:
         - name: docker
@@ -53,7 +53,7 @@ blocks:
         commands:
           - checkout
           - docker pull $DOCKER_USERNAME/fullstackfit_test:latest
-          - ./.semaphore/scripts/create-test-env-file.sh
+          - source ./.semaphore/scripts/create-test-env-file.sh
           - cd test
       jobs:
         - name: e2e
