@@ -90,9 +90,7 @@ blocks:
         commands:
           - checkout
           - bash ./.semaphore/scripts/export-git-env-vars.sh
-          # create .env file from environment variables
-          - echo GIT_COMMIT_SHA=${GIT_COMMIT_SHA} >> ./test/.env
-          - echo GIT_COMMIT_MSG=${GIT_COMMIT_MSG} >> ./test/.env
+          - bash ./.semaphore/scripts/create-test-env-file.sh
           # Docker
           - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
           # Pull images from bamaas/registry (private container registry)
@@ -101,6 +99,7 @@ blocks:
           - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/registry:fullstackfit_backend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/registry:fullstackfit_database.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:latest | xargs -n 2 docker tag
           # Start application with 'make latest'. In this way we start the application the same was as we do in production.
           - make latest
+          - docker pull $DOCKER_USERNAME/fullstackfit_test:latest
       jobs:
         - name: api
           commands:
@@ -122,12 +121,7 @@ blocks:
         commands:
           - checkout
           - bash ./.semaphore/scripts/export-git-env-vars.sh
-          # create .env file from environment variables
-          - echo BROWSERSTACK_URL=${BROWSERSTACK_URL} >> ./test/.env
-          - echo BROWSERSTACK_USER=${BROWSERSTACK_USER} >> ./test/.env
-          - echo BROWSERSTACK_KEY=${BROWSERSTACK_KEY} >> ./test/.env
-          - echo GIT_COMMIT_SHA=${GIT_COMMIT_SHA} >> ./test/.env
-          - echo GIT_COMMIT_MSG=${GIT_COMMIT_MSG} >> ./test/.env
+          - bash ./.semaphore/scripts/create-test-env-file.sh
           # Docker
           - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
           # Pull images from bamaas/registry (private container registry)
@@ -136,6 +130,7 @@ blocks:
           - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/registry:fullstackfit_backend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/registry:fullstackfit_database.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:latest | xargs -n 2 docker tag
           # Start application with 'make latest'. In this way we start the application the same was as we do in production.
           - make latest
+          - docker pull $DOCKER_USERNAME/fullstackfit_test:latest
       jobs:
         - name: MacOS - Chrome
           commands:
