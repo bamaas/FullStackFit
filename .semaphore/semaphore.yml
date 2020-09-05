@@ -17,6 +17,7 @@ blocks:
       prologue:
         commands:
           - checkout
+          - bash ./.semaphore/scripts/export-git-env-vars.sh
           - sem-version java 11
       jobs:
         - name: backend
@@ -30,11 +31,8 @@ blocks:
       prologue:
         commands:
           - checkout
+          - bash ./.semaphore/prologue.sh
           - sem-version java 11
-          - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
-          - export GIT_COMMIT_SHA_LONG=$(git rev-parse HEAD)
-          - export GIT_COMMIT_MSG=$(git show -s --format=%B ${GIT_COMMIT_SHA})
-          - export GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
       jobs:
         - name: sonarcloud
           commands:
@@ -54,10 +52,7 @@ blocks:
       prologue:
         commands:
           - checkout
-          - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
-          - export GIT_COMMIT_SHA_LONG=$(git rev-parse HEAD)
-          - export GIT_COMMIT_MSG=$(git show -s --format=%B ${GIT_COMMIT_SHA})
-          - echo $GIT_COMMIT_SHA
+          - bash ./.semaphore/scripts/export-git-env-vars.sh
           - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
       jobs:
         - name: database
@@ -83,16 +78,18 @@ blocks:
             - make build s="reverseproxy"
             - docker tag fullstackfit_reverseproxy:b.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${GIT_COMMIT_SHA}
             - docker push ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${GIT_COMMIT_SHA}
+        - name: test
+          commands:
+            - bash ./.semaphore/scripts/create-test-env-file.sh
+            - docker-compose -f docker-compose-test build
+            - docker push ${DOCKER_USERNAME}/fullstackfit_test:latest
   - name: Integration test
     dependencies: ["Build"]
     task:
       prologue:
         commands:
           - checkout
-          - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
-          - export GIT_COMMIT_SHA_LONG=$(git rev-parse HEAD)
-          - export GIT_COMMIT_MSG=$(git show -s --format=%B ${GIT_COMMIT_SHA})
-          - echo $GIT_COMMIT_SHA
+          - bash ./.semaphore/scripts/export-git-env-vars.sh
           # create .env file from environment variables
           - echo GIT_COMMIT_SHA=${GIT_COMMIT_SHA} >> ./test/.env
           - echo GIT_COMMIT_MSG=${GIT_COMMIT_MSG} >> ./test/.env
@@ -113,8 +110,6 @@ blocks:
           commands:
             - make shutdown
             - artifact push job ./test/logs/log.html
-            - artifact push job ./test/logs/output.xml
-            - artifact push job ./test/logs/report.html
       secrets:
         - name: docker
   - name: E2E test
@@ -126,10 +121,7 @@ blocks:
       prologue:
         commands:
           - checkout
-          - export GIT_COMMIT_SHA=$(git rev-parse --short HEAD)
-          - export GIT_COMMIT_SHA_LONG=$(git rev-parse HEAD)
-          - export GIT_COMMIT_MSG=$(git show -s --format=%B ${GIT_COMMIT_SHA})
-          - echo $GIT_COMMIT_SHA
+          - bash ./.semaphore/scripts/export-git-env-vars.sh
           # create .env file from environment variables
           - echo BROWSERSTACK_URL=${BROWSERSTACK_URL} >> ./test/.env
           - echo BROWSERSTACK_USER=${BROWSERSTACK_USER} >> ./test/.env
@@ -150,14 +142,12 @@ blocks:
             - bash ./test/rerunner.sh robotlooper -v environment:localhost -v remote_webdriver:true -v capabilities:mac_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/e2e.robot
         - name: Android - Samsung S10
           commands:
-            - bash ./test/rerunner.sh robotlooper -v environment:localhost -v remote_webdriver:true -v capabilities:samsung_s10_plus maximize_window:false -v remote_url:${BROWSERSTACK_URL} testsuites/e2e.robot  
+            - bash ./test/rerunner.sh robotlooper -v environment:localhost -v remote_webdriver:true -v capabilities:samsung_s10_plus -v maximize_window:false -v remote_url:${BROWSERSTACK_URL} testsuites/e2e.robot  
       epilogue:
         always:
           commands:
             - make shutdown
             - artifact push job ./test/logs/log.html
-            - artifact push job ./test/logs/output.xml
-            - artifact push job ./test/logs/report.html
 promotions:
 - name: Deploy
   pipeline_file: deploy-prod.yml
