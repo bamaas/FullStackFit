@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  generation: 1
+  labels:
+    app: database
+  name: database
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: database
+  serviceName: database
+  template:
+    metadata:
+      labels:
+        app: database
+    spec:
+      containers:
+      - env:
+        - name: POSTGRES_PASSWORD
+          value: postgres
+        - name: POSTGRES_USER
+          value: postgres
+        image: bamaas/fullstackfit_database:latest
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 20
+          periodSeconds: 2
+          successThreshold: 1
+          tcpSocket:
+            port: 5432
+          timeoutSeconds: 2
+        name: database
+        ports:
+        - containerPort: 5432
+          name: 5432tcp
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 20
+          periodSeconds: 2
+          successThreshold: 2
+          tcpSocket:
+            port: 5432
+          timeoutSeconds: 2
+        securityContext:
+          allowPrivilegeEscalation: false
+          privileged: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: false
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        tty: true
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: vol1
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - hostPath:
+          path: /home/bas/rancher/volumes/testdb
+          type: DirectoryOrCreate
+        name: vol1
+  updateStrategy:
+    type: RollingUpdate
+status:
+  replicas: 0
