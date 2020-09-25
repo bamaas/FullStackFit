@@ -84,8 +84,7 @@ blocks:
             - docker-compose -f docker-compose-test.yml build
             - docker push ${DOCKER_USERNAME}/fullstackfit_test:latest
   - name: Deploy
-    skip:
-      when: "branch != 'master'"
+    dependencies: ["Build"]
     task:
       prologue:
         commands:
@@ -111,7 +110,7 @@ blocks:
         - name: KUBECONFIG
           value: /home/semaphore/.kube/config
   - name: Integration test
-    dependencies: ["Build"]
+    dependencies: ["Deploy"]
     task:
       prologue:
         commands:
