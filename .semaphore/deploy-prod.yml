@@ -46,7 +46,7 @@ blocks:
             - sh ./.semaphore/scripts/rollout.sh prod statefulset database
             - sh ./.semaphore/scripts/rollout.sh prod deployment backend
             - sh ./.semaphore/scripts/rollout.sh prod deployment frontend
-            - sh ./.semaphore/scripts/rollout.sh prod deployment reverseproxy
+            - sh ./.semaphore/scripts/rollout.sh prod deployment reverse-proxy
       secrets:
         - name: kubectl
       env_vars:

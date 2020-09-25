@@ -103,7 +103,7 @@ blocks:
             - sh ./.semaphore/scripts/rollout.sh test statefulset database
             - sh ./.semaphore/scripts/rollout.sh test deployment backend
             - sh ./.semaphore/scripts/rollout.sh test deployment frontend
-            - sh ./.semaphore/scripts/rollout.sh test deployment reverseproxy
+            - sh ./.semaphore/scripts/rollout.sh test deployment reverse-proxy
       secrets:
         - name: kubectl
       env_vars:
