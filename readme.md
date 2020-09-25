@@ -23,8 +23,6 @@ Code Quality & Security @ [Sonarcloud](https://sonarcloud.io/dashboard?id=bamaas
 - Docker Compose
 - Make
 
-Platform support : MacOS / Linux
-
 ## Running
 Commando to run latest release:
 
