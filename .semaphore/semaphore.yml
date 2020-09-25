@@ -83,34 +83,55 @@ blocks:
             - bash ./.semaphore/scripts/create-test-env-file.sh
             - docker-compose -f docker-compose-test.yml build
             - docker push ${DOCKER_USERNAME}/fullstackfit_test:latest
+  - name: Deploy
+    skip:
+      when: "branch != 'master'"
+    task:
+      prologue:
+        commands:
+          - checkout
+          - source ./.semaphore/scripts/export-git-env-vars.sh
+      jobs:
+        - name: to test
+          commands:
+            # change image tags from :latest -> :$GIT_COMMIT_SHA
+            - sed -i -e "s/:latest/:$GIT_COMMIT_SHA/g" ./.kubernetes/deployment/backend.yaml
+            - sed -i -e "s/:latest/:$GIT_COMMIT_SHA/g" ./.kubernetes/deployment/frontend.yaml
+            - sed -i -e "s/:latest/:$GIT_COMMIT_SHA/g" ./.kubernetes/deployment/reverse-proxy.yaml
+            - sed -i -e "s/:latest/:$GIT_COMMIT_SHA/g" ./.kubernetes/statefulset/database.yaml
+            - sed -i -e 's/EXPOSED-NODEPORT/30004/g' ./.kubernetes/service/reverse-proxy-nodeport.yaml
+            - kubectl -n test apply -f ./.kubernetes/ --recursive --insecure-skip-tls-verify
+            - sh ./.semaphore/scripts/rollout.sh test statefulset database
+            - sh ./.semaphore/scripts/rollout.sh test deployment backend
+            - sh ./.semaphore/scripts/rollout.sh test deployment frontend
+            - sh ./.semaphore/scripts/rollout.sh test deployment reverseproxy
+      secrets:
+        - name: kubectl
+      env_vars:
+        - name: KUBECONFIG
+          value: /home/semaphore/.kube/config
   - name: Integration test
     dependencies: ["Build"]
     task:
       prologue:
         commands:
           - checkout
-          - bash ./.semaphore/scripts/export-git-env-vars.sh
-          - bash ./.semaphore/scripts/create-test-env-file.sh
-          # Docker
-          - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
-          # Pull images from bamaas/registry (private container registry)
-          - echo ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_database.${GIT_COMMIT_SHA} | xargs -n 1 docker pull
-          # Retag to latest
-          - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/registry:fullstackfit_backend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/registry:fullstackfit_database.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:latest | xargs -n 2 docker tag
-          # Start application with 'make latest'. In this way we start the application the same was as we do in production.
-          - make latest
-          - docker pull $DOCKER_USERNAME/fullstackfit_test:latest
+          - source ./.semaphore/scripts/export-git-env-vars.sh
+          - source ./.semaphore/scripts/create-test-env-file.sh
+          - kubectl -n test port-forward statefulset/database 5432:5432 --insecure-skip-tls-verify
       jobs:
         - name: api
           commands:
-            - "bash ./test/testcontainer robotlooper -v environment:localhost testsuites/api.robot"
+            - "bash ./test/rerunner.sh robotlooper -v environment:test testsuites/api.robot"
       epilogue:
         always:
           commands:
-            - make shutdown
             - artifact push job ./test/logs/log.html
       secrets:
-        - name: docker
+        - name: kubectl
+      env_vars:
+        - name: KUBECONFIG
+          value: /home/semaphore/.kube/config
   - name: E2E test
     dependencies: ["Integration test"]
     task:
@@ -122,26 +143,16 @@ blocks:
           - checkout
           - source ./.semaphore/scripts/export-git-env-vars.sh
           - source ./.semaphore/scripts/create-test-env-file.sh
-          # Docker
-          - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
-          # Pull images from bamaas/registry (private container registry)
-          - echo ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_database.${GIT_COMMIT_SHA} | xargs -n 1 docker pull
-          # Retag to latest
-          - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/registry:fullstackfit_backend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/registry:fullstackfit_database.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:latest | xargs -n 2 docker tag
-          # Start application with 'make latest'. In this way we start the application the same was as we do in production.
-          - make latest
-          - docker pull $DOCKER_USERNAME/fullstackfit_test:latest
       jobs:
         - name: MacOS - Chrome
           commands:
-            - bash ./test/rerunner.sh robotlooper -v environment:localhost -v remote_webdriver:true -v capabilities:mac_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/e2e.robot
+            - bash ./test/rerunner.sh robotlooper -v environment:test -v remote_webdriver:true -v capabilities:mac_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/e2e.robot
         - name: Android - Samsung S10
           commands:
-            - bash ./test/rerunner.sh robotlooper -v environment:localhost -v remote_webdriver:true -v capabilities:samsung_s10_plus -v maximize_window:false -v remote_url:${BROWSERSTACK_URL} testsuites/e2e.robot  
+            - bash ./test/rerunner.sh robotlooper -v environment:test -v remote_webdriver:true -v capabilities:samsung_s10_plus -v maximize_window:false -v remote_url:${BROWSERSTACK_URL} testsuites/e2e.robot  
       epilogue:
         always:
           commands:
-            - make shutdown
             - artifact push job ./test/logs/log.html
 promotions:
 - name: Deploy

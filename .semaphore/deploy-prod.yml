@@ -36,15 +36,22 @@ blocks:
     task:
       prologue:
         commands:
-          - gcloud auth activate-service-account --key-file=.secrets.gcp.json
-          - chmod 600 google_compute_engine
-          - chmod 600 google_compute_engine.pub
+          - checkout
       jobs:
-        - name: to VM
+        - name: to prod
           commands:
-            - gcloud compute ssh instance-2 --project united-watch-268115 --zone us-central1-a --ssh-key-file=google_compute_engine --command='cd FullStackFit && git pull && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0 down && docker images -aq -f 'dangling=true' | xargs docker rmi && sudo systemctl restart docker && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0  -f docker-compose-deploy-latest.yml pull && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0  -f docker-compose-deploy-latest.yml up -d'
+            - sed -i -e 's/EXPOSED-NODEPORT/30005/g' ./.kubernetes/service/reverse-proxy-nodeport.yaml
+            - sed -i -e 's/testdb/proddb/g' ./.kubernetes/statefulset/database.yaml
+            - kubectl -n prod apply -f ./.kubernetes/ --recursive --insecure-skip-tls-verify
+            - sh ./.semaphore/scripts/rollout.sh prod statefulset database
+            - sh ./.semaphore/scripts/rollout.sh prod deployment backend
+            - sh ./.semaphore/scripts/rollout.sh prod deployment frontend
+            - sh ./.semaphore/scripts/rollout.sh prod deployment reverseproxy
       secrets:
-        - name: google-cloud-stg
+        - name: kubectl
+      env_vars:
+        - name: KUBECONFIG
+          value: /home/semaphore/.kube/config
   - name: Test Prod
     skip:
       when: "branch != 'master'"
@@ -54,11 +61,10 @@ blocks:
           - checkout
           - docker pull $DOCKER_USERNAME/fullstackfit_test:latest
           - source ./.semaphore/scripts/create-test-env-file.sh
-          - cd test
       jobs:
         - name: e2e
           commands:
-            - bash testcontainer robot -v environment:prod -v remote_webdriver:false -e DBconnection -i smoke -v browser:Chrome testsuites/e2e.robot
+            bash ./test/rerunner.sh robotlooper -v environment:prod -v remote_webdriver:false -e DBconnection -i smoke -v browser:Chrome testsuites/e2e.robot
       epilogue:
         always:
           commands:
