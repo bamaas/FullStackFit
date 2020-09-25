@@ -94,10 +94,10 @@ blocks:
         - name: to test
           commands:
             # change image tags from :latest -> :$GIT_COMMIT_SHA
-            - sed -i -e "s/:latest/:$GIT_COMMIT_SHA/g" ./.kubernetes/deployment/backend.yaml
-            - sed -i -e "s/:latest/:$GIT_COMMIT_SHA/g" ./.kubernetes/deployment/frontend.yaml
-            - sed -i -e "s/:latest/:$GIT_COMMIT_SHA/g" ./.kubernetes/deployment/reverse-proxy.yaml
-            - sed -i -e "s/:latest/:$GIT_COMMIT_SHA/g" ./.kubernetes/statefulset/database.yaml
+            - sed -i -e "s/fullstackfit_backend:latest/registry:fullstackfit_backend.$GIT_COMMIT_SHA/g" ./.kubernetes/deployment/backend.yaml
+            - sed -i -e "s/fullstackfit_frontend:latest/registry:fullstackfit_frontend.$GIT_COMMIT_SHA/g" ./.kubernetes/deployment/frontend.yaml
+            - sed -i -e "s/fullstackfit_reverse_proxy:latest/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA/g" ./.kubernetes/deployment/reverse-proxy.yaml
+            - sed -i -e "s/fullstackfit_database:latest/registry:fullstackfit_database.$GIT_COMMIT_SHA/g" ./.kubernetes/statefulset/database.yaml
             - sed -i -e 's/EXPOSED-NODEPORT/30004/g' ./.kubernetes/service/reverse-proxy-nodeport.yaml
             - kubectl -n test apply -f ./.kubernetes/ --recursive --insecure-skip-tls-verify
             - sh ./.semaphore/scripts/rollout.sh test statefulset database
