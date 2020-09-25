@@ -51,7 +51,7 @@ blocks:
         - name: kubectl
       env_vars:
         - name: KUBECONFIG
-          value: /home/semaphore/.kube/config
+          value: /home/semaphore/.kube/config.yaml
   - name: Test Prod
     skip:
       when: "branch != 'master'"

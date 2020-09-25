@@ -108,7 +108,7 @@ blocks:
         - name: kubectl
       env_vars:
         - name: KUBECONFIG
-          value: /home/semaphore/.kube/config
+          value: /home/semaphore/.kube/config.yaml
   - name: Integration test
     dependencies: ["Deploy"]
     task:
@@ -130,7 +130,7 @@ blocks:
         - name: kubectl
       env_vars:
         - name: KUBECONFIG
-          value: /home/semaphore/.kube/config
+          value: /home/semaphore/.kube/config.yaml
   - name: E2E test
     dependencies: ["Integration test"]
     task:
