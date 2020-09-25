@@ -117,7 +117,7 @@ blocks:
           - checkout
           - source ./.semaphore/scripts/export-git-env-vars.sh
           - source ./.semaphore/scripts/create-test-env-file.sh
-          - kubectl -n test port-forward statefulset/database 5432:5432 --insecure-skip-tls-verify
+          - kubectl -n test port-forward statefulset/database 5432:5432 --insecure-skip-tls-verify &
       jobs:
         - name: api
           commands:
@@ -125,6 +125,7 @@ blocks:
       epilogue:
         always:
           commands:
+            - pkill kubectl
             - artifact push job ./test/logs/log.html
       secrets:
         - name: kubectl
