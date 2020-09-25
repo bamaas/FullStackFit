@@ -5,9 +5,8 @@
 
 # Fulltackfit project - Bas Maas
 
-Frontend deployed @ [fit.basmaas.nl](https://fit.basmaas.nl) (Running @ Google Cloud)
-
-Backend API docs @ [fit.basmaas.nl/api](https://fit.basmaas.nl/api) (Running @ Google Cloud)
+Prod deployed @ [fit.basmaas.nl](https://fit.basmaas.nl) (Running on Kubernetes @ My Home)
+Test deployed @ [test.fit.basmaas.nl](https://test.fit.basmaas.nl) (Running on Kubernetes @ My Home)
 
 CI/CD @ [Semaphore](https://bamaas.semaphoreci.com/projects/FullStackFit/)
 
