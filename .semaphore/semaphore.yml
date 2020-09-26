@@ -60,7 +60,7 @@ blocks:
             - make build s="database"
             - docker tag fullstackfit_database:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_database.${IMAGE_TAG}
             - docker push ${DOCKER_USERNAME}/registry:fullstackfit_database.${IMAGE_TAG}
-        - name: backend
+        - name: Backend
           commands:
             - sem-version java 11
             - sed -i 's/localhost/database/g' ./backend/src/main/resources/application.properties
@@ -117,8 +117,8 @@ blocks:
           - checkout
           - source ./.semaphore/scripts/export-git-env-vars.sh
           - source ./.semaphore/scripts/create-test-env-file.sh
-          - docker pull ${DOCKER_USERNAME}/fullstackfit_test
           - kubectl -n test port-forward statefulset/database 5432:5432 --insecure-skip-tls-verify &
+          - docker pull ${DOCKER_USERNAME}/fullstackfit_test
       jobs:
         - name: api
           commands:
