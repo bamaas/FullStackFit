@@ -16,7 +16,7 @@ blocks:
       jobs:
         - name: Production
           commands:
-            # change image tags from :latest -> :$IMAGE_TAG
+            # change image tags from :latest -> :$IMAGE_TAG .
             - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/backend.yaml
             - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/frontend.yaml
             - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/reverse-proxy.yaml
