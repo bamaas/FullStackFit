@@ -12,7 +12,7 @@ services:
     ports:
       - 80:80
     restart: always
-    image: "fullstackfit_reverseproxy:b.${GIT_COMMIT_SHA}"
+    image: "fullstackfit_reverseproxy:b.${IMAGE_TAG}"
     build:
       context: ./reverse-proxy
     depends_on:
@@ -22,7 +22,7 @@ services:
 
   frontend:
     container_name: fit_frontend-b
-    image: "fullstackfit_frontend:b.${GIT_COMMIT_SHA}"
+    image: "fullstackfit_frontend:b.${IMAGE_TAG}"
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -36,7 +36,7 @@ services:
     
   backend:
     container_name: fit_backend-b
-    image: "fullstackfit_backend:b.${GIT_COMMIT_SHA}"
+    image: "fullstackfit_backend:b.${IMAGE_TAG}"
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -45,7 +45,7 @@ services:
   
   database:
     container_name: fit_database-b
-    image: "fullstackfit_database:b.${GIT_COMMIT_SHA}"
+    image: "fullstackfit_database:b.${IMAGE_TAG}"
     build:
       context: ./database
       dockerfile: Dockerfile 
