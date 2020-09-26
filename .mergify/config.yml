@@ -6,5 +6,5 @@ pull_request_rules:
       - base=master
     actions:
       merge:
-        method: merge
+        method: rebase
         strict: true

@@ -142,7 +142,7 @@ blocks:
           - checkout
           - source ./.semaphore/scripts/export-git-env-vars.sh
           - source ./.semaphore/scripts/create-test-env-file.sh
-          - docker pull ${DOCKER_UCSERNAME}/fullstackfit_test
+          - docker pull ${DOCKER_USERNAME}/fullstackfit_test
       jobs:
         - name: MacOS - Chrome
           commands:
