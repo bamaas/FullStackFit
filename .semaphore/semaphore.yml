@@ -101,7 +101,7 @@ blocks:
             # change image tags from :latest -> :$IMAGE_TAG
             - sed -i -e "s/fullstackfit_backend:latest/registry:fullstackfit_backend.$IMAGE_TAG/g" ./.kubernetes/deployment/backend.yaml
             - sed -i -e "s/fullstackfit_frontend:latest/registry:fullstackfit_frontend.$IMAGE_TAG/g" ./.kubernetes/deployment/frontend.yaml
-            - sed -i -e "s/fullstackfit_reverse_proxy:latest/registry:fullstackfit_reverseproxy.$IMAGE_TAG/g" ./.kubernetes/deployment/reverse-proxy.yaml
+            - sed -i -e "s/fullstackfit_reverseproxy:latest/registry:fullstackfit_reverseproxy.$IMAGE_TAG/g" ./.kubernetes/deployment/reverse-proxy.yaml
             - sed -i -e "s/fullstackfit_database:latest/registry:fullstackfit_database.$IMAGE_TAG/g" ./.kubernetes/statefulset/database.yaml
             - sed -i -e 's/EXPOSED-NODEPORT/30004/g' ./.kubernetes/service/reverse-proxy-nodeport.yaml
             - kubectl -n test apply -f ./.kubernetes/ --recursive --insecure-skip-tls-verify
@@ -173,7 +173,7 @@ blocks:
           # Pull images from bamaas/registry
           - echo ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_database.${IMAGE_TAG} | xargs -n 1 docker pull
           # Tag to :$IMAGE_TAG
-          - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_frontend:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_backend.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_backend:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_database.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_database:$GIT_COMMIT_SHA $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:$GIT_COMMIT_SHA | xargs -n 2 docker tag
+          - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_frontend:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_backend.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_backend:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_database.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_database:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_reverseproxy:$IMAGE_TAG | xargs -n 2 docker tag
           # Push :$IMAGE_TAG
           - echo ${DOCKER_USERNAME}/fullstackfit_frontend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_backend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_reverseproxy:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_database:$IMAGE_TAG | xargs -n 1 docker push
 promotions:
