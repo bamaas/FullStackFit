@@ -86,6 +86,11 @@ blocks:
   - name: Deploy to Kubernetes
     dependencies: ["Build"]
     task:
+      secrets:
+        - name: kubectl
+      env_vars:
+        - name: KUBECONFIG
+          value: /home/semaphore/.kube/config.yaml
       prologue:
         commands:
           - checkout
@@ -104,11 +109,6 @@ blocks:
             - sh ./.semaphore/scripts/rollout.sh test deployment backend
             - sh ./.semaphore/scripts/rollout.sh test deployment frontend
             - sh ./.semaphore/scripts/rollout.sh test deployment reverse-proxy
-      secrets:
-        - name: kubectl
-      env_vars:
-        - name: KUBECONFIG
-          value: /home/semaphore/.kube/config.yaml
   - name: Integration test
     dependencies: ["Deploy"]
     task:
