@@ -34,7 +34,7 @@ blocks:
           - source ./.semaphore/scripts/export-git-env-vars.sh
           - sem-version java 11
       jobs:
-        - name: sonarcloud
+        - name: SonarQube
           commands:
             - export SONAR_SCANNER_VERSION=4.2.0.1873
             - export SONAR_SCANNER_HOME=$HOME/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux
@@ -44,7 +44,7 @@ blocks:
             - export SONAR_SCANNER_OPTS="-server"
             - mvn package -Dmaven.compiler.executable=javac -Dmaven.test.skip=true -f ./backend
             - sonar-scanner -Dsonar.organization=bamaas -Dsonar.projectKey=bamaas_FullStackFit -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.branch.name=${GIT_BRANCH} -Dsonar.java.binaries="backend/target" -Dsonar.exclusions="**/.archive/**, **/test/**, **/.github/**, **/.mergify/**"
-  - name: Build
+  - name: Docker build
     dependencies: ["Code analysis"]
     task:
       secrets:
@@ -55,62 +55,62 @@ blocks:
           - source ./.semaphore/scripts/export-git-env-vars.sh
           - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
       jobs:
-        - name: database
+        - name: Database
           commands:
             - make build s="database"
-            - docker tag fullstackfit_database:b.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_database.${GIT_COMMIT_SHA}
-            - docker push ${DOCKER_USERNAME}/registry:fullstackfit_database.${GIT_COMMIT_SHA}
-        - name: backend
+            - docker tag fullstackfit_database:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_database.${IMAGE_TAG}
+            - docker push ${DOCKER_USERNAME}/registry:fullstackfit_database.${IMAGE_TAG}
+        - name: Backend
           commands:
             - sem-version java 11
             - sed -i 's/localhost/database/g' ./backend/src/main/resources/application.properties
             - mvn package -Dmaven.compiler.executable=javac -Dmaven.test.skip=true -f ./backend
             - make build s="backend"
-            - docker tag fullstackfit_backend:b.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${GIT_COMMIT_SHA}
-            - docker push ${DOCKER_USERNAME}/registry:fullstackfit_backend.${GIT_COMMIT_SHA}
-        - name: frontend
+            - docker tag fullstackfit_backend:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${IMAGE_TAG}
+            - docker push ${DOCKER_USERNAME}/registry:fullstackfit_backend.${IMAGE_TAG}
+        - name: Frontend
           commands:
             - make build s="frontend"
-            - docker tag fullstackfit_frontend:b.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${GIT_COMMIT_SHA}
-            - docker push ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${GIT_COMMIT_SHA}
-        - name: proxy
+            - docker tag fullstackfit_frontend:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${IMAGE_TAG}
+            - docker push ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${IMAGE_TAG}
+        - name: Reverse proxy
           commands:
             - make build s="reverseproxy"
-            - docker tag fullstackfit_reverseproxy:b.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${GIT_COMMIT_SHA}
-            - docker push ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${GIT_COMMIT_SHA}
-        - name: test
+            - docker tag fullstackfit_reverseproxy:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${IMAGE_TAG}
+            - docker push ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${IMAGE_TAG}
+        - name: Test
           commands:
             - bash ./.semaphore/scripts/create-test-env-file.sh
             - docker-compose -f docker-compose-test.yml build
             - docker push ${DOCKER_USERNAME}/fullstackfit_test:latest
-  - name: Deploy
-    dependencies: ["Build"]
+  - name: Deploy to Kubernetes
+    dependencies: ["Docker build"]
     task:
+      secrets:
+        - name: kubectl
+      env_vars:
+        - name: KUBECONFIG
+          value: /home/semaphore/.kube/config.yaml
       prologue:
         commands:
           - checkout
           - source ./.semaphore/scripts/export-git-env-vars.sh
       jobs:
-        - name: to test
+        - name: To test environment
           commands:
-            # change image tags from :latest -> :$GIT_COMMIT_SHA
-            - sed -i -e "s/fullstackfit_backend:latest/registry:fullstackfit_backend.$GIT_COMMIT_SHA/g" ./.kubernetes/deployment/backend.yaml
-            - sed -i -e "s/fullstackfit_frontend:latest/registry:fullstackfit_frontend.$GIT_COMMIT_SHA/g" ./.kubernetes/deployment/frontend.yaml
-            - sed -i -e "s/fullstackfit_reverse_proxy:latest/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA/g" ./.kubernetes/deployment/reverse-proxy.yaml
-            - sed -i -e "s/fullstackfit_database:latest/registry:fullstackfit_database.$GIT_COMMIT_SHA/g" ./.kubernetes/statefulset/database.yaml
+            # change image tags from :latest -> :$IMAGE_TAG
+            - sed -i -e "s/fullstackfit_backend:latest/registry:fullstackfit_backend.$IMAGE_TAG/g" ./.kubernetes/deployment/backend.yaml
+            - sed -i -e "s/fullstackfit_frontend:latest/registry:fullstackfit_frontend.$IMAGE_TAG/g" ./.kubernetes/deployment/frontend.yaml
+            - sed -i -e "s/fullstackfit_reverse_proxy:latest/registry:fullstackfit_reverseproxy.$IMAGE_TAG/g" ./.kubernetes/deployment/reverse-proxy.yaml
+            - sed -i -e "s/fullstackfit_database:latest/registry:fullstackfit_database.$IMAGE_TAG/g" ./.kubernetes/statefulset/database.yaml
             - sed -i -e 's/EXPOSED-NODEPORT/30004/g' ./.kubernetes/service/reverse-proxy-nodeport.yaml
             - kubectl -n test apply -f ./.kubernetes/ --recursive --insecure-skip-tls-verify
             - sh ./.semaphore/scripts/rollout.sh test statefulset database
             - sh ./.semaphore/scripts/rollout.sh test deployment backend
             - sh ./.semaphore/scripts/rollout.sh test deployment frontend
             - sh ./.semaphore/scripts/rollout.sh test deployment reverse-proxy
-      secrets:
-        - name: kubectl
-      env_vars:
-        - name: KUBECONFIG
-          value: /home/semaphore/.kube/config.yaml
   - name: Integration test
-    dependencies: ["Deploy"]
+    dependencies: ["Deploy to Kubernetes"]
     task:
       prologue:
         commands:
@@ -118,6 +118,7 @@ blocks:
           - source ./.semaphore/scripts/export-git-env-vars.sh
           - source ./.semaphore/scripts/create-test-env-file.sh
           - kubectl -n test port-forward statefulset/database 5432:5432 --insecure-skip-tls-verify &
+          - docker pull ${DOCKER_USERNAME}/fullstackfit_test
       jobs:
         - name: api
           commands:
@@ -129,20 +130,19 @@ blocks:
             - artifact push job ./test/logs/log.html
       secrets:
         - name: kubectl
+        - name: docker
       env_vars:
         - name: KUBECONFIG
           value: /home/semaphore/.kube/config.yaml
   - name: E2E test
     dependencies: ["Integration test"]
     task:
-      secrets:
-        - name: docker
-        - name: browserstack
       prologue:
         commands:
           - checkout
           - source ./.semaphore/scripts/export-git-env-vars.sh
           - source ./.semaphore/scripts/create-test-env-file.sh
+          - docker pull ${DOCKER_USERNAME}/fullstackfit_test
       jobs:
         - name: MacOS - Chrome
           commands:
@@ -150,10 +150,32 @@ blocks:
         - name: Android - Samsung S10
           commands:
             - bash ./test/rerunner.sh robotlooper -v environment:test -v remote_webdriver:true -v capabilities:samsung_s10_plus -v maximize_window:false -v remote_url:${BROWSERSTACK_URL} testsuites/e2e.robot  
+      secrets:
+        - name: browserstack
+        - name: docker
       epilogue:
         always:
           commands:
             - artifact push job ./test/logs/log.html
+  - name: Promote Image
+    dependencies: ["E2E test"]
+    task:
+      secrets:
+        - name: docker
+      prologue:
+        commands:
+          - checkout
+          - source ./.semaphore/scripts/export-git-env-vars.sh
+          - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+      jobs:
+        - name: To DockerHub
+          commands:
+          # Pull images from bamaas/registry
+          - echo ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_database.${IMAGE_TAG} | xargs -n 1 docker pull
+          # Tag to :$IMAGE_TAG
+          - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_frontend:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_backend.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_backend:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_database.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_database:$GIT_COMMIT_SHA $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:$GIT_COMMIT_SHA | xargs -n 2 docker tag
+          # Push :$IMAGE_TAG
+          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_backend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_reverseproxy:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_database:$IMAGE_TAG | xargs -n 1 docker push
 promotions:
 - name: Deploy
   pipeline_file: deploy-prod.yml

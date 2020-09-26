@@ -21,9 +21,6 @@ clean-be:
 lint-dockerfile:
 	docker run --rm -i hadolint/hadolint < ${f}
 
-notify-gitter:
-	curl -d message="**[Semaphore[bot]](${SEMAPHORE_ORGANIZATION_URL})** [${SEMAPHORE_JOB_NAME}](${SEMAPHORE_ORGANIZATION_URL}/workflows/${SEMAPHORE_WORKFLOW_ID}) _${SEMAPHORE_JOB_RESULT}_ — [${GIT_COMMIT_SHA}](github.com/bamaas/FullStackFit/commit/${GIT_COMMIT_SHA_LONG}) *${GIT_COMMIT_MSG}*" -d level=${level} https://webhooks.gitter.im/e/afa7445bc110e2ed8000
-
 # DEV
 dev:
 	docker-compose -f docker-compose-dev.yml build

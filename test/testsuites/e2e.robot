@@ -37,7 +37,6 @@ Test Teardown       run keywords      close browser if running remotely and repo
 
 *** Test Cases ***
 Add entry in frontend
-    [Tags]                      Smoke
     # Setup - determine the latest entry and create one that has the same date
     send POST ENTRY request     
     ${response}=                send GET ENTRIES request
@@ -49,7 +48,6 @@ Add entry in frontend
     Add entry                   weight=${weight}    note=${note}        date=${date}
 
 Edit entry in frontend
-    [Tags]                      Smoke
     # Setup
     send POST ENTRY request      # post entry to be sure there is at least 1 entry to edit
     ${response}=                 send GET ENTRIES request

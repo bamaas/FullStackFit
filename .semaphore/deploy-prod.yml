@@ -4,8 +4,8 @@ agent:
   machine:
     type: e1-standard-2
     os_image: ubuntu1804
-blocks:
-  - name: Promote Image
+blocks:        
+  - name: Deploy to Kubernetes
     skip:
       when: "branch != 'master'"
     task:
@@ -13,33 +13,14 @@ blocks:
         commands:
           - checkout
           - source ./.semaphore/scripts/export-git-env-vars.sh
-          - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
-      secrets:
-        - name: docker
       jobs:
-      # Push the newest :latest image to DockerHub
-        - name: to DockerHub
+        - name: Production
           commands:
-          # Pull images from bamaas/registry (private container image registry)
-          - echo ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${GIT_COMMIT_SHA} ${DOCKER_USERNAME}/registry:fullstackfit_database.${GIT_COMMIT_SHA} | xargs -n 1 docker pull
-          # Tag to :$GIT_COMMIT_SHA for public registry
-          - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_frontend:$GIT_COMMIT_SHA $DOCKER_USERNAME/registry:fullstackfit_backend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_backend:$GIT_COMMIT_SHA $DOCKER_USERNAME/registry:fullstackfit_database.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_database:$GIT_COMMIT_SHA $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:$GIT_COMMIT_SHA | xargs -n 2 docker tag
-          # Tag to :latest for public registry
-          - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/registry:fullstackfit_backend.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/registry:fullstackfit_database.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:latest | xargs -n 2 docker tag
-          # Push :$GIT_COMMIT_SHA to public registry
-          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:$GIT_COMMIT_SHA ${DOCKER_USERNAME}/fullstackfit_backend:$GIT_COMMIT_SHA ${DOCKER_USERNAME}/fullstackfit_reverseproxy:$GIT_COMMIT_SHA ${DOCKER_USERNAME}/fullstackfit_database:$GIT_COMMIT_SHA | xargs -n 1 docker push
-          # Push :latest to public registry
-          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:latest ${DOCKER_USERNAME}/fullstackfit_backend:latest ${DOCKER_USERNAME}/fullstackfit_reverseproxy:latest ${DOCKER_USERNAME}/fullstackfit_database:latest | xargs -n 1 docker push
-  - name: Deploy
-    skip:
-      when: "branch != 'master'"
-    task:
-      prologue:
-        commands:
-          - checkout
-      jobs:
-        - name: to prod
-          commands:
+            # change image tags from :latest -> :$IMAGE_TAG
+            - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/backend.yaml
+            - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/frontend.yaml
+            - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/reverse-proxy.yaml
+            - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/statefulset/database.yaml
             - sed -i -e 's/EXPOSED-NODEPORT/30005/g' ./.kubernetes/service/reverse-proxy-nodeport.yaml
             - sed -i -e 's/testdb/proddb/g' ./.kubernetes/statefulset/database.yaml
             - kubectl -n prod apply -f ./.kubernetes/ --recursive --insecure-skip-tls-verify &
@@ -52,19 +33,20 @@ blocks:
       env_vars:
         - name: KUBECONFIG
           value: /home/semaphore/.kube/config.yaml
-  - name: Test Prod
+  - name: Smoke test
     skip:
       when: "branch != 'master'"
     task:
       prologue:
         commands:
           - checkout
-          - docker pull $DOCKER_USERNAME/fullstackfit_test:latest
+          - docker pull ${DOCKER_USERNAME}/fullstackfit_test
+          - source ./.semaphore/scripts/export-git-env-vars.sh
           - source ./.semaphore/scripts/create-test-env-file.sh
       jobs:
-        - name: e2e
+        - name: On production
           commands:
-            bash ./test/rerunner.sh robotlooper -v environment:prod -v remote_webdriver:false -e DBconnection -i smoke -v browser:Chrome testsuites/e2e.robot
+            - bash ./test/rerunner.sh robotlooper -v environment:prod -v remote_webdriver:false -e DBconnection -i smoke -v browser:Chrome testsuites/e2e.robot
       epilogue:
         always:
           commands:
@@ -76,3 +58,23 @@ blocks:
       secrets:
         - name: docker
         - name: browserstack
+  - name: Tag to latest release
+    skip:
+      when: "branch != 'master'"
+    task:
+      prologue:
+        commands:
+          - checkout
+          - source ./.semaphore/scripts/export-git-env-vars.sh
+          - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+      jobs:
+        - name: Docker tag latest
+          commands:
+          # Pull images
+          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_backend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_reverseproxy:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_database:$IMAGE_TAG | xargs -n 1 docker pull
+          # Tag to :latest
+          - echo $DOCKER_USERNAME/fullstackfit_frontend:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/fullstackfit_backend:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/fullstackfit_database:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/fullstackfit_reverseproxy:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_reverseproxy:latest | xargs -n 2 docker tag
+          # Push :latest to public registry
+          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:latest ${DOCKER_USERNAME}/fullstackfit_backend:latest ${DOCKER_USERNAME}/fullstackfit_reverseproxy:latest ${DOCKER_USERNAME}/fullstackfit_database:latest | xargs -n 1 docker push
+      secrets:
+        - name: docker
