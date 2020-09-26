@@ -117,6 +117,7 @@ blocks:
           - checkout
           - source ./.semaphore/scripts/export-git-env-vars.sh
           - source ./.semaphore/scripts/create-test-env-file.sh
+          - docker pull ${DOCKER_USERNAME}/fullstackfit_test:latest
           - kubectl -n test port-forward statefulset/database 5432:5432 --insecure-skip-tls-verify &
       jobs:
         - name: api
@@ -140,7 +141,7 @@ blocks:
           - checkout
           - source ./.semaphore/scripts/export-git-env-vars.sh
           - source ./.semaphore/scripts/create-test-env-file.sh
-          - docker pull ${DOCKER_USERNAME}/fulstackfit_test:latest
+          - docker pull ${DOCKER_USERNAME}/fullstackfit_test:latest
       jobs:
         - name: MacOS - Chrome
           commands:
