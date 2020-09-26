@@ -84,7 +84,7 @@ blocks:
             - docker-compose -f docker-compose-test.yml build
             - docker push ${DOCKER_USERNAME}/fullstackfit_test:latest
   - name: Deploy to Kubernetes
-    dependencies: ["Build"]
+    dependencies: ["Docker build"]
     task:
       secrets:
         - name: kubectl
@@ -110,7 +110,7 @@ blocks:
             - sh ./.semaphore/scripts/rollout.sh test deployment frontend
             - sh ./.semaphore/scripts/rollout.sh test deployment reverse-proxy
   - name: Integration test
-    dependencies: ["Deploy"]
+    dependencies: ["Deploy to Kubernetes"]
     task:
       prologue:
         commands:
@@ -158,6 +158,8 @@ blocks:
   - name: Promote Image
     dependencies: ["E2E test"]
     task:
+      secrets:
+        - name: docker
       prologue:
         commands:
           - checkout
@@ -172,12 +174,10 @@ blocks:
           - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_frontend:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_backend.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_backend:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_database.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_database:$GIT_COMMIT_SHA $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$GIT_COMMIT_SHA $DOCKER_USERNAME/fullstackfit_reverseproxy:$GIT_COMMIT_SHA | xargs -n 2 docker tag
           # Push :$IMAGE_TAG
           - echo ${DOCKER_USERNAME}/fullstackfit_frontend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_backend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_reverseproxy:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_database:$IMAGE_TAG | xargs -n 1 docker push
-    secrets:
-        - name: docker
 promotions:
 - name: Deploy
   pipeline_file: deploy-prod.yml
   auto_promote:
     when: "result = 'passed' and branch = 'master'"
-execution_time_limit:
-  minutes: 30
+  execution_time_limit:
+    minutes: 30
