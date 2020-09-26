@@ -179,5 +179,5 @@ promotions:
   pipeline_file: deploy-prod.yml
   auto_promote:
     when: "result = 'passed' and branch = 'master'"
-  execution_time_limit:
-    minutes: 30
+execution_time_limit:
+  minutes: 30
