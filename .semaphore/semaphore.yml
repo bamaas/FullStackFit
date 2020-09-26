@@ -117,7 +117,7 @@ blocks:
           - checkout
           - source ./.semaphore/scripts/export-git-env-vars.sh
           - source ./.semaphore/scripts/create-test-env-file.sh
-          - docker pull ${DOCKER_USERNAME}/fullstackfit_test:latest
+          - docker pull ${DOCKER_USERNAME}/fullstackfit_test
           - kubectl -n test port-forward statefulset/database 5432:5432 --insecure-skip-tls-verify &
       jobs:
         - name: api
@@ -130,6 +130,7 @@ blocks:
             - artifact push job ./test/logs/log.html
       secrets:
         - name: kubectl
+        - name: docker
       env_vars:
         - name: KUBECONFIG
           value: /home/semaphore/.kube/config.yaml
@@ -141,7 +142,7 @@ blocks:
           - checkout
           - source ./.semaphore/scripts/export-git-env-vars.sh
           - source ./.semaphore/scripts/create-test-env-file.sh
-          - docker pull ${DOCKER_USERNAME}/fullstackfit_test:latest
+          - docker pull ${DOCKER_UCSERNAME}/fullstackfit_test
       jobs:
         - name: MacOS - Chrome
           commands:
@@ -150,8 +151,8 @@ blocks:
           commands:
             - bash ./test/rerunner.sh robotlooper -v environment:test -v remote_webdriver:true -v capabilities:samsung_s10_plus -v maximize_window:false -v remote_url:${BROWSERSTACK_URL} testsuites/e2e.robot  
       secrets:
-        - name: docker
         - name: browserstack
+        - name: docker
       epilogue:
         always:
           commands:

@@ -40,7 +40,7 @@ blocks:
       prologue:
         commands:
           - checkout
-          - docker pull $DOCKER_USERNAME/fullstackfit_test:latest
+          - docker pull ${DOCKER_USERNAME}/fullstackfit_test
           - source ./.semaphore/scripts/export-git-env-vars.sh
           - source ./.semaphore/scripts/create-test-env-file.sh
       jobs:
@@ -66,6 +66,7 @@ blocks:
         commands:
           - checkout
           - source ./.semaphore/scripts/export-git-env-vars.sh
+          - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
       jobs:
         - name: Docker tag latest
           commands:
