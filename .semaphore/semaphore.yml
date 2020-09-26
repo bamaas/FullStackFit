@@ -148,13 +148,13 @@ blocks:
         - name: Android - Samsung S10
           commands:
             - bash ./test/rerunner.sh robotlooper -v environment:test -v remote_webdriver:true -v capabilities:samsung_s10_plus -v maximize_window:false -v remote_url:${BROWSERSTACK_URL} testsuites/e2e.robot  
+      secrets:
+        - name: docker
+        - name: browserstack
       epilogue:
         always:
           commands:
             - artifact push job ./test/logs/log.html
-      secrets:
-        - name: docker
-        - name: browserstack
   - name: Promote Image
     dependencies: ["E2E test"]
     task:
