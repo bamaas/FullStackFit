@@ -6,5 +6,8 @@ pull_request_rules:
       - base=master
     actions:
       merge:
-        method: rebase
+        method: squash
+        commit_message: default
+        rebase_fallback: merge
         strict: true
+        strict_method: smart+fasttrack
