@@ -96,7 +96,7 @@ blocks:
           - checkout
           - source ./.semaphore/scripts/export-git-env-vars.sh
       jobs:
-        - name: To test environment
+        - name: To test env
           commands:
             # change image tags from :latest -> :$IMAGE_TAG
             - sed -i -e "s/fullstackfit_backend:latest/registry:fullstackfit_backend.$IMAGE_TAG/g" ./.kubernetes/deployment/backend.yaml
