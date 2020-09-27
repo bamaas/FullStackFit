@@ -3,7 +3,7 @@ Resource          ../keywords/all.robot
 
 *** Variables ***
 # The value in 'environment' is used to load the config file containing variables for the specific environment, such as the GUI_URL.
-${ENVIRONMENT}                  localhostnodocker
+${ENVIRONMENT}                  test
 
 *** Settings *** 
 Suite Setup                     connect to db
