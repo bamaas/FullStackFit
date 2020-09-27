@@ -14,7 +14,7 @@ blocks:
           - checkout
           - source ./.semaphore/scripts/export-git-env-vars.sh
       jobs:
-        - name: Production
+        - name: To production
           commands:
             # change image tags from :latest -> :$IMAGE_TAG .
             - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/backend.yaml
