@@ -46,18 +46,11 @@ dev-proxy-restart:
 	docker exec -it fit_reverseproxy-dev nginx -s reload
 
 # TEST
-test:
-	make test-unit
-	sh ./test/testcontainer -v environment:localhost testsuites
-
-test-unit:
-	python3 "./backend/unit_tests/test_calculations.py"
-
 test-api:
-	sh ./test/testcontainer robotlooper testsuites/ws.robot
+	sh ./test/testcontainer robotlooper -v environment:dev testsuites/api.robot
 
 test-e2e:
-	sh ./test/testcontainer robotlooper -v remote_webdriver:false -v browser:chrome -v environment:localhost testsuites/gui.robot
+	sh ./test/testcontainer robotlooper -v remote_webdriver:false -v browser:chrome -v environment:dev testsuites/gui.robot
 
 # BUILD
 build:
