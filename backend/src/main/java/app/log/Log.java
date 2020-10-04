@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity
+@Entity(name="log")
 @Table(name="log")
 public class Log {
 
@@ -32,7 +32,6 @@ public class Log {
     @Column(name="\"note\"")
     private String note;
 
-//    @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     @Column(name="\"date\"")
     private Date date;
