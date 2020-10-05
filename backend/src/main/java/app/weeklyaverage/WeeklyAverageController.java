@@ -1,14 +1,12 @@
 package app.weeklyaverage;
 
-import app.weeklyaverage.WeeklyAverage;
-import app.weeklyaverage.WeeklyAverageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
 @CrossOrigin
 @RestController
-@RequestMapping("/average/")
+@RequestMapping("/stats/avg/")
 public class WeeklyAverageController {
 
     @Autowired
