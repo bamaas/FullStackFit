@@ -8,7 +8,7 @@ ${ENVIRONMENT}                  test
 *** Settings *** 
 Suite Setup                     connect to db
 Suite Teardown                  disconnect from database
-Test Setup                      delete all rows from table         log
+Test Setup                      delete all rows from table         entry
 Test Teardown                   report last output message on failure
 
 *** Test Cases ***

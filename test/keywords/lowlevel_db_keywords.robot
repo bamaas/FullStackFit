@@ -6,7 +6,7 @@ Insert entry into db
     [Arguments]                        ${id}        ${date}     ${weight}       ${note}
     ${date}=                           run keyword if       '${date}' != 'current_timestamp'        set variable      TO_TIMESTAMP('${date}', 'YYYY/MM/DD[T]HH24:MI:SS')
     ...  ELSE                          set variable         ${date}  
-    execute sql string                 INSERT INTO log (id,date, weight, note) VALUES (${id}, ${date}, ${weight}, '${note}'); 
+    execute sql string                 INSERT INTO entry (id,date, weight, note) VALUES (${id}, ${date}, ${weight}, '${note}'); 
 
 Verify entry in db
     [Arguments]                         ${id}     ${weight}       ${note}     ${date}
@@ -17,7 +17,7 @@ Verify entry in db
 
 Get entry from db
     [Arguments]                        ${id}
-    ${row}=                            get row from query                  SELECT weight,note,date FROM log WHERE id=${id}
+    ${row}=                            get row from query                  SELECT weight,note,date FROM entry WHERE id=${id}
     ${date}=                           convert date   ${row}[2]            result_format=%Y-%m-%dT%H:%M:%S
     ${entry}=                          create dictionary
     ...                                weight=${row}[0]
