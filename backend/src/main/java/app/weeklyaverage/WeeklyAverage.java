@@ -3,7 +3,6 @@ package app.weeklyaverage;
 import javax.persistence.*;
 import java.io.Serializable;
 
-//    Year and week compose the composite primary key
 class WeeklyAverageId implements Serializable {
 
     private short year;
@@ -24,11 +23,14 @@ class WeeklyAverageId implements Serializable {
 public class WeeklyAverage {
 
     public WeeklyAverage(){}
-    public WeeklyAverage(short year, byte week, float weight) {
+
+    public WeeklyAverage(short year, byte week, float weightAverage, Float weightDifference, short weightMeasurementCount) {
         super();
         this.year = year;
         this.week = week;
-        this.weight = weight;
+        this.weightAverage = weightAverage;
+        this.weightDifference = weightDifference;
+        this.weightMeasurementCount = weightMeasurementCount;
     }
 
     @Id
@@ -39,8 +41,22 @@ public class WeeklyAverage {
     @Column(name="\"week\"", nullable = false)
     private byte week;
 
-    @Column(name="\"weight\"", nullable = false)
-    private float weight;
+    @Column(name="\"weight_average\"", nullable = false)
+    private float weightAverage;
+
+    @Column(name="\"weight_difference\"")
+    private Float weightDifference;
+
+    @Column(name="\"weight_measurement_count\"")
+    private short weightMeasurementCount;
+
+    public Float getWeightDifference() {
+        return weightDifference;
+    }
+
+    public void setWeightDifference(Float weightDifference) {
+        this.weightDifference = weightDifference;
+    }
 
     public short getYear() {
         return year;
@@ -58,11 +74,19 @@ public class WeeklyAverage {
         this.week = week;
     }
 
-    public float getWeight() {
-        return weight;
+    public float getWeightAverage() {
+        return weightAverage;
     }
 
-    public void setWeight(float weight) {
-        this.weight = weight;
+    public void setWeightAverage(float weightAverage) {
+        this.weightAverage = weightAverage;
+    }
+
+    public short getWeightMeasurementCount() {
+        return weightMeasurementCount;
+    }
+
+    public void setWeightMeasurementCount(short weightMeasurementCount) {
+        this.weightMeasurementCount = weightMeasurementCount;
     }
 }

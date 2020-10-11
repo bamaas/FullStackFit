@@ -1,18 +1,18 @@
-package app.log;
+package app.entry;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity(name="log")
-@Table(name="log")
-public class Log {
+@Entity(name="entry")
+@Table(name="entry")
+public class Entry {
 
-    public Log(){
+    public Entry(){
 
     }
 
-    public Log(long id, float weight, Date date, String note) {
+    public Entry(long id, float weight, Date date, String note) {
         super();
         this.id = id;
         this.weight = weight;
@@ -20,20 +20,53 @@ public class Log {
         this.note = note;
     }
 
+    @Override
+    public String toString(){
+        return "id: " + getId()+
+                " | Weight: " + getWeight() +
+                " | Date: " + getDate()  +
+                " | Note: " + getNote() +
+                " | Year: " + getYear() +
+                " | Week: " + getWeek();
+    }
+
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name="\"id\"",unique=true,nullable=false)
     private long id;
 
-    @Column(name="\"weight\"")
+    @Column(name="\"weight\"", nullable = false)
     private float weight;
 
     @Column(name="\"note\"")
     private String note;
 
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
-    @Column(name="\"date\"")
+    @Column(name="\"date\"", unique = true, nullable = false)
     private Date date;
+
+    @JsonFormat(pattern="yyyy")
+    @Column(name="\"year\"", nullable = true)
+    private short year;
+
+    @Column(name="\"week\"", nullable = true)
+    private byte week;
+
+    public short getYear() {
+        return year;
+    }
+
+    public void setYear(short year) {
+        this.year = year;
+    }
+
+    public byte getWeek() {
+        return week;
+    }
+
+    public void setWeek(byte week) {
+        this.week = week;
+    }
 
     public String getNote() {
         return note;

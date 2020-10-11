@@ -9,27 +9,41 @@ Prod deployed @ [fit.basmaas.nl](https://fit.basmaas.nl) (Running on Kubernetes 
 
 Test deployed @ [test.fit.basmaas.nl](https://test.fit.basmaas.nl) (Running on Kubernetes @ My Home)
 
-CI/CD @ [Semaphore](https://bamaas.semaphoreci.com/projects/FullStackFit/)
+### What is this application about?
+In my free time I like to be in the gym and move some weights. For years I keep track of my body weight in an Excel sheet, every day. At the end of a week I calculate the average of that week and compare it with the previous week, so I can determine if I lost or gained weight. I thought it would be nice to build a web application to replace the Excel sheet.
 
-Container Registry @ [DockerHub](https://hub.docker.com/u/bamaas)
+### Technology stack
+- Frontend: Typescript, Angular.
+- Backend: Java, Spring Boot.
+- Database: PostgreSQL.
+- Test: Python, Robot Framework.
+- CI/CD @ [Semaphore](https://bamaas.semaphoreci.com/projects/FullStackFit/)
+- Container Registry @ [DockerHub](https://hub.docker.com/u/bamaas)
+- Uptime Monitoring @ [Uptime Robot](https://stats.uptimerobot.com/zp8vnhRRwy)
+- E2E Test Reports (latest build only) @ [BrowserStack](https://automate.browserstack.com/public-build/SFlpQ0s5WW1GaWlJYjVjL3R4TGpRZHBUei9lY1J5Sng5QnY3NjdQSlhSQT0tLW5vY1FwamkyTituZDRldG1DOG0wNXc9PQ==--9bfa6e5f0a81668369f9ebb1ba200bc64ef3191f)
+- Code Quality & Security @ [Sonarcloud](https://sonarcloud.io/dashboard?id=bamaas_FullStackFit)
 
-Uptime Monitoring @ [Uptime Robot](https://stats.uptimerobot.com/zp8vnhRRwy)
+### Top 3 features I'm proud of
 
-E2E Test Reports (latest build only) @ [BrowserStack](https://automate.browserstack.com/badge.svg?badge_key=SFlpQ0s5WW1GaWlJYjVjL3R4TGpRZHBUei9lY1J5Sng5QnY3NjdQSlhSQT0tLW5vY1FwamkyTituZDRldG1DOG0wNXc9PQ==--9bfa6e5f0a81668369f9ebb1ba200bc64ef3191f)
+#### 1. The enitre development to deployment process is automated. 
+Commits pushed to the dev branch automatically opens a pull request and triggers a build of the pipeline. If all checks in the pipeline passes the pull request is merged into master. From here on we have a new master version that needs to be tested. If everything passes, a deployment pipeline is started. At the end of the deployment a small smoke test runs to validate that the deployment was successful.
 
-Code Quality & Security @ [Sonarcloud](https://sonarcloud.io/dashboard?id=bamaas_FullStackFit)
+#### 2. The application is hosted at my home running on a Kubernetes cluster.
+I have an Intel NUC running at my home with Proxmox installed; a server virtualization management platform. I've created several virtual machines with Ubuntu. One of these nodes is running a Kubernetes cluster on which I deploy my Fullstackfit application on.
 
-## Dependencies
-- Docker
-- Docker Compose
-- Make
+#### 3. Mobile first approach.
+Because I'm going to use this application on my phone I want it to be compatible with mobile devices. That's why I design this with a mobile-first approach and thus it needs to be tested on mobile devices. Before a new version is deployed to production it is first being e2e tested on the above mentioned test environment. During these e2e tests Selenium connects with a node from Browserstack where the tests are being executed on real mobile devices. These tests are [recorded](https://automate.browserstack.com/public-build/SFlpQ0s5WW1GaWlJYjVjL3R4TGpRZHBUei9lY1J5Sng5QnY3NjdQSlhSQT0tLW5vY1FwamkyTituZDRldG1DOG0wNXc9PQ==--9bfa6e5f0a81668369f9ebb1ba200bc64ef3191f).
 
-## Running
-Commando to run latest release:
+## Run locally
+Run the following command to run the latest release of the application. Be sure `make` is installed.
 
 `make latest`
 
-This will start the application on `http://localhost:80`. To view the API documentation visit: `http://localhost:80/api`
+This will start the application on `http://localhost:80`.
+
+### Backlog
+1. Frontend view for displaying the weekly averages and the delta.
+2. Authentication with Keycloak.
 
 ## License
 [MIT](https://github.com/bamaas/FullStackFit/blob/master/LICENSE.md)

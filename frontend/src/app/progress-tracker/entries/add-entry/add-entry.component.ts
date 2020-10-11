@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, Input, Inject } from '@angula
 import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { EntryService } from '../../../services/entry.service'
+import { EntryService, Entry } from '../../../services/entry.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -31,7 +31,6 @@ import { PickDateAdapter, PICK_FORMATS } from 'src/app/shared/pick-date-adapter'
 import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material';
 import {MAT_BOTTOM_SHEET_DATA} from '@angular/material/bottom-sheet';
 import * as moment from 'moment';
-
 
 @Component({
   selector: 'app-add-entry-sheet',
@@ -87,33 +86,41 @@ export class AddEntrySheet implements OnInit{
     this._bottomSheetRef.dismiss();
   }
 
+  private _submitEnabled = true;
+
   submit(): void{
-    if (!this.entryForm.invalid){
+    if (!this.entryForm.invalid && this._submitEnabled){
       const id: number = this.data.id;
       const weight: number = this.entryForm.controls['weight'].value;
       const note: string = this.entryForm.controls['note'].value;
+      const dateMoment = moment(new Date(this.entryForm.controls['date'].value));
+      // const year: number = dateMoment.year();
+      // const week: number = Math.floor(dateMoment.dayOfYear() / 7);
       if (id != null){
         // If editing etry
-        const datetime: string = moment(new Date(this.entryForm.controls['date'].value)).format("YYYY-MM-DD[T]HH:mm:ss");
-        this.edit(id, weight, datetime, note);
+        const date = dateMoment.format("YYYY-MM-DD[T]HH:mm:ss");
+        const entry: Entry = { id, weight, date, note};
+        this.edit(entry);
       } else {
-        // If new entry
-        // Get current time and add it to the date
-        const date: string = moment(new Date(this.entryForm.controls['date'].value)).format("YYYY-MM-DD");
+        // If new entry - Get current time and add it to the date
+        const dateformat: string = dateMoment.format("YYYY-MM-DD");
         const time:string = moment().format("HH:mm:ss")
-        const datetime: string = date + 'T' + time;
-        this.add(weight, datetime, note);
+        const date: string = dateformat + 'T' + time;
+        const entry: Entry = { id, weight, date, note}
+        this.add(entry);
+        this._submitEnabled = false;
+        setTimeout(f => this._submitEnabled = true, 1000);
       }
     }
   }
 
-  edit(id:number, weight:number, date:string, note:string): void{
-    this._entryService.editEntryOnTable(id, weight, date, note);
+  edit(entry: Entry): void{
+    this._entryService.editEntryOnTable(entry);
     this._bottomSheetRef.dismiss();
   }
   
-  add(weight:number, date:string, note:string): void{
-      this._entryService.addEntryToPage(weight, date, note);
+  add(entry: Entry): void{
+      this._entryService.addEntryToPage(entry);
       this._bottomSheetRef.dismiss();
     } 
 }
