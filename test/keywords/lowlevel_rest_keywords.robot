@@ -6,7 +6,7 @@ Send UPDATE ENTRY request
     ...                         weight=${weight}
     ...                         note=${note}
     ...                         date=${date}
-    ${response}=                send PUT request         ${BACKEND_URL}/log     ${body}         
+    ${response}=                send PUT request         ${BACKEND_URL}/entry     ${body}         
     assert JSON                 ${response}              $.id                   ${id}           number
     assert JSON                 ${response}              $.date                 ${date}         string
     assert JSON                 ${response}              $.weight               ${weight}       number
@@ -25,7 +25,7 @@ Send POST ENTRY request
     ...                         weight=${weight}
     ...                         note=${note}
     ...                         date=${date}
-    ${response}=                send POST request        ${BACKEND_URL}/log     ${body}         200 
+    ${response}=                send POST request        ${BACKEND_URL}/entry     ${body}         200 
     assert JSON                 ${response}              $.weight               ${weight}       number
     assert JSON                 ${response}              $.date                 ${date}     string
     assert JSON                 ${response}              $.note                 ${note}         string
@@ -34,10 +34,10 @@ Send POST ENTRY request
 
 Send DELETE ENTRY request
     [Arguments]                 ${id}
-    ${response}=                send DELETE request        ${BACKEND_URL}/log/${id}
+    ${response}=                send DELETE request        ${BACKEND_URL}/entry/${id}
     [Return]                    ${response}      
 
 Send GET ENTRIES request
     [Arguments]                 ${page_number}=0        ${page_size}=9999
-    ${response}=                send GET request        ${BACKEND_URL}/log/?pageNo=${page_number}&pageSize=${page_size}
+    ${response}=                send GET request        ${BACKEND_URL}/entry/?pageNo=${page_number}&pageSize=${page_size}
     [Return]                    ${response}
