@@ -4,8 +4,8 @@ connect to db
     
 Insert entry into db
     [Arguments]                        ${id}        ${date}     ${weight}       ${note}
-    # ${date}=                           run keyword if       '${date}' != 'current_timestamp'        set variable      TO_TIMESTAMP('${date}', 'YYYY/MM/DD[T]HH24:MI:SS')
-    # ...  ELSE                          set variable         ${date}
+    ${date}=                           run keyword if       '${date}' != 'current_timestamp'        set variable      TO_TIMESTAMP('${date}', 'YYYY/MM/DD[T]HH24:MI:SS')
+    ...  ELSE                          set variable         ${date}
     ${year}=                           convert date         ${date}             result_format=%Y        exclude_millis=yes
     ${datetimeobj}=                    convert date         ${date}             result_format=datetime
     ${week}=                           evaluate             math.floor($datetimeobj.timetuple().tm_yday)       modules=datetime,math
