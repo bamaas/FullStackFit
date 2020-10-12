@@ -5,8 +5,10 @@ connect to db
 Insert entry into db
     [Arguments]                        ${id}        ${date}     ${weight}       ${note}
     ${date}=                           run keyword if       '${date}' != 'current_timestamp'        set variable      TO_TIMESTAMP('${date}', 'YYYY/MM/DD[T]HH24:MI:SS')
-    ...  ELSE                          set variable         ${date}  
-    execute sql string                 INSERT INTO entry (id,date, weight, note) VALUES (${id}, ${date}, ${weight}, '${note}'); 
+    ...  ELSE                          set variable         ${date}
+    ${year}=                           convert date         ${date}             result_format=%Y        exclude_milis=yes
+    ${week}=                           evaluate             math.floor($date.timetuple().tm_yday)       modules=datetime,math
+    execute sql string                 INSERT INTO entry (id,date, weight, note, year, week) VALUES (${id}, ${date}, ${weight}, '${note}', ${year}, ${week}); 
 
 Verify entry in db
     [Arguments]                         ${id}     ${weight}       ${note}     ${date}
