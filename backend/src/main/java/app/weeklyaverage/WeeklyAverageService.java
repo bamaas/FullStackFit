@@ -25,9 +25,4 @@ public class WeeklyAverageService {
         return weeklyAverageRepository.getAllSortedByYearAndWeek();
     }
 
-    public void deleteWeeklyAverage(short year, byte week){
-        logger.info("Deleting WeeklyAverage with year {} and week {}.", year, week);
-        weeklyAverageRepository.deleteByYearAndWeek(year, week);
-    }
-
 }

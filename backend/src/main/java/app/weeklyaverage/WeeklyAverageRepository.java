@@ -19,9 +19,4 @@ public interface WeeklyAverageRepository extends CrudRepository<WeeklyAverage, L
       @Query(value = "SELECT * FROM #{#entityName} GROUP BY year, week ORDER BY year, week;", nativeQuery = true)
       List<WeeklyAverage> getAllSortedByYearAndWeek();
 
-      @Modifying
-      @Transactional
-      @Query(value = "DELETE FROM #{#entityName} WHERE year = ?1 AND week = ?2", nativeQuery = true)
-      void deleteByYearAndWeek(Short year, Byte week);
-
 }

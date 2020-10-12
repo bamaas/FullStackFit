@@ -8,7 +8,7 @@
 CURDIR=$(pwd | grep -o '[^/]*$')
 if [ $CURDIR = 'test' ]; then
     testcontainer="bash testcontainer "
-elif [ $CURDIR = 'fullStackFit' ]; then
+elif [ $CURDIR = 'FullStackFit' ]; then
     testcontainer="bash ./test/testcontainer "
 else
     printf "Please run this script from ./test or ./FullStackFit (root)\nCURDIR: $CURDIR \n"

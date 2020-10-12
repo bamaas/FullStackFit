@@ -20,7 +20,7 @@ fi
 CURDIR=$(pwd | grep -o '[^/]*$')
 if [ $CURDIR = 'test' ]; then
     f="./../docker-compose-test.yml"
-elif [ $CURDIR = 'fullStackFit' ]; then
+elif [ $CURDIR = 'FullStackFit' ]; then
     f="docker-compose-test.yml"
 else
     printf "Please run this script from ./test or root. \nCURDIR: $CURDIR"
