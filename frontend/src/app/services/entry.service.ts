@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable, Subject } from 'rxjs';
 import { MatSnackBar } from '@angular/material';
+import { WeeklyAverageService } from './../services/weekly-average.service';
 
 export interface Entry {
   id: number,
@@ -18,7 +19,8 @@ export class EntryService {
 
   constructor(
     private _http: HttpClient, 
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private _weeklyAverageService: WeeklyAverageService
   ){}
 
   private entriesSubject = new Subject();
@@ -64,6 +66,7 @@ export class EntryService {
             this.lastPageReached = true;
           }
           this.emitEntries();
+          this._weeklyAverageService.addWeeklyAveragesToSubject();
         },
         error => {
           this._snackBar.open('Error occured while getting entries.', 'Dismiss', {duration: 6000})
@@ -78,6 +81,7 @@ export class EntryService {
       response => {
         this.entries = this.entries.filter(entry => entry['id'] != id);
         this.emitEntries();
+        this._weeklyAverageService.addWeeklyAveragesToSubject();
       }, 
       error => {
         this._snackBar.open('Error occured while deleting entry.', 'Dismiss', {duration: 6000})
@@ -92,6 +96,7 @@ export class EntryService {
         this.entries.push(entry);
         this.sortEntriesByDate()
         this.emitEntries();
+        this._weeklyAverageService.addWeeklyAveragesToSubject();
       }, 
       error => {
         this._snackBar.open('Error occured while adding entry.', 'Dismiss', {duration: 6000})
@@ -119,6 +124,7 @@ export class EntryService {
         }
         this.sortEntriesByDate()
         this.emitEntries();
+        this._weeklyAverageService.addWeeklyAveragesToSubject();
       },
       error => {
         this._snackBar.open('Error occured while updating entry.', 'Dismiss', {duration: 6000})

@@ -24,6 +24,7 @@ export class EntriesComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['date', 'weight', 'note', 'actions'];
   
   private mediaSub: Subscription;
+  private _entriesSub: Subscription;
   public screenHeight: number;
   public tableBodyHeight: number; // initalized in ngAfterViewInit
 
@@ -46,12 +47,13 @@ export class EntriesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this._entryService.entriesObservable.subscribe(
+    this._entriesSub = this._entryService.entriesObservable.subscribe(
       (entries: Entry[]) => {
         // this.dataSource.data = entries;    Use this when enabled sorting
         this.dataSource.data = [...entries];
       }
     );
+    this._entryService.emitEntries();
     this.mediaSub = this.mediaObserver.media$.subscribe(
       (change: MediaChange) => {
         if (change.mqAlias == 'xs'){
@@ -63,7 +65,7 @@ export class EntriesComponent implements OnInit, OnDestroy {
       this.onResize();
   }
 
-  public data: Entry[];
+  public data: Entry[] = [];
   dataSource = new TableVirtualScrollDataSource<Entry>(this.data);
 
   ngAfterViewInit() {
@@ -162,6 +164,7 @@ export class EntriesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.mediaSub.unsubscribe();
+    this._entriesSub.unsubscribe();
   }
 
 }
