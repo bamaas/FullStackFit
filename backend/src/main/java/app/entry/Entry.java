@@ -25,9 +25,7 @@ public class Entry {
         return "id: " + getId()+
                 " | Weight: " + getWeight() +
                 " | Date: " + getDate()  +
-                " | Note: " + getNote() +
-                " | Year: " + getYear() +
-                " | Week: " + getWeek();
+                " | Note: " + getNote();
     }
 
     @Id
@@ -44,29 +42,6 @@ public class Entry {
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     @Column(name="\"date\"", unique = true, nullable = false)
     private Date date;
-
-    @JsonFormat(pattern="yyyy")
-    @Column(name="\"year\"", nullable = true)
-    private short year;
-
-    @Column(name="\"week\"", nullable = true)
-    private byte week;
-
-    public short getYear() {
-        return year;
-    }
-
-    public void setYear(short year) {
-        this.year = year;
-    }
-
-    public byte getWeek() {
-        return week;
-    }
-
-    public void setWeek(byte week) {
-        this.week = week;
-    }
 
     public String getNote() {
         return note;

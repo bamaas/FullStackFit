@@ -34,11 +34,24 @@ export class WeeklyAverageService {
     this.weeklyAverageSubject.next(this.weeklyAverages);
   }
 
-  // High level
   addWeeklyAveragesToSubject(): void{
     this.getAllWeeklyAverages().subscribe(
       (weeklyAverages: WeeklyAverage[]) => {
-        // weeklyAverages.forEach(weeklyAverage => this.weeklyAverages.push(weeklyAverage));
+        weeklyAverages.forEach(
+          (weeklyAverage, index: number) => {
+            if (index+1 == weeklyAverages.length){
+              weeklyAverage.weightDifference = null;
+            } else {
+              let prevWeeklyAverage = weeklyAverages[index+1];
+              if (typeof prevWeeklyAverage !== "undefined"){
+                if (prevWeeklyAverage['week'] == (weeklyAverage['week']-1)){
+                  weeklyAverage.weightDifference = Number((weeklyAverage['weightAverage'] - prevWeeklyAverage['weightAverage']).toFixed(1));
+                } else {
+                  weeklyAverage.weightDifference = null;
+                };
+              }
+            };
+          });
         this.weeklyAverages = weeklyAverages;
         this.emitEntries();
       },

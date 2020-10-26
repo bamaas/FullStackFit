@@ -1,6 +1,6 @@
 CREATE TABLE public.entry (id SERIAL PRIMARY KEY, date TIMESTAMP, weight REAL, note TEXT, year SMALLINT, week SMALLINT);
 
-CREATE TABLE public.weekly_average (year SMALLINT, week SMALLINT, weight_average REAL, weight_difference REAL, weight_measurement_count SMALLINT, PRIMARY KEY (year, week));
+CREATE TABLE public.weekly_average (year SMALLINT, week SMALLINT, weight_average REAL, weight_measurement_count SMALLINT, PRIMARY KEY (year, week));
 
 CREATE FUNCTION update_weekly_average() RETURNS trigger AS $BODY$
 DECLARE avg_weight REAL;
@@ -23,11 +23,6 @@ DECLARE avg_weight_prev REAL;
         END IF;
         -- set weight_measurement_count
         UPDATE public.weekly_average SET weight_measurement_count = (SELECT COUNT(weight) FROM public.entry WHERE year = NEW.year AND week = NEW.week) WHERE year = NEW.year AND week = NEW.week;
-        -- set weight_difference
-        IF EXISTS (SELECT FROM public.weekly_average WHERE year = NEW.year AND week = NEW.week - 1) THEN
-            SELECT weight_average FROM public.weekly_average WHERE year = NEW.year AND week = NEW.week - 1 INTO avg_weight_prev;
-            UPDATE public.weekly_average SET weight_difference = ROUND((weight_average - avg_weight_prev)::numeric,1) WHERE week = NEW.week AND year = NEW.year; 
-	    END IF;
         RETURN NEW;
     END;
 $BODY$ LANGUAGE plpgsql;

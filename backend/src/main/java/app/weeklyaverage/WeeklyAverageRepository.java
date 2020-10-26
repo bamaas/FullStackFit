@@ -16,7 +16,7 @@ public interface WeeklyAverageRepository extends CrudRepository<WeeklyAverage, L
       WeeklyAverage findByYearAndWeek(Short year, Byte week);
 
       @OrderBy("year, week")
-      @Query(value = "SELECT * FROM #{#entityName} GROUP BY year, week ORDER BY year, week;", nativeQuery = true)
+      @Query(value = "SELECT * FROM #{#entityName} GROUP BY year, week ORDER BY year DESC, week DESC;", nativeQuery = true)
       List<WeeklyAverage> getAllSortedByYearAndWeek();
 
 }

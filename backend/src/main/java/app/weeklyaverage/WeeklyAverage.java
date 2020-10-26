@@ -24,12 +24,11 @@ public class WeeklyAverage {
 
     public WeeklyAverage(){}
 
-    public WeeklyAverage(short year, byte week, float weightAverage, Float weightDifference, short weightMeasurementCount) {
+    public WeeklyAverage(short year, byte week, float weightAverage, short weightMeasurementCount) {
         super();
         this.year = year;
         this.week = week;
         this.weightAverage = weightAverage;
-        this.weightDifference = weightDifference;
         this.weightMeasurementCount = weightMeasurementCount;
     }
 
@@ -44,19 +43,8 @@ public class WeeklyAverage {
     @Column(name="\"weight_average\"", nullable = false)
     private float weightAverage;
 
-    @Column(name="\"weight_difference\"")
-    private Float weightDifference;
-
     @Column(name="\"weight_measurement_count\"")
     private short weightMeasurementCount;
-
-    public Float getWeightDifference() {
-        return weightDifference;
-    }
-
-    public void setWeightDifference(Float weightDifference) {
-        this.weightDifference = weightDifference;
-    }
 
     public short getYear() {
         return year;
