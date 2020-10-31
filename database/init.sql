@@ -30,6 +30,15 @@ $BODY$ LANGUAGE plpgsql;
 CREATE TRIGGER update_weekly_average AFTER INSERT OR UPDATE ON public.entry
     FOR EACH ROW EXECUTE PROCEDURE update_weekly_average();
 
+CREATE FUNCTION update_record_count_on_entry_delete() RETURNS trigger AS $BODY$
+    BEGIN
+        UPDATE public.weekly_average SET weight_measurement_count = (SELECT COUNT(weight) FROM public.entry WHERE year = OLD.year AND week = OLD.week) WHERE year = OLD.year AND week = OLD.week;
+        RETURN NEW;
+    END;
+$BODY$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_record_count_on_entry_delete AFTER DELETE ON public.entry
+    FOR EACH ROW EXECUTE PROCEDURE update_record_count_on_entry_delete();
 
 CREATE FUNCTION delete_weekly_average_if_no_records_in_entries() RETURNS trigger AS $BODY$
     BEGIN

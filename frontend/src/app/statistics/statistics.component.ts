@@ -25,11 +25,10 @@ export class StatisticsComponent implements OnInit {
   ngOnInit(): void {
     this._weeklyAverageSub = this._weeklyAverageService.weeklyAverageObservable.subscribe(
       (weeklyAverages: WeeklyAverage[]) => {
-        // this.dataSource.data = weeklyAverages;   // Use this when enabled sorting
         this.dataSource.data = [...weeklyAverages];
       }
     );
-    this._weeklyAverageService.addWeeklyAveragesToSubject();
+    this._weeklyAverageService.emit();
   }
 
   ngOnDestroy() {

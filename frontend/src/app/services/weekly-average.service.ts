@@ -30,7 +30,7 @@ export class WeeklyAverageService {
     return this._http.get(environment.apiBaseUrl + '/stats/avg/weight/all')
   }
 
-  emitEntries(): void{
+  emit(): void{
     this.weeklyAverageSubject.next(this.weeklyAverages);
   }
 
@@ -53,7 +53,7 @@ export class WeeklyAverageService {
             };
           });
         this.weeklyAverages = weeklyAverages;
-        this.emitEntries();
+        this.emit();
       },
       error => {
         this._snackBar.open('Error occured while getting statistics.', 'Dismiss', {duration: 6000})

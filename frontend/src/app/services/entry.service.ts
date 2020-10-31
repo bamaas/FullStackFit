@@ -30,19 +30,19 @@ export class EntryService {
 
   // Low level
   postEntry(entry: Entry): Observable<any>{
-    return this._http.post(environment.apiBaseUrl + '/entry', entry )
+    return this._http.post(environment.apiBaseUrl + '/entry', entry );
   }
 
   putEntry(entry: Entry): Observable<any>{
-    return this._http.put(environment.apiBaseUrl + '/entry', entry )
+    return this._http.put(environment.apiBaseUrl + '/entry', entry );
   }
 
   deleteEntry(id: number): Observable<any>{
-    return this._http.delete(environment.apiBaseUrl + '/entry/' + id)
+    return this._http.delete(environment.apiBaseUrl + '/entry/' + id);
   }
 
   getEntries(pageNumber: number, pageSize: number): Observable<any>{
-    return this._http.get(environment.apiBaseUrl + '/entry?pageNumber=' + pageNumber + '&pageSize=' + pageSize)
+    return this._http.get(environment.apiBaseUrl + '/entry?pageNumber=' + pageNumber + '&pageSize=' + pageSize);
   }
 
   emitEntries(): void{
@@ -127,8 +127,8 @@ export class EntryService {
         this._weeklyAverageService.addWeeklyAveragesToSubject();
       },
       error => {
-        this._snackBar.open('Error occured while updating entry.', 'Dismiss', {duration: 6000})
-        console.log(error)
+        this._snackBar.open('Error occured while updating entry.', 'Dismiss', {duration: 6000});
+        console.log(error);
       }
     ) 
   }
