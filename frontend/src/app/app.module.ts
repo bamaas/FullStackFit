@@ -23,6 +23,8 @@ import { ScrollingModule } from '@angular/cdk/scrolling'
 import { TableVirtualScrollModule } from 'ng-table-virtual-scroll';
 import { TruncatePipe } from 'src/app/pipes/truncate.pipe'
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { StatisticsComponent } from './statistics/statistics.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,8 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     AddEntryComponent,
     AlertDialogComponent,
     FilterColumnsComponent,
-    TruncatePipe
+    TruncatePipe,
+    StatisticsComponent
   ],
   imports: [
     BrowserModule,
@@ -51,7 +54,8 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     FlexLayoutModule,
     ScrollingModule,
     TableVirtualScrollModule,
-    InfiniteScrollModule
+    InfiniteScrollModule,
+    NgxChartsModule
   ],
   providers: [AddEntryComponent, FilterColumnsComponent],
   bootstrap: [AppComponent],

@@ -47,10 +47,10 @@ dev-proxy-restart:
 
 # TEST
 test-api:
-	sh ./test/testcontainer robotlooper -v environment:dev testsuites/api.robot
+	sh ./test/testcontainer robotlooper -v environment:test testsuites/api.robot
 
 test-e2e:
-	sh ./test/testcontainer robotlooper -v remote_webdriver:false -v browser:chrome -v environment:dev testsuites/gui.robot
+	sh ./test/testcontainer robotlooper -v remote_webdriver:false -v browser:chrome -v environment:test testsuites/gui.robot
 
 # BUILD
 build:

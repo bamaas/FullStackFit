@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable, Subject } from 'rxjs';
 import { MatSnackBar } from '@angular/material';
+import { WeeklyAverageService } from './../services/weekly-average.service';
 
 export interface Entry {
   id: number,
   weight: number,
   date: string,
-  note: string
+  note: string,
 }
 
 @Injectable({
@@ -18,7 +19,8 @@ export class EntryService {
 
   constructor(
     private _http: HttpClient, 
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private _weeklyAverageService: WeeklyAverageService
   ){}
 
   private entriesSubject = new Subject();
@@ -27,20 +29,20 @@ export class EntryService {
   public lastPageReached: boolean = false;
 
   // Low level
-  postEntry(weight: number, date: string, note: string): Observable<any>{
-    return this._http.post(environment.apiBaseUrl + '/log', {"weight": weight, "date": date, "note": note} )
+  postEntry(entry: Entry): Observable<any>{
+    return this._http.post(environment.apiBaseUrl + '/entry', entry );
   }
 
-  putEntry(id:number, weight: number, date: string, note: string): Observable<any>{
-    return this._http.put(environment.apiBaseUrl + '/log', {"id": id, "weight": weight, "date": date, "note": note} )
+  putEntry(entry: Entry): Observable<any>{
+    return this._http.put(environment.apiBaseUrl + '/entry', entry );
   }
 
   deleteEntry(id: number): Observable<any>{
-    return this._http.delete(environment.apiBaseUrl + '/log/' + id)
+    return this._http.delete(environment.apiBaseUrl + '/entry/' + id);
   }
 
   getEntries(pageNumber: number, pageSize: number): Observable<any>{
-    return this._http.get(environment.apiBaseUrl + '/log?pageNumber=' + pageNumber + '&pageSize=' + pageSize)
+    return this._http.get(environment.apiBaseUrl + '/entry?pageNumber=' + pageNumber + '&pageSize=' + pageSize);
   }
 
   emitEntries(): void{
@@ -64,6 +66,7 @@ export class EntryService {
             this.lastPageReached = true;
           }
           this.emitEntries();
+          this._weeklyAverageService.addWeeklyAveragesToSubject();
         },
         error => {
           this._snackBar.open('Error occured while getting entries.', 'Dismiss', {duration: 6000})
@@ -78,6 +81,7 @@ export class EntryService {
       response => {
         this.entries = this.entries.filter(entry => entry['id'] != id);
         this.emitEntries();
+        this._weeklyAverageService.addWeeklyAveragesToSubject();
       }, 
       error => {
         this._snackBar.open('Error occured while deleting entry.', 'Dismiss', {duration: 6000})
@@ -86,12 +90,13 @@ export class EntryService {
     )
   }
 
-  addEntryToPage(weight: number, date: string, note: string): void{
-    this.postEntry(weight, date, note).subscribe(
+  addEntryToPage(entry: Entry): void{
+    this.postEntry(entry).subscribe(
       entry => {
         this.entries.push(entry);
         this.sortEntriesByDate()
         this.emitEntries();
+        this._weeklyAverageService.addWeeklyAveragesToSubject();
       }, 
       error => {
         this._snackBar.open('Error occured while adding entry.', 'Dismiss', {duration: 6000})
@@ -100,10 +105,10 @@ export class EntryService {
     )
   }
 
-  editEntryOnTable(id:number, weight: number, date: string, note: string): void{
-    this.putEntry(id, weight, date, note).subscribe(
+  editEntryOnTable(entry: Entry): void{
+    this.putEntry(entry).subscribe(
       updatedEntry => {
-        this.entries = this.entries.filter(entry => entry['id'] != id);
+        this.entries = this.entries.filter(item => item['id'] != entry.id);
         if (this.entries.length != 0){    // If there are multiple entries
           let lastEntry = this.entries[this.entries.length-1]
           // @ts-ignore
@@ -119,10 +124,11 @@ export class EntryService {
         }
         this.sortEntriesByDate()
         this.emitEntries();
+        this._weeklyAverageService.addWeeklyAveragesToSubject();
       },
       error => {
-        this._snackBar.open('Error occured while updating entry.', 'Dismiss', {duration: 6000})
-        console.log(error)
+        this._snackBar.open('Error occured while updating entry.', 'Dismiss', {duration: 6000});
+        console.log(error);
       }
     ) 
   }

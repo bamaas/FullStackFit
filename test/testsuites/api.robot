@@ -8,7 +8,7 @@ ${ENVIRONMENT}                  test
 *** Settings *** 
 Suite Setup                     connect to db
 Suite Teardown                  disconnect from database
-Test Setup                      delete all rows from table         log
+Test Setup                      delete all rows from table         entry
 Test Teardown                   report last output message on failure
 
 *** Test Cases ***
@@ -39,7 +39,7 @@ Delete entry through api
     insert entry into db               id=${id}         date=${date}      weight=${weight}       note=${note}
     send DELETE ENTRY request          id=${id}
     # validate the table is empty
-    ${rows}	                           get rows from query 	        SELECT * FROM log
+    ${rows}	                           get rows from query 	        SELECT * FROM entry
     ${rows_length}=                    get length      ${rows}
     should be equal                    '${rows_length}'        '0'  Entry is not deleted in database.
 
