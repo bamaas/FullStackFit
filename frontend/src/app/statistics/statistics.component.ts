@@ -4,6 +4,7 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { TableVirtualScrollDataSource } from 'ng-table-virtual-scroll';
 import { Subscription } from 'rxjs';
 import { WeeklyAverageService, WeeklyAverage } from './../services/weekly-average.service';
+import {MatRippleModule} from '@angular/material/core';
 
 @Component({
   selector: 'app-statistics',
