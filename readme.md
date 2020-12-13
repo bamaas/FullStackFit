@@ -43,7 +43,6 @@ This will start the application on `http://localhost:80`.
 
 ### Backlog
 1. Frontend view for displaying the weekly averages and the delta.
-2. Authentication with Keycloak.
 
 ## License
 [MIT](https://github.com/bamaas/FullStackFit/blob/master/LICENSE.md)
