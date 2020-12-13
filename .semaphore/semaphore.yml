@@ -104,7 +104,7 @@ blocks:
         - name: To test env
           commands:
             # change image tags from :latest -> :$IMAGE_TAG
-            - sed -i -e "s/fullstackfit_iam:latest/registry:iam.$IMAGE_TAG/g" ./.kubernetes/deployment/iam.yaml
+            - sed -i -e "s/fullstackfit_iam:latest/registry:fullstackfit_iam.$IMAGE_TAG/g" ./.kubernetes/deployment/iam.yaml
             - sed -i -e "s/fullstackfit_backend:latest/registry:fullstackfit_backend.$IMAGE_TAG/g" ./.kubernetes/deployment/backend.yaml
             - sed -i -e "s/fullstackfit_frontend:latest/registry:fullstackfit_frontend.$IMAGE_TAG/g" ./.kubernetes/deployment/frontend.yaml
             - sed -i -e "s/fullstackfit_reverseproxy:latest/registry:fullstackfit_reverseproxy.$IMAGE_TAG/g" ./.kubernetes/deployment/reverse-proxy.yaml
