@@ -15,10 +15,13 @@ services:
     image: "fullstackfit_reverseproxy:b.${IMAGE_TAG}"
     build:
       context: ./reverse-proxy
+    # volumes:
+    #  - ./reverse-proxy/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
-      - database
-      - backend
       - frontend
+      - backend
+      - iam
+      - database
 
   frontend:
     container_name: fit_frontend-b
@@ -30,9 +33,12 @@ services:
       - 'config=production'
     environment:
       - PORT=4200
+    ports:
+      - 4200:4200
     depends_on:
-      - database
       - backend
+      - iam
+      - database
     
   backend:
     container_name: fit_backend-b
@@ -40,9 +46,27 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    ports:
+      - 5000:5000
     depends_on:
+      - iam
       - database
   
+  iam:
+    container_name: fit_iam-b
+    image: "fullstackfit_iam:b.${IMAGE_TAG}"
+    build:
+      context: ./iam
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+      - PROXY_ADDRESS_FORWARDING=true
+    depends_on:
+      - database
+
   database:
     container_name: fit_database-b
     image: "fullstackfit_database:b.${IMAGE_TAG}"
@@ -51,15 +75,6 @@ services:
       dockerfile: Dockerfile 
     ports:
       - 5432:5432
-  
-  keycloak:
-    container_name: fit_keycloak-b
-    image: "fullstackfit_keycloak:b.${IMAGE_TAG}"
-    build:
-      context: ./keycloak
-      dockerfile: Dockerfile
-    ports:
-      - 8080:8080
-    environment:
-      - KEYCLOAK_USER=admin
-      - KEYCLOAK_PASSWORD=admin
+    environment: 
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres

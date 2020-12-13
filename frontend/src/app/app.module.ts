@@ -1,5 +1,5 @@
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from './material/material.module';
@@ -25,6 +25,23 @@ import { TruncatePipe } from 'src/app/pipes/truncate.pipe'
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { StatisticsComponent } from './statistics/statistics.component';
+import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
+
+export function initializeKeycloak(keycloak: KeycloakService) {
+  return () =>
+    keycloak.init({
+      config: {
+        url: window.location.origin + '/auth',
+        realm: 'SpringBootKeycloak',
+        clientId: 'login-app',
+      },
+      initOptions: {
+        onLoad: 'check-sso',
+        silentCheckSsoRedirectUri:
+          window.location.origin + '/assets/silent-check-sso.html',
+      },
+    });
+}
 
 @NgModule({
   declarations: [
@@ -55,10 +72,22 @@ import { StatisticsComponent } from './statistics/statistics.component';
     ScrollingModule,
     TableVirtualScrollModule,
     InfiniteScrollModule,
-    NgxChartsModule
+    NgxChartsModule,
+    KeycloakAngularModule,
   ],
-  providers: [AddEntryComponent, FilterColumnsComponent],
+  providers: [ 
+    KeycloakService,
+    AddEntryComponent,
+    FilterColumnsComponent,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeKeycloak,
+      multi: true,
+      deps: [KeycloakService],
+    },
+  ],
   bootstrap: [AppComponent],
   entryComponents: [AddEntrySheet, AlertDialogComponent]
 })
+
 export class AppModule { }

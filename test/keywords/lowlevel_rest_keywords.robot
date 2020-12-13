@@ -41,3 +41,6 @@ Send GET ENTRIES request
     [Arguments]                 ${page_number}=0        ${page_size}=9999
     ${response}=                send GET request        ${BACKEND_URL}/entry/?pageNo=${page_number}&pageSize=${page_size}
     [Return]                    ${response}
+
+Get access token
+    
