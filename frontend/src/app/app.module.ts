@@ -32,6 +32,7 @@ export function initializeKeycloak(keycloak: KeycloakService) {
     keycloak.init({
       config: {
         url: window.location.origin + '/auth',
+        // url: 'http://localhost:8080/auth',
         realm: 'SpringBootKeycloak',
         clientId: 'login-app',
       },

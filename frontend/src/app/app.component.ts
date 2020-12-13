@@ -25,9 +25,11 @@ export class AppComponent implements OnInit, AfterViewInit{
 
   async ngOnInit(){
     this.isLoggedIn = await this.keycloak.isLoggedIn();
-    console.log(this.isLoggedIn)
+    console.log('Logged in: ' + this.isLoggedIn)
     if (this.isLoggedIn) {
       this.userProfile = await this.keycloak.loadUserProfile();
+    } else {
+      this.login();
     }
 
     this.mediaObserver.media$.subscribe(
