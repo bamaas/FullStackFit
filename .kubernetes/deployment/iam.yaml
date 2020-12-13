@@ -24,6 +24,8 @@ spec:
           value: "admin"
         - name: PROXY_ADDRESS_FORWARDING
           value: "true"
+        - name: KEYCLOAK_FRONTEND_URL
+          value: "https://fit.basmaas.nl/auth"
         ports:
         - name: http
           containerPort: 8080
