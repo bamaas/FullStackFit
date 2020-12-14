@@ -64,7 +64,7 @@ blocks:
           commands:
             - sem-version java 11
             - sed -i 's/localhost\:5432/database/g' ./backend/src/main/resources/application.properties
-            - sed -i 's/localhost\:8080/iam/g' ./backend/src/main/resources/application.properties
+            - sed -i 's/localhost\:8080/iam\:8080/g' ./backend/src/main/resources/application.properties
             - mvn package -Dmaven.compiler.executable=javac -Dmaven.test.skip=true -f ./backend
             - make build s="backend"
             - docker tag fullstackfit_backend:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${IMAGE_TAG}
