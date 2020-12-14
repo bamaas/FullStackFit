@@ -26,20 +26,19 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { StatisticsComponent } from './statistics/statistics.component';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
+import { environment } from '../environments/environment';
 
 export function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
     keycloak.init({
       config: {
-        url: window.location.origin + '/auth',
-        // url: 'http://localhost:8080/auth',
-        realm: 'SpringBootKeycloak',
-        clientId: 'login-app',
+        url: environment.authBaseUrl,
+        realm: 'Fit',
+        clientId: 'fit-app',
       },
       initOptions: {
         onLoad: 'check-sso',
-        silentCheckSsoRedirectUri:
-          window.location.origin + '/assets/silent-check-sso.html',
+        silentCheckSsoRedirectUri: window.location.origin + '/assets/silent-check-sso.html',
       },
     });
 }
