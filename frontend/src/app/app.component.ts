@@ -29,7 +29,7 @@ export class AppComponent implements OnInit, AfterViewInit{
     if (this.isLoggedIn) {
       this.userProfile = await this.keycloak.loadUserProfile();
     } else {
-      this.login();
+      await this.login();
     }
 
     this.mediaObserver.media$.subscribe(
