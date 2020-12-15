@@ -1,3 +1,5 @@
+CREATE SCHEMA iam;
+
 CREATE TABLE public.entry (id SERIAL PRIMARY KEY, date TIMESTAMP, weight REAL, note TEXT, year SMALLINT, week SMALLINT);
 
 CREATE TABLE public.weekly_average (year SMALLINT, week SMALLINT, weight_average REAL, weight_measurement_count SMALLINT, PRIMARY KEY (year, week));

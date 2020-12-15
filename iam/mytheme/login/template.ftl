@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="robots" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width,initial-scale=0.8,maximum-scale=1,user-scalable=yes"/>
 
     <title><#nested "title"></title>
     <#if properties.styles?has_content>

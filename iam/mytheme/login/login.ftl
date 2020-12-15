@@ -4,7 +4,7 @@
         ${msg("loginTitle",(realm.displayName!''))}
     <#elseif section = "header">
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"/>
-        <script>
+        <#-- <script>
             function togglePassword() {
                 var x = document.getElementById("password");
                 var v = document.getElementById("vi");
@@ -16,7 +16,7 @@
                     v.src = "${url.resourcesPath}/img/eye-off.png";
                 }
             }
-        </script>
+        </script> -->
     <#elseif section = "form">
         <#-- <div>
             <img class="logo" src="${url.resourcesPath}/img/fittrack-logo.svg" alt="FitTrack">

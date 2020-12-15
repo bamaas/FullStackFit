@@ -64,6 +64,13 @@ services:
       - KEYCLOAK_USER=admin
       - KEYCLOAK_PASSWORD=admin
       - PROXY_ADDRESS_FORWARDING=true
+      - DB_VENDOR=postgres
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_ADDR=database
+      - DB_PORT=5432
+      - DB_DATABASE=postgres
+      - DB_SCHEMA=iam
     depends_on:
       - database
 
@@ -75,6 +82,8 @@ services:
       dockerfile: Dockerfile 
     ports:
       - 5432:5432
-    environment: 
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
+    volumes:
+      - data:/var/lib/postgresql/data
+  
+volumes:
+  data:
