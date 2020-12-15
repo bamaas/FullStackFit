@@ -27,7 +27,7 @@ export class AppComponent implements OnInit, AfterViewInit{
     if (await this.keycloak.isLoggedIn()) {
       this.userProfile = await this.keycloak.loadUserProfile();
     } else {
-      this.keycloak.login();
+      await this.login();
     }
 
     /**
@@ -39,7 +39,7 @@ export class AppComponent implements OnInit, AfterViewInit{
       if (keycloakAuth.refreshToken) {
           this.keycloak.updateToken();
       } else {
-          this.keycloak.login({ redirectUri: window.location.origin });
+          this.login();
       }
     };
 
@@ -48,6 +48,10 @@ export class AppComponent implements OnInit, AfterViewInit{
         console.log(change.mqAlias);
       }
     );
+  }
+
+  public login(): void{
+    this.keycloak.login({ redirectUri: window.location.origin });
   }
 
   ngAfterViewInit(){
