@@ -22,7 +22,7 @@ body {
   flex-direction:column;
 }
 .login-content .box {
-  width: 100%;
+  width: 92%;
   max-width: 430px;
   border-radius: 8px;
   background-color: #ffffff;

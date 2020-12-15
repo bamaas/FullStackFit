@@ -71,6 +71,7 @@ services:
       - DB_PORT=5432
       - DB_DATABASE=postgres
       - DB_SCHEMA=iam
+      - KEYCLOAK_FRONTEND_URL=http://localhost/auth
     depends_on:
       - database
 
