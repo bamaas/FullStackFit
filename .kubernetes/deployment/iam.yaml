@@ -33,7 +33,7 @@ spec:
         - name: DB_ADDR
           value: "database"
         - name: DB_PORT
-          value: 5432
+          value: "5432"
         - name: DB_DATABASE
           value: "postgres"
         - name: DB_SCHEMA

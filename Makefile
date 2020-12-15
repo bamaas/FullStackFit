@@ -55,7 +55,3 @@ test-e2e:
 # BUILD
 build:
 	docker-compose -f docker-compose-build.yml build ${s}
-
-# DEPLOY LATEST RELEASE
-latest:
-	docker-compose -f docker-compose-deploy-latest.yml build --pull && docker-compose -f docker-compose-deploy-latest.yml up -d
