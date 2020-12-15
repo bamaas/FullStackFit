@@ -27,17 +27,17 @@ spec:
         - name: KEYCLOAK_FRONTEND_URL
           value: "https://fit.basmaas.nl/auth"
         - name: DB_VENDOR
-          value: postgres
+          value: "postgres"
         - name: DB_USER
-          value: postgres
+          value: "postgres"
         - name: DB_ADDR
-          value: database
+          value: "database"
         - name: DB_PORT
           value: 5432
         - name: DB_DATABASE
-          value: postgres
+          value: "postgres"
         - name: DB_SCHEMA
-          value: iam
+          value: "iam"
         ports:
         - name: http
           containerPort: 8080
