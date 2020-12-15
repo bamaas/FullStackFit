@@ -24,11 +24,12 @@ export class AppComponent implements OnInit, AfterViewInit{
   }
 
   async ngOnInit(){
-    if (await this.keycloak.isLoggedIn()) {
-      this.userProfile = await this.keycloak.loadUserProfile();
-    } else {
-      await this.login();
-    }
+    this.keycloak.login();
+    // if (await this.keycloak.isLoggedIn()) {
+    //   this.userProfile = await this.keycloak.loadUserProfile();
+    // } else {
+    //   await this.login();
+    // }
 
     /**
      * Whenever the token expires and a refresh token is available, try to refresh the access token.

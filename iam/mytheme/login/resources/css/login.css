@@ -29,8 +29,8 @@ body {
   margin: auto;
 }
 .login-content .box .box-container {
-  width:100%;
-  padding-left: 32px;
+  /* width:100%;
+  padding-left: 32px; */
 }
 .login-content .box .logo {
   display: block;
@@ -39,7 +39,6 @@ body {
   margin-top: 30px;
 }
 .login-content .box .application-name {
-  width: 270px;
   text-align: center;
   font-family: Roboto;
   font-size: 24px;
@@ -49,11 +48,10 @@ body {
   line-height: 0.83;
   letter-spacing: -0.4px;
   color: #3545a5;
-  margin-left: 32px;
   margin-top: 40px;
 }
 .login-content .box .form {
-  margin-left: 32px;
+  text-align: center;
   margin-top: 55px;
   margin-bottom: -55px;
 }
@@ -95,7 +93,7 @@ body {
   text-align: center;
   color: #ffffff;
   border-style: none;
-  margin-top: 60px;
+  margin-top: 40px;
   margin-bottom: 60px;
 }
 .login-content .box .visibility {
@@ -114,6 +112,7 @@ body {
   opacity: .54;
   position: relative;
   top: 50px;
+  color: white;
 }
 .message-text {
   width: 322px;
