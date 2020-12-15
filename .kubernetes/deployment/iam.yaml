@@ -30,6 +30,8 @@ spec:
           value: "postgres"
         - name: DB_USER
           value: "postgres"
+        - name: DB_PASSWORD
+          value: "postgres"
         - name: DB_ADDR
           value: "database"
         - name: DB_PORT
