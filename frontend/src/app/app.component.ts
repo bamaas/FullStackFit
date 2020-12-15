@@ -24,12 +24,11 @@ export class AppComponent implements OnInit, AfterViewInit{
   }
 
   async ngOnInit(){
-    this.keycloak.login();
-    // if (await this.keycloak.isLoggedIn()) {
-    //   this.userProfile = await this.keycloak.loadUserProfile();
-    // } else {
-    //   await this.login();
-    // }
+    if (await this.keycloak.isLoggedIn()) {
+      this.userProfile = await this.keycloak.loadUserProfile();
+    } else {
+      this.keycloak.login();
+    }
 
     /**
      * Whenever the token expires and a refresh token is available, try to refresh the access token.
@@ -49,14 +48,6 @@ export class AppComponent implements OnInit, AfterViewInit{
         console.log(change.mqAlias);
       }
     );
-  }
-
-  public login() {
-    this.keycloak.login();
-  }
-
-  public logout() {
-    this.keycloak.logout();
   }
 
   ngAfterViewInit(){
