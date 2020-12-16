@@ -33,8 +33,8 @@ export function initializeKeycloak(keycloak: KeycloakService) {
     keycloak.init({
       config: {
         url: environment.authBaseUrl,
-        realm: 'Fit',
-        clientId: 'fit-app',
+        realm: 'FitTrack',
+        clientId: 'fittrack-application',
       },
       initOptions: {
         onLoad: 'check-sso',

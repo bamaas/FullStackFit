@@ -116,7 +116,8 @@ body {
 .login-content .box .copyright {
   min-width: 320px;
   text-align: center;
-  font-size: 14px;
+  font-size: 13px;
+  font-family: Roboto;
   opacity: .54;
   position: relative;
   top: 50px;

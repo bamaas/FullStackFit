@@ -15,12 +15,12 @@
       </ng-container>
 
       <ng-container matColumnDef="weightAverage">
-          <mat-header-cell *matHeaderCellDef>Weight average</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef>Average</mat-header-cell>
           <mat-cell *matCellDef="let weeklyAverage">{{ weeklyAverage.weightAverage}} kg</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="weightDifference">
-        <mat-header-cell *matHeaderCellDef>Weight difference</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>Difference</mat-header-cell>
         <mat-cell *matCellDef="let weeklyAverage">{{ (weeklyAverage.weightDifference !== null) ? (weeklyAverage.weightDifference + ' kg') : "" }}</mat-cell>
     </ng-container>
 
