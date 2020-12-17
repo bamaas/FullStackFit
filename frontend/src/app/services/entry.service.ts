@@ -41,7 +41,7 @@ export class EntryService {
     return this._http.delete(environment.apiBaseUrl + '/entry/' + id);
   }
 
-  getEntries(pageNumber: number, pageSize: number): Observable<any>{
+  getEntries(pageNumber: number = 0, pageSize: number = 0): Observable<any>{
     return this._http.get(environment.apiBaseUrl + '/entry?pageNumber=' + pageNumber + '&pageSize=' + pageSize);
   }
 

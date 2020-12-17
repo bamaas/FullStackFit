@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angula
 import { AddEntryComponent } from '../progress-tracker/entries/add-entry/add-entry.component';
 import { StyleService } from 'src/app/services/style.service'
 import { KeycloakService } from 'keycloak-angular';
-import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { faUser, faHistory, faChartBar } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-header',
@@ -24,6 +24,8 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   public headerHeight: number;
   public faUser = faUser;
+  public faHistory = faHistory;
+  public faChartBar = faChartBar;
 
   openAddEntryDialog(): void{
     this._addEntryComponent.openAddEntrySheet();

@@ -68,7 +68,8 @@ export class EntriesComponent implements OnInit, OnDestroy {
   public data: Entry[] = [];
   dataSource = new TableVirtualScrollDataSource<Entry>(this.data);
 
-  ngAfterViewInit() {
+  async ngAfterViewInit() {
+    await new Promise(r => setTimeout(r, 1));   // workaround
     let o1:Observable<boolean> = this.columnFilterWeightControl.valueChanges;
     let o2:Observable<boolean> = this.columnFilterDateControl.valueChanges;
     let o3:Observable<boolean> = this.columnFilterNoteControl.valueChanges;
@@ -83,8 +84,11 @@ export class EntriesComponent implements OnInit, OnDestroy {
       }
     );
     this.tableBodyHeight = this.screenHeight - this._styleService.headerHeight;
+    console.log(this.tableBodyHeight)
     this.itemsRenderedAtViewport = Math.round((this.tableBodyHeight - 56) / this.rowHeight);
-    this.pageSize = this.itemsRenderedAtViewport * 2; 
+    console.log(this.itemsRenderedAtViewport)
+    this.pageSize = this.itemsRenderedAtViewport * 2;
+    console.log('pagesize: ' + this.pageSize)
    // this.dataSource.sort = this.sort;      //COMMENTED TO DISABLE SORTING AS THIS IS CAUSING ISSUES WITH PAGINATION. This is a new feature.
     this.onScrollDown()
     // this.dataSource.sortingDataAccessor = (item, property) => {
@@ -106,7 +110,7 @@ export class EntriesComponent implements OnInit, OnDestroy {
   public reachedTop: boolean = true;
   public renderedPages: Array<any> = [];
   public lastPageNumber: number;
-  public pageSize: number;
+  public pageSize: number = 0;
 
   onScrollDown(): void{
     this._entryService.addEntryPageToTable(this.nextPageNumber, this.pageSize);
@@ -120,7 +124,7 @@ export class EntriesComponent implements OnInit, OnDestroy {
     }
 
   editEntry(id: number, weight: number, date: string, note: string): void{
-    const bottomSheetRef = this._bottomSheet.open(AddEntrySheet, {
+    this._bottomSheet.open(AddEntrySheet, {
       data: {title: 'Edit entry...', btn_cancel: 'Cancel', btn_confirm: 'Save', id: id, weight: weight, date: date, note: note}
     });
   }

@@ -2,8 +2,8 @@
     <mat-toolbar-row class="nav sticky">
         <div fxFlex="90" fxLayout="row" fxLayoutGap="10px">
             <button mat-button routerLink="/profile"><fa-icon [icon]="faUser"></fa-icon></button>
-            <button mat-button routerLink="/entries" id="nav-btn-entries">Entries</button>
-            <button mat-button routerLink="/statistics">Statistics</button>  
+            <button mat-button routerLink="/entries" id="nav-btn-entries"><fa-icon [icon]="faHistory"></fa-icon></button>
+            <button mat-button routerLink="/statistics"><fa-icon [icon]="faChartBar"></fa-icon></button>  
         </div>
         <div fxFlex="10" fxLayoutAlign="end center" fxLayoutGap="10px">
             <button mat-stroked-button (click)="openAddEntryDialog()" id="nav-btn-add-entry"><app-add-entry></app-add-entry></button>
