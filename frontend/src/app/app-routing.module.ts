@@ -1,11 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { ProfileComponent } from './profile/profile.component';
 import { ProgressTrackerComponent } from './progress-tracker/progress-tracker.component'
 import { StatisticsComponent } from './statistics/statistics.component';
 
 const routes: Routes = [
   { path: 'entries', component: ProgressTrackerComponent},
   { path: 'statistics', component: StatisticsComponent},
+  { path: 'profile', component: ProfileComponent},
   { path: '', component: ProgressTrackerComponent }
 ];
 

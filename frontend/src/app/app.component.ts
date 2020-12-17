@@ -3,7 +3,6 @@ import { TDEEService } from './_archive/tdee.service';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
 import { Subscription } from 'rxjs';
 import { KeycloakService } from 'keycloak-angular';
-import { KeycloakProfile } from 'keycloak-js';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +13,6 @@ import { KeycloakProfile } from 'keycloak-js';
 export class AppComponent implements OnInit, AfterViewInit{
 
   public isLoggedIn = false;
-  public userProfile: KeycloakProfile | null = null;
 
   constructor(
     private readonly keycloak: KeycloakService,
@@ -25,7 +23,7 @@ export class AppComponent implements OnInit, AfterViewInit{
 
   async ngOnInit(){
     if (await this.keycloak.isLoggedIn()) {
-      this.userProfile = await this.keycloak.loadUserProfile();
+      this.isLoggedIn = true;
     } else {
       await this.login();
     }

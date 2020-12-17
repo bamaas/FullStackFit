@@ -1,24 +1,11 @@
 <mat-toolbar color="primary" fxLayout="column" #mainHeader>
-    <!-- <mat-toolbar-row fxLayout="row">
-        <div fxFlex="20">
-            <span style="margin-left: 10px;">FullStackFit</span>
-        </div>
-        <div fxFlex="80" fxLayoutAlign="end center">
-            <button mat-icon-button color="foreground" (click)="open_bottom_sheet()" class="nofocus" aria-label="Share icon">
-                    <mat-icon>share</mat-icon>
-            </button>
-        </div>
-    </mat-toolbar-row> -->
     <mat-toolbar-row class="nav sticky">
         <div fxFlex="90" fxLayout="row" fxLayoutGap="10px">
-            <!-- <h1>Progress</h1> -->
-            <!-- <button mat-button routerLink="/entries">Overview</button> -->
+            <button mat-button routerLink="/profile"><fa-icon [icon]="faUser"></fa-icon></button>
             <button mat-button routerLink="/entries" id="nav-btn-entries">Entries</button>
             <button mat-button routerLink="/statistics">Statistics</button>  
-            <button mat-button (click)="logout()" id="nav-btn-entries"><fa-icon [icon]="faSignOutAlt"></fa-icon></button>
         </div>
         <div fxFlex="10" fxLayoutAlign="end center" fxLayoutGap="10px">
-            <!-- <button mat-stroked-button id="nav-btn-add-entry"><app-filter-columns></app-filter-columns></button> -->
             <button mat-stroked-button (click)="openAddEntryDialog()" id="nav-btn-add-entry"><app-add-entry></app-add-entry></button>
         </div>
     </mat-toolbar-row>

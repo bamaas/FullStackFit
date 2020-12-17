@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angula
 import { AddEntryComponent } from '../progress-tracker/entries/add-entry/add-entry.component';
 import { StyleService } from 'src/app/services/style.service'
 import { KeycloakService } from 'keycloak-angular';
-import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-header',
@@ -13,8 +13,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   constructor(
     private _addEntryComponent: AddEntryComponent,
-    private _styleService: StyleService,
-    private readonly keycloak: KeycloakService
+    private _styleService: StyleService
   )
   {}
 
@@ -24,14 +23,10 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   @ViewChild('mainHeader', {read: ElementRef, static:false}) mainHeaderElement: ElementRef;
 
   public headerHeight: number;
-  public faSignOutAlt = faSignOutAlt;
+  public faUser = faUser;
 
   openAddEntryDialog(): void{
     this._addEntryComponent.openAddEntrySheet();
-  }
-
-  public logout(): void {
-    this.keycloak.logout();
   }
 
   ngAfterViewInit(): void{
