@@ -41,7 +41,7 @@ DECLARE avg_weight REAL;
 $BODY$ LANGUAGE plpgsql;
 
 CREATE TRIGGER update_weekly_average_weight_on_entry_delete AFTER DELETE ON public.entry
-    FOR EACH ROW EXECUTE PROCEDURE update_weekly_average_weight_on_entry_delete()();
+    FOR EACH ROW EXECUTE PROCEDURE update_weekly_average_weight_on_entry_delete();
 
 CREATE FUNCTION update_record_count_on_entry_delete() RETURNS trigger AS $BODY$
     BEGIN

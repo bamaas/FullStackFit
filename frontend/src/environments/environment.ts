@@ -4,9 +4,9 @@
 
 export const environment = {
   production: false,
-  apiBaseUrl: window.location.origin + '/api',
-  authBaseUrl: 'http://localhost:8080/auth'
-  // apiBaseUrl: window.location.origin + '/api'
+  // apiBaseUrl: window.location.origin + '/api',
+  authBaseUrl: 'http://localhost:8080/auth',
+  apiBaseUrl: 'http://localhost:5000'
   // apiBaseUrl: 'https://fit.basmaas.nl/api'
 };
 

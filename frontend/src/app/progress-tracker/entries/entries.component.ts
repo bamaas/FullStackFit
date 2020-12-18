@@ -68,7 +68,7 @@ export class EntriesComponent implements OnInit, OnDestroy {
   public data: Entry[] = [];
   dataSource = new TableVirtualScrollDataSource<Entry>(this.data);
 
-  async ngAfterViewInit() {
+  ngAfterViewInit() {
     let o1:Observable<boolean> = this.columnFilterWeightControl.valueChanges;
     let o2:Observable<boolean> = this.columnFilterDateControl.valueChanges;
     let o3:Observable<boolean> = this.columnFilterNoteControl.valueChanges;
@@ -82,7 +82,7 @@ export class EntriesComponent implements OnInit, OnDestroy {
           //  console.log(this.columnDefinitions);
       }
     );
-    this.tableBodyHeight = (await this.screenHeight - await this._styleService.headerHeight);
+    this.tableBodyHeight = this.screenHeight - 64;    // this.tableBodyHeight = this.screenHeight - this._styleService.headerHeight;
     this.itemsRenderedAtViewport = Math.round((this.tableBodyHeight - 56) / this.rowHeight);
     this.pageSize = this.itemsRenderedAtViewport * 2;
    // this.dataSource.sort = this.sort;      //COMMENTED TO DISABLE SORTING AS THIS IS CAUSING ISSUES WITH PAGINATION. This is a new feature.
@@ -98,37 +98,6 @@ export class EntriesComponent implements OnInit, OnDestroy {
     // Handles ExpressionChangedAfterItHasBeenCheckedError
     this._cdr.detectChanges(); 
    }
-
-  // ngAfterViewInit() {
-  //   let o1:Observable<boolean> = this.columnFilterWeightControl.valueChanges;
-  //   let o2:Observable<boolean> = this.columnFilterDateControl.valueChanges;
-  //   let o3:Observable<boolean> = this.columnFilterNoteControl.valueChanges;
-  //   let o4:Observable<boolean> = this.columnFilterActionsControl.valueChanges;
-  //   merge(o1, o2, o3, o4).subscribe( 
-  //     v => {
-  //         this.columnDefinitions[0].show = this.columnFilterWeightControl.value;
-  //         this.columnDefinitions[1].show = this.columnFilterDateControl.value;
-  //         this.columnDefinitions[2].show = this.columnFilterNoteControl.value;
-  //         this.columnDefinitions[3].show = this.columnFilterActionsControl.value;
-  //         //  console.log(this.columnDefinitions);
-  //     }
-  //   );
-  //   this.tableBodyHeight = this.screenHeight - this._styleService.headerHeight;
-  //   this.itemsRenderedAtViewport = Math.round((this.tableBodyHeight - 56) / this.rowHeight);
-  //   this.pageSize = this.itemsRenderedAtViewport * 2;
-  //  // this.dataSource.sort = this.sort;      //COMMENTED TO DISABLE SORTING AS THIS IS CAUSING ISSUES WITH PAGINATION. This is a new feature.
-  //   this.onScrollDown()
-  //   // this.dataSource.sortingDataAccessor = (item, property) => {
-  //   //   console.log(item)
-  //   //   console.log(property)
-  //   //   switch (property) {
-  //   //     case 'Date': return new Date(item.date);
-  //   //     default: return item[property];
-  //   //   }
-  //   // };
-  //   // Handles ExpressionChangedAfterItHasBeenCheckedError
-  //   this._cdr.detectChanges(); 
-  //  }
   
   public nextPageNumber: number = 0;
   public maxPagesToRender: number = 3;
