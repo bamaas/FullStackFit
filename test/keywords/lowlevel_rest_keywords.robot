@@ -58,7 +58,7 @@ Get access token
     ...                                                     username=${username}
     ...                                                     password=${password}
     ...                                                     grant_type=password
-    ${response}=            sent_form_urlencoded_request    ${AUTH_URL}/auth/realms/${realm}/protocol/openid-connect/token  data=${data}  expected_status=200
+    ${response}=            sent_form_urlencoded_request    ${AUTH_URL}/realms/${realm}/protocol/openid-connect/token  data=${data}  expected_status=200
     ${access_token}=        get from dictionary             ${response}         access_token
     ${expires_in}=          get from dictionary             ${response}         expires_in
     ${current_date}=        get current date                result_format=%Y-%m-%dT%H:%M:%S

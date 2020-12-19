@@ -1,12 +1,27 @@
 <mat-toolbar color="primary" fxLayout="column" #mainHeader>
     <mat-toolbar-row class="nav sticky">
-        <div fxFlex="90" fxLayout="row" fxLayoutGap="10px">
-            <button mat-button routerLink="/profile"><fa-icon [icon]="faUser"></fa-icon></button>
-            <button mat-button routerLink="/entries" id="nav-btn-entries"><fa-icon [icon]="faHistory"></fa-icon></button>
-            <button mat-button routerLink="/statistics"><fa-icon [icon]="faChartBar"></fa-icon></button>  
+        <div fxFlex="90" fxLayout="row">
+            <button mat-button [matMenuTriggerFor]="menu" test="nav-profile">
+                <fa-icon [icon]="faUser"></fa-icon>
+                <span class="nav-text" test="username">{{ userProfile.username | titlecase}}</span>
+            </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="logout()">
+                    <mat-icon>logout</mat-icon>
+                    <span>Sign out</span>
+                </button>
+            </mat-menu>
+            <button mat-button routerLink="/entries" id="nav-btn-entries" test="nav-entries">
+                <!-- <fa-icon [icon]="faHistory"></fa-icon> -->
+                <span class="nav-text">Entries</span>
+            </button>
+            <button mat-button routerLink="/statistics" test="nav-statistics">
+                <!-- <fa-icon [icon]="faChartBar"></fa-icon> -->
+                <span class="nav-text">Statistics</span>
+            </button>  
         </div>
         <div fxFlex="10" fxLayoutAlign="end center" fxLayoutGap="10px">
-            <button mat-stroked-button (click)="openAddEntryDialog()" id="nav-btn-add-entry"><app-add-entry></app-add-entry></button>
+            <button mat-stroked-button (click)="openAddEntryDialog()" id="nav-btn-add-entry" test="add-entry"><app-add-entry></app-add-entry></button>
         </div>
     </mat-toolbar-row>
 </mat-toolbar>

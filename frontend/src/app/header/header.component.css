@@ -21,3 +21,8 @@ mat-toolbar{
     width: 100%;
     z-index: 100;
 }
+.nav-text{
+    padding-left: 10px;
+    font-weight: 500px;
+    font-size: 12px;
+}
