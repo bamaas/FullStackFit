@@ -29,7 +29,7 @@ Suite Setup         set suite tags      environment=${ENVIRONMENT}      remote_w
 Suite Teardown      disconnect from browserstack
 
 Test Setup          run keywords      setup browser     remote_webdriver=${REMOTE_WEBDRIVER}      browser=${BROWSER}      remote_url=${REMOTE_URL}    capabilities=${CAPABILITIES}      setup_url=${FRONTEND_URL}   maximize_window=${MAXIMIZE_WINDOW}
-...                 AND               login
+...                 AND               login             ${USERNAME}         ${PASSWORD}
 
 Test Teardown       run keywords      close browser if running remotely and report screenshot on failure                  ${REMOTE_WEBDRIVER}
 ...                 AND               report last output message on failure
@@ -41,7 +41,7 @@ Add entry in frontend
     send POST ENTRY request     
     ${response}=                send GET ENTRIES request
     ${latest_entry}=            get from list      ${response}      0      
-    ${date}=                    convert date            ${latest_entry}[date]     result_format=%d-%m-%Y
+    ${date}=                    convert date       ${latest_entry}[date]     result_format=%d-%m-%Y
     # Test script
     ${note}=                    get current date
     ${weight}=                  evaluate            (random.randint(1, 9)/10)+(random.randint(1,199))    modules=random

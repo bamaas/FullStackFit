@@ -1,10 +1,12 @@
 *** Keywords ***
 Login
-    ${logged_in}=           run keyword and return status       page should contain element     id=username
-    return from keyword if  '${logged_in}' == 'False'           already logged in
-    input text              id=username     ${USERNAME}
-    input text              id=password     ${PASSWORD}
+    [Arguments]             ${uname}     ${pw}
+    ${not_logged_in}=        run keyword and return status       wait until page contains element     id=username
+    return from keyword if  '${not_logged_in}' == 'False'        already logged in
+    input text              id=username     ${uname}
+    input text              id=password     ${pw}
     click element           class=submit
+    wait until page contains element        //span[@test='${uname}']        Login failed. Username did not appear in the header.
 
 Edit entry
     [Arguments]                 ${date_old}         ${weight_old}       ${date_new}     ${weight_new}      ${note_new}
