@@ -1,24 +1,27 @@
 <mat-toolbar color="primary" fxLayout="column" #mainHeader>
-    <!-- <mat-toolbar-row fxLayout="row">
-        <div fxFlex="20">
-            <span style="margin-left: 10px;">FullStackFit</span>
-        </div>
-        <div fxFlex="80" fxLayoutAlign="end center">
-            <button mat-icon-button color="foreground" (click)="open_bottom_sheet()" class="nofocus" aria-label="Share icon">
-                    <mat-icon>share</mat-icon>
-            </button>
-        </div>
-    </mat-toolbar-row> -->
     <mat-toolbar-row class="nav sticky">
-        <div fxFlex="90" fxLayout="row" fxLayoutGap="10px">
-            <!-- <h1>Progress</h1> -->
-            <!-- <button mat-button routerLink="/entries">Overview</button> -->
-            <button mat-button routerLink="/entries" id="nav-btn-entries">Entries</button>
-            <button mat-button routerLink="/statistics">Statistics</button>  
+        <div fxFlex="90" fxLayout="row">
+            <button mat-button [matMenuTriggerFor]="menu" test="nav-profile">
+                <fa-icon [icon]="faUser"></fa-icon>
+                <span class="nav-text" test="username">{{ userProfile.username | titlecase}}</span>
+            </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="logout()">
+                    <mat-icon>logout</mat-icon>
+                    <span>Sign out</span>
+                </button>
+            </mat-menu>
+            <button mat-button routerLink="/entries" id="nav-btn-entries" test="nav-entries">
+                <!-- <fa-icon [icon]="faHistory"></fa-icon> -->
+                <span class="nav-text">Entries</span>
+            </button>
+            <button mat-button routerLink="/statistics" test="nav-statistics">
+                <!-- <fa-icon [icon]="faChartBar"></fa-icon> -->
+                <span class="nav-text">Statistics</span>
+            </button>  
         </div>
         <div fxFlex="10" fxLayoutAlign="end center" fxLayoutGap="10px">
-            <!-- <button mat-stroked-button id="nav-btn-add-entry"><app-filter-columns></app-filter-columns></button> -->
-            <button mat-stroked-button (click)="openAddEntryDialog()" id="nav-btn-add-entry"><app-add-entry></app-add-entry></button>
+            <button mat-stroked-button (click)="openAddEntryDialog()" id="nav-btn-add-entry" test="add-entry"><app-add-entry></app-add-entry></button>
         </div>
     </mat-toolbar-row>
 </mat-toolbar>

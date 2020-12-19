@@ -63,7 +63,8 @@ blocks:
         - name: Backend
           commands:
             - sem-version java 11
-            - sed -i 's/localhost/database/g' ./backend/src/main/resources/application.properties
+            - sed -i 's/localhost\:5432/database/g' ./backend/src/main/resources/application.properties
+            - sed -i 's/localhost\:8080/iam\:8080/g' ./backend/src/main/resources/application.properties
             - mvn package -Dmaven.compiler.executable=javac -Dmaven.test.skip=true -f ./backend
             - make build s="backend"
             - docker tag fullstackfit_backend:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${IMAGE_TAG}
@@ -78,6 +79,11 @@ blocks:
             - make build s="reverseproxy"
             - docker tag fullstackfit_reverseproxy:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${IMAGE_TAG}
             - docker push ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${IMAGE_TAG}
+        - name: IAM
+          commands:
+            - make build s="iam"
+            - docker tag fullstackfit_iam:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_iam.${IMAGE_TAG}
+            - docker push ${DOCKER_USERNAME}/registry:fullstackfit_iam.${IMAGE_TAG}
         - name: Test
           commands:
             - bash ./.semaphore/scripts/create-test-env-file.sh
@@ -98,7 +104,10 @@ blocks:
       jobs:
         - name: To test env
           commands:
+            # change keycloak frontend url
+            - sed -i -e "s/fit\.basmaas\.nl/test\.fit\.basmaas\.nl/g" ./.kubernetes/deployment/iam.yaml
             # change image tags from :latest -> :$IMAGE_TAG
+            - sed -i -e "s/fullstackfit_iam:latest/registry:fullstackfit_iam.$IMAGE_TAG/g" ./.kubernetes/deployment/iam.yaml
             - sed -i -e "s/fullstackfit_backend:latest/registry:fullstackfit_backend.$IMAGE_TAG/g" ./.kubernetes/deployment/backend.yaml
             - sed -i -e "s/fullstackfit_frontend:latest/registry:fullstackfit_frontend.$IMAGE_TAG/g" ./.kubernetes/deployment/frontend.yaml
             - sed -i -e "s/fullstackfit_reverseproxy:latest/registry:fullstackfit_reverseproxy.$IMAGE_TAG/g" ./.kubernetes/deployment/reverse-proxy.yaml
@@ -106,6 +115,7 @@ blocks:
             - sed -i -e 's/EXPOSED-NODEPORT/30004/g' ./.kubernetes/service/reverse-proxy-nodeport.yaml
             - kubectl -n test apply -f ./.kubernetes/ --recursive --insecure-skip-tls-verify
             - sh ./.semaphore/scripts/rollout.sh test statefulset database
+            - sh ./.semaphore/scripts/rollout.sh test deployment iam
             - sh ./.semaphore/scripts/rollout.sh test deployment backend
             - sh ./.semaphore/scripts/rollout.sh test deployment frontend
             - sh ./.semaphore/scripts/rollout.sh test deployment reverse-proxy

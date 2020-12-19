@@ -1,35 +1,37 @@
 <div fxLayout="column">
+
   <div fxLayout="row" fxLayoutAlign="left end">
     <div fxFill> 
     <table id="entries-table" mat-table [dataSource]="dataSource">
 
       <ng-container matColumnDef="year">
-          <th mat-header-cell *matHeaderCellDef>Year</th>
-          <td mat-cell *matCellDef="let weeklyAverage">{{ weeklyAverage.year }}</td>
+          <mat-header-cell *matHeaderCellDef>Year</mat-header-cell>
+          <mat-cell *matCellDef="let weeklyAverage">{{ weeklyAverage.year }}</mat-cell>
       </ng-container>
   
       <ng-container matColumnDef="week">
-          <th mat-header-cell *matHeaderCellDef>Week</th>
-          <td mat-cell *matCellDef="let weeklyAverage">{{weeklyAverage.week}}</td>
+          <mat-header-cell *matHeaderCellDef>Week</mat-header-cell>
+          <mat-cell *matCellDef="let weeklyAverage">{{weeklyAverage.week}}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="weightAverage">
-          <th mat-header-cell *matHeaderCellDef>Weight average</th>
-          <td mat-cell *matCellDef="let weeklyAverage">{{ weeklyAverage.weightAverage}} kg</td>
+          <mat-header-cell *matHeaderCellDef>Average</mat-header-cell>
+          <mat-cell *matCellDef="let weeklyAverage">{{ weeklyAverage.weightAverage}} kg</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="weightDifference">
-        <th mat-header-cell *matHeaderCellDef>Weight difference</th>
-        <td mat-cell *matCellDef="let weeklyAverage">{{ (weeklyAverage.weightDifference !== null) ? (weeklyAverage.weightDifference + ' kg') : "" }}</td>
+        <mat-header-cell *matHeaderCellDef>Difference</mat-header-cell>
+        <mat-cell *matCellDef="let weeklyAverage">{{ (weeklyAverage.weightDifference !== null) ? (weeklyAverage.weightDifference + ' kg') : "" }}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="weightMeasurementCount">
-      <th mat-header-cell *matHeaderCellDef>Measurements</th>
-      <td mat-cell *matCellDef="let weeklyAverage">{{ weeklyAverage.weightMeasurementCount}}</td>
+      <mat-header-cell *matHeaderCellDef>Measurements</mat-header-cell>
+      <mat-cell *matCellDef="let weeklyAverage">{{ weeklyAverage.weightMeasurementCount}}</mat-cell>
     </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      
+      <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row-hover"></mat-row>
   </table>
   </div>
   </div>

@@ -331,7 +331,7 @@ class BrowserHelper(object):
         selib = BuiltIn().get_library_instance('SeleniumLibrary')
         driver = selib.driver
         element = selib.find_element(locator)
-        logger.info("Setting value of element '{}'.".format(locator))
+        logger.info("Setting value of element '{}' to '{}'.".format(locator, value))
         # driver.execute_script("""document.documentElement.value='{}'""".format(value), element)
         driver.execute_script("arguments[0].value='{}';".format(value), element);
     

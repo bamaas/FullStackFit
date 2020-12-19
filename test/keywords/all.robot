@@ -2,6 +2,7 @@
 # Config
 Resource         ../config/environments.robot
 Resource         ../config/browser_capabilities.robot
+Resource         ../config/users.robot
 
 # Out of the box libraries
 Library         DateTime

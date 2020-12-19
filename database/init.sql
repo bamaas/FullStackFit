@@ -1,10 +1,11 @@
+CREATE SCHEMA iam;
+
 CREATE TABLE public.entry (id SERIAL PRIMARY KEY, date TIMESTAMP, weight REAL, note TEXT, year SMALLINT, week SMALLINT);
 
 CREATE TABLE public.weekly_average (year SMALLINT, week SMALLINT, weight_average REAL, weight_measurement_count SMALLINT, PRIMARY KEY (year, week));
 
 CREATE FUNCTION update_weekly_average() RETURNS trigger AS $BODY$
 DECLARE avg_weight REAL;
-DECLARE avg_weight_prev REAL;
     BEGIN
         IF NEW.weight IS NULL THEN
             RAISE EXCEPTION 'weight cannot be null';
@@ -30,6 +31,18 @@ $BODY$ LANGUAGE plpgsql;
 CREATE TRIGGER update_weekly_average AFTER INSERT OR UPDATE ON public.entry
     FOR EACH ROW EXECUTE PROCEDURE update_weekly_average();
 
+CREATE FUNCTION update_weekly_average_weight_on_entry_delete() RETURNS trigger AS $BODY$
+DECLARE avg_weight REAL;
+    BEGIN
+        SELECT ROUND(AVG(weight)::numeric,1) FROM public.entry WHERE year = OLD.year AND week = OLD.week INTO avg_weight;
+        UPDATE public.weekly_average SET weight_average = avg_weight WHERE week = OLD.week AND year = OLD.year;
+        RETURN NEW;
+    END;
+$BODY$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_weekly_average_weight_on_entry_delete AFTER DELETE ON public.entry
+    FOR EACH ROW EXECUTE PROCEDURE update_weekly_average_weight_on_entry_delete();
+
 CREATE FUNCTION update_record_count_on_entry_delete() RETURNS trigger AS $BODY$
     BEGIN
         UPDATE public.weekly_average SET weight_measurement_count = (SELECT COUNT(weight) FROM public.entry WHERE year = OLD.year AND week = OLD.week) WHERE year = OLD.year AND week = OLD.week;
@@ -48,7 +61,6 @@ CREATE FUNCTION delete_weekly_average_if_no_records_in_entries() RETURNS trigger
         RETURN NEW;
     END;
 $BODY$ LANGUAGE plpgsql;
-
 
 CREATE TRIGGER delete_weekly_average_if_no_records_in_entries AFTER DELETE ON public.entry
     FOR EACH ROW EXECUTE PROCEDURE delete_weekly_average_if_no_records_in_entries();

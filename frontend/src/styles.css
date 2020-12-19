@@ -6,3 +6,11 @@ html, body {
 .mat-dialog-container{
     padding: 24px !important;
 }
+
+.table-row-hover{
+    background-position: center;
+    transition: background 0.7s;
+}
+.table-row-hover:hover {
+    background-color:rgba(0, 0, 0, 0.03);
+}

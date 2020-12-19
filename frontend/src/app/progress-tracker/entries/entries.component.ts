@@ -82,9 +82,9 @@ export class EntriesComponent implements OnInit, OnDestroy {
           //  console.log(this.columnDefinitions);
       }
     );
-    this.tableBodyHeight = this.screenHeight - this._styleService.headerHeight;
+    this.tableBodyHeight = this.screenHeight - 64;    // this.tableBodyHeight = this.screenHeight - this._styleService.headerHeight;
     this.itemsRenderedAtViewport = Math.round((this.tableBodyHeight - 56) / this.rowHeight);
-    this.pageSize = this.itemsRenderedAtViewport * 2; 
+    this.pageSize = this.itemsRenderedAtViewport * 2;
    // this.dataSource.sort = this.sort;      //COMMENTED TO DISABLE SORTING AS THIS IS CAUSING ISSUES WITH PAGINATION. This is a new feature.
     this.onScrollDown()
     // this.dataSource.sortingDataAccessor = (item, property) => {
@@ -120,7 +120,7 @@ export class EntriesComponent implements OnInit, OnDestroy {
     }
 
   editEntry(id: number, weight: number, date: string, note: string): void{
-    const bottomSheetRef = this._bottomSheet.open(AddEntrySheet, {
+    this._bottomSheet.open(AddEntrySheet, {
       data: {title: 'Edit entry...', btn_cancel: 'Cancel', btn_confirm: 'Save', id: id, weight: weight, date: date, note: note}
     });
   }

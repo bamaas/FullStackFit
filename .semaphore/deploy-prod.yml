@@ -17,6 +17,7 @@ blocks:
         - name: To production
           commands:
             # change image tags from :latest -> :$IMAGE_TAG .
+            - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/iam.yaml
             - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/backend.yaml
             - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/frontend.yaml
             - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/reverse-proxy.yaml
@@ -25,6 +26,7 @@ blocks:
             - sed -i -e 's/testdb/proddb/g' ./.kubernetes/statefulset/database.yaml
             - kubectl -n prod apply -f ./.kubernetes/ --recursive --insecure-skip-tls-verify &
             - sh ./.semaphore/scripts/rollout.sh prod statefulset database
+            - sh ./.semaphore/scripts/rollout.sh prod deployment iam
             - sh ./.semaphore/scripts/rollout.sh prod deployment backend
             - sh ./.semaphore/scripts/rollout.sh prod deployment frontend
             - sh ./.semaphore/scripts/rollout.sh prod deployment reverse-proxy

@@ -16,12 +16,12 @@ public class WeeklyAverageService {
     private WeeklyAverageRepository weeklyAverageRepository;
 
     public WeeklyAverage getWeeklyAverage(Short year, Byte week){
-        logger.info("Getting WeeklyAverage with year {} and week {}.", year, week);
+        logger.trace("Getting WeeklyAverage with year {} and week {}.", year, week);
         return weeklyAverageRepository.findByYearAndWeek(year, week);
     }
 
     public List<WeeklyAverage> getAllSortedByYearAndWeek(){
-        logger.info("Getting all WeeklyAverage sorted by year and week.");
+        logger.trace("Getting all WeeklyAverage sorted by year and week.");
         return weeklyAverageRepository.getAllSortedByYearAndWeek();
     }
 

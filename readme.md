@@ -8,6 +8,7 @@
 Prod deployed @ [fit.basmaas.nl](https://fit.basmaas.nl) (Running on Kubernetes @ My Home)
 
 Test deployed @ [test.fit.basmaas.nl](https://test.fit.basmaas.nl) (Running on Kubernetes @ My Home)
+Demo user: test / test
 
 ### What is this application about?
 In my free time I like to be in the gym and move some weights. For years I keep track of my body weight in an Excel sheet, every day. At the end of a week I calculate the average of that week and compare it with the previous week, so I can determine if I lost or gained weight. I thought it would be nice to build a web application to replace the Excel sheet.
@@ -43,7 +44,6 @@ This will start the application on `http://localhost:80`.
 
 ### Backlog
 1. Frontend view for displaying the weekly averages and the delta.
-2. Authentication with Keycloak.
 
 ## License
 [MIT](https://github.com/bamaas/FullStackFit/blob/master/LICENSE.md)
