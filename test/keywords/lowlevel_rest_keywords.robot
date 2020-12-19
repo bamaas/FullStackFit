@@ -74,4 +74,3 @@ _new token needed
     ${remaining_time}=      subtract date from date         ${EXPIRY_DATE}      ${current_date}      result_format=number
     ${new_token_needed}=    set variable if                 ${remaining_time} < 60           TRUE        FALSE
     [Return]                ${new_token_needed}
-

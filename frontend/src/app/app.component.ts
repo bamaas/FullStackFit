@@ -1,5 +1,4 @@
 import { Component, AfterViewInit, OnInit } from '@angular/core';
-import { TDEEService } from './_archive/tdee.service';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
 import { Subscription } from 'rxjs';
 import { KeycloakService } from 'keycloak-angular';
@@ -7,8 +6,7 @@ import { KeycloakService } from 'keycloak-angular';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
-  providers: [TDEEService]
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit, AfterViewInit{
 
