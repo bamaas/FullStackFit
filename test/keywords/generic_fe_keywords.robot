@@ -3,6 +3,7 @@ Login
     [Arguments]             ${uname}     ${pw}
     ${logged_in}=           run keyword and return status       page should contain element     //span[@test='username' and text()='${uname}']
     return from keyword if  '${logged_in}' == 'True'            already logged in
+    wait until page contains element        id=username     timeout=5 seconds
     input text              id=username     ${uname}
     input text              id=password     ${pw}
     click element           class=submit
