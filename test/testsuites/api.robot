@@ -4,6 +4,7 @@ Resource          ../keywords/all.robot
 *** Variables ***
 # The value in 'environment' is used to load the config file containing variables for the specific environment, such as the GUI_URL.
 ${ENVIRONMENT}                  test
+${USER}                         test
 
 *** Settings *** 
 Suite Setup                     connect to db
@@ -20,7 +21,7 @@ Get entries through api
     set test variable           ${weight}               80.0
     set test variable           ${note}                 ${TEST_NAME}
     # Test Script
-    insert entry into db        id=${id}     date=${date}       weight=${weight}        note=${note}
+    insert entry into db        id=${id}     date=${date}   weight=${weight}        note=${note}
     ${response}=                Send GET entries request    page_number=0           page_size=10
     ${entry}=                   get from list               ${response}             -1
     assert JSON                 ${entry}                    $.id                    ${id}           number

@@ -1,4 +1,11 @@
 *** Keywords ***
+Login
+    ${logged_in}=           run keyword and return status       page should contain element     id=username
+    return from keyword if  '${logged_in}' == 'False'           already logged in
+    input text              id=username     ${USERNAME}
+    input text              id=password     ${PASSWORD}
+    click element           class=submit
+
 Edit entry
     [Arguments]                 ${date_old}         ${weight_old}       ${date_new}     ${weight_new}      ${note_new}
     Open actions menu of entry  ${date_old}         ${weight_old}
