@@ -3,11 +3,11 @@ Login
     [Arguments]             ${uname}     ${pw}
     ${logged_in}=           run keyword and return status       page should contain element     //span[@test='username' and text()='${uname}']
     return from keyword if  '${logged_in}' == 'True'            already logged in
-    wait until page contains element        id=username     timeout=5 seconds
+    wait until page contains element        id=username     timeout=10 seconds
     input text              id=username     ${uname}
     input text              id=password     ${pw}
     click element           class=submit
-    wait until page contains element        locator=//span[@test='username' and text()='${uname}']        timeout=5 seconds       error=Login failed. Username did not appear in the header.
+    wait until page contains element        locator=//span[@test='username' and text()='${uname}']        timeout=10 seconds       error=Login failed. Username did not appear in the header.
 
 Edit entry
     [Arguments]                 ${date_old}         ${weight_old}       ${date_new}     ${weight_new}      ${note_new}

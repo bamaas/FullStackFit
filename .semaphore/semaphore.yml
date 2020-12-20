@@ -181,11 +181,11 @@ blocks:
         - name: To DockerHub
           commands:
           # Pull images from bamaas/registry
-          - echo ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_database.${IMAGE_TAG} | xargs -n 1 docker pull
+          - echo ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_database.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_iam.${IMAGE_TAG} | xargs -n 1 docker pull
           # Tag to :$IMAGE_TAG
-          - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_frontend:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_backend.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_backend:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_database.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_database:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_reverseproxy:$IMAGE_TAG | xargs -n 2 docker tag
+          - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_frontend:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_backend.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_backend:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_database.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_database:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_reverseproxy:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_iam.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_iam:$IMAGE_TAG | xargs -n 2 docker tag
           # Push :$IMAGE_TAG
-          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_backend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_reverseproxy:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_database:$IMAGE_TAG | xargs -n 1 docker push
+          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_backend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_reverseproxy:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_database:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_iam:$IMAGE_TAG | xargs -n 1 docker push
 promotions:
 - name: Deploy
   pipeline_file: deploy-prod.yml
