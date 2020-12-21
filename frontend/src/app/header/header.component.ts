@@ -1,9 +1,8 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { AddEntryComponent } from '../progress-tracker/entries/add-entry/add-entry.component';
-import { StyleService } from 'src/app/services/style.service'
 import { faUser, faHistory, faChartBar, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { ProfileService } from '../services/profile.service'
 import { KeycloakProfile } from 'keycloak-js';
-import { KeycloakService } from 'keycloak-angular';
 
 @Component({
   selector: 'app-header',
@@ -12,17 +11,16 @@ import { KeycloakService } from 'keycloak-angular';
 })
 export class HeaderComponent implements OnInit, AfterViewInit {
 
-  public userProfile: KeycloakProfile | null = null;
+  public userInfo: any = null;
 
   constructor(
-    private _addEntryComponent: AddEntryComponent,
-    private _styleService: StyleService,
-    private readonly keycloak: KeycloakService
+    private addEntryComponent: AddEntryComponent,
+    private profileService: ProfileService
   )
   {}
 
-  async ngOnInit(): Promise<void> {
-    this.userProfile = await this.keycloak.loadUserProfile();
+  ngOnInit() {
+    this.getUserProfile();
   }
 
   @ViewChild('mainHeader', {read: ElementRef, static:false}) mainHeaderElement: ElementRef;
@@ -34,16 +32,19 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   public faChartBar = faChartBar;
 
   openAddEntryDialog(): void{
-    this._addEntryComponent.openAddEntrySheet();
+    this.addEntryComponent.openAddEntrySheet();
   }
 
   ngAfterViewInit(): void{
     this.headerHeight = this.mainHeaderElement.nativeElement.offsetHeight;
-    this._styleService.headerHeight = this.headerHeight;
+  }
+
+  getUserProfile(): void{
+    this.profileService.userInfo.subscribe(userInfo => {this.userInfo = userInfo})
   }
 
   public logout(): void {
-    this.keycloak.logout();
+    this.profileService.logout();
   }
 
 }

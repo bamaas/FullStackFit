@@ -3,7 +3,7 @@
         <div fxFlex="90" fxLayout="row">
             <button mat-button [matMenuTriggerFor]="menu" test="nav-profile">
                 <fa-icon [icon]="faUser"></fa-icon>
-                <span class="nav-text" test="username">{{ userProfile.username | titlecase}}</span>
+                <span class="nav-text" test="username">{{ (userInfo !== null) ? (userInfo.preferred_username | titlecase ) : "Profile" }}</span>
             </button>
             <mat-menu #menu="matMenu">
                 <button mat-menu-item (click)="logout()">

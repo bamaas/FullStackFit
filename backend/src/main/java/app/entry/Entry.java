@@ -33,6 +33,9 @@ public class Entry {
     @Column(name="\"id\"",unique=true,nullable=false)
     private long id;
 
+    @Column(name="\"user_id\"", nullable = false)
+    private String userId;
+
     @Column(name="\"weight\"", nullable = false)
     private float weight;
 
@@ -74,4 +77,8 @@ public class Entry {
     public void setId(long id) {
         this.id = id;
     }
+
+    public void setUserId(String id) { this.userId = id; }
+
+    public String getUserId() { return this.userId; }
 }

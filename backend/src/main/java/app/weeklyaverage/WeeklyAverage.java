@@ -46,6 +46,9 @@ public class WeeklyAverage {
     @Column(name="\"weight_measurement_count\"")
     private short weightMeasurementCount;
 
+    @Column(name="\"user_id\"", nullable = false)
+    private String userId;
+
     public short getYear() {
         return year;
     }
@@ -77,4 +80,8 @@ public class WeeklyAverage {
     public void setWeightMeasurementCount(short weightMeasurementCount) {
         this.weightMeasurementCount = weightMeasurementCount;
     }
+
+    public void setUserId(String id) { this.userId = id; }
+
+    public String getUserId() { return this.userId; }
 }

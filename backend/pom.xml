@@ -80,6 +80,11 @@
       <version>25.1-jre</version>
     </dependency>
     <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-data</artifactId>
+      <version>5.3.6.RELEASE</version>
+    </dependency>
+    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
@@ -97,6 +102,11 @@
       <groupId>org.keycloak</groupId>
       <artifactId>keycloak-spring-boot-starter</artifactId>
     </dependency>
+      <dependency>
+          <groupId>FullStackFit</groupId>
+          <artifactId>FullStackFit</artifactId>
+          <version>FullStackFit</version>
+      </dependency>
   </dependencies>
 
     <dependencyManagement>
