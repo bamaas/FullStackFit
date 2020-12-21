@@ -1,6 +1,5 @@
 import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
-import { Subscription } from 'rxjs';
 import { KeycloakService } from 'keycloak-angular';
 import { ProfileService } from './services/profile.service';
 
@@ -16,7 +15,7 @@ export class AppComponent implements OnInit, AfterViewInit{
   constructor(
     private readonly keycloak: KeycloakService,
     private mediaObserver: MediaObserver,
-    private profileService: ProfileService
+    private profileService: ProfileService,
   ){
 
   }

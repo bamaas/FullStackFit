@@ -9,7 +9,7 @@ Insert entry into db
     ${year}=                           convert date         ${date}             result_format=%Y        exclude_millis=yes
     ${datetimeobj}=                    convert date         ${date}             result_format=datetime
     ${week}=                           evaluate             math.floor($datetimeobj.timetuple().tm_yday)       modules=datetime,math
-    execute sql string                 INSERT INTO entry (id,date, weight, note, year, week) VALUES (${id}, ${date}, ${weight}, '${note}', ${year}, ${week}); 
+    execute sql string                 INSERT INTO entry (id,date, weight, note, year, week, user_id) VALUES (${id}, ${date}, ${weight}, '${note}', ${year}, ${week}, ${USERID}); 
 
 Verify entry in db
     [Arguments]                         ${id}     ${weight}       ${note}     ${date}
