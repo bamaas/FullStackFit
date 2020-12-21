@@ -102,11 +102,6 @@
       <groupId>org.keycloak</groupId>
       <artifactId>keycloak-spring-boot-starter</artifactId>
     </dependency>
-      <dependency>
-          <groupId>FullStackFit</groupId>
-          <artifactId>FullStackFit</artifactId>
-          <version>FullStackFit</version>
-      </dependency>
   </dependencies>
 
     <dependencyManagement>
