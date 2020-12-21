@@ -1,7 +1,7 @@
 import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
-import { Subscription } from 'rxjs';
 import { KeycloakService } from 'keycloak-angular';
+import { ProfileService } from './services/profile.service';
 
 @Component({
   selector: 'app-root',
@@ -15,27 +15,32 @@ export class AppComponent implements OnInit, AfterViewInit{
   constructor(
     private readonly keycloak: KeycloakService,
     private mediaObserver: MediaObserver,
+    private profileService: ProfileService,
   ){
 
   }
 
   async ngOnInit(){
+    const keycloakInstance = this.profileService.keycloakInstance;
+
     if (await this.keycloak.isLoggedIn()) {
       this.isLoggedIn = true;
+      keycloakInstance.loadUserInfo().then( (userinfo) => {
+        this.profileService.updateUserInfo(userinfo);
+      });
     } else {
-      await this.login();
+      await this.profileService.login();
     }
 
     /**
      * Whenever the token expires and a refresh token is available, try to refresh the access token.
      * Otherwise, redirect to login.
     */
-    const keycloakAuth = this.keycloak.getKeycloakInstance();
-    keycloakAuth.onTokenExpired = () => {
-      if (keycloakAuth.refreshToken) {
+    keycloakInstance.onTokenExpired = () => {
+      if (keycloakInstance.refreshToken) {
           this.keycloak.updateToken();
       } else {
-          this.login();
+          this.profileService.login();
       }
     };
 
@@ -44,10 +49,6 @@ export class AppComponent implements OnInit, AfterViewInit{
         console.log(change.mqAlias);
       }
     );
-  }
-
-  public login(): void{
-    this.keycloak.login({ redirectUri: window.location.origin });
   }
 
   ngAfterViewInit(){

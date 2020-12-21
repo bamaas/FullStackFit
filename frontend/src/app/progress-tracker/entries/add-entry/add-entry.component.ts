@@ -31,6 +31,7 @@ import { PickDateAdapter, PICK_FORMATS } from 'src/app/shared/pick-date-adapter'
 import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material';
 import {MAT_BOTTOM_SHEET_DATA} from '@angular/material/bottom-sheet';
 import * as moment from 'moment';
+import { ProfileService } from 'src/app/services/profile.service';
 
 @Component({
   selector: 'app-add-entry-sheet',
@@ -49,16 +50,23 @@ export class AddEntrySheet implements OnInit{
     private _bottomSheetRef: MatBottomSheetRef<AddEntrySheet>, 
     private _entryService: EntryService,
     private _snackBar: MatSnackBar,
+    private profileService: ProfileService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any
   ) {}
 
   public entryForm: FormGroup;
+  public userId: string;
 
   ngOnInit(): void{
-    this.entryForm = this.initEntryForm(this.data.weight, this.data.date, this.data.note);
+    this.initEntryForm(this.data.weight, this.data.date, this.data.note);
+    this.getUserId();
   }
 
-  initEntryForm(weight: number, date: any, note: string): FormGroup{
+  getUserId(): void{
+    this.profileService.userInfo.subscribe(userInfo => {this.userId = userInfo['sub']});
+  }
+
+  initEntryForm(weight: number, date: any, note: string): void{
     if (date == null){
       // If new entry
       date = new Date();
@@ -66,7 +74,7 @@ export class AddEntrySheet implements OnInit{
       // If editing entry
       date = moment(date, 'YYYY-MM-DD[T]HH:mm:ss').toDate();
     }
-    return new FormGroup({
+    this.entryForm = new FormGroup({
       weight: new FormControl(weight, [Validators.required, Validators.min(0), Validators.max(200), Validators.pattern(new RegExp(/^\d{0,3}(?:\.\d)?$/))]),
       date: new FormControl(date),
       note: new FormControl(note, Validators.maxLength(50))
@@ -91,22 +99,21 @@ export class AddEntrySheet implements OnInit{
   submit(): void{
     if (!this.entryForm.invalid && this._submitEnabled){
       const id: number = this.data.id;
+      const userId: string = this.userId;
       const weight: number = this.entryForm.controls['weight'].value;
       const note: string = this.entryForm.controls['note'].value;
       const dateMoment = moment(new Date(this.entryForm.controls['date'].value));
-      // const year: number = dateMoment.year();
-      // const week: number = Math.floor(dateMoment.dayOfYear() / 7);
       if (id != null){
         // If editing etry
         const date = dateMoment.format("YYYY-MM-DD[T]HH:mm:ss");
-        const entry: Entry = { id, weight, date, note};
+        const entry: Entry = { id, userId, weight, date, note};
         this.edit(entry);
       } else {
         // If new entry - Get current time and add it to the date
         const dateformat: string = dateMoment.format("YYYY-MM-DD");
         const time:string = moment().format("HH:mm:ss")
         const date: string = dateformat + 'T' + time;
-        const entry: Entry = { id, weight, date, note}
+        const entry: Entry = { id, userId, weight, date, note}
         this.add(entry);
         this._submitEnabled = false;
         setTimeout(f => this._submitEnabled = true, 1000);

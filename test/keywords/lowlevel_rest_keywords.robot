@@ -3,6 +3,7 @@ Send UPDATE ENTRY request
     [Arguments]                 ${id}                   ${date}          ${weight}            ${note}
     ${body}=                    create dictionary   
     ...                         id=${id}
+    ...                         userId=${USERID}
     ...                         weight=${weight}
     ...                         note=${note}
     ...                         date=${date}
@@ -26,6 +27,7 @@ Send POST ENTRY request
     ${body}=                    create dictionary   
     ...                         weight=${weight}
     ...                         note=${note}
+    ...                         userId=${USERID}
     ...                         date=${date}
     ${access_token}=            Get access token        username=${USERNAME}   password=${PASSWORD}
     ${header}=                  Create REST header      ${access_token}

@@ -7,6 +7,7 @@ import { WeeklyAverageService } from './../services/weekly-average.service';
 
 export interface Entry {
   id: number,
+  userId: string,
   weight: number,
   date: string,
   note: string,

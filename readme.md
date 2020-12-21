@@ -7,7 +7,7 @@
 
 Prod deployed @ [fit.basmaas.nl](https://fit.basmaas.nl) (Running on Kubernetes @ My Home)
 
-Test deployed @ [test.fit.basmaas.nl](https://test.fit.basmaas.nl) (Running on Kubernetes @ My Home)
+Test deployed @ [test.basmaas.nl](https://test.basmaas.nl) (Running on Kubernetes @ My Home)
 Demo user: test / test
 
 ### What is this application about?
