@@ -38,7 +38,7 @@ module.exports = (on, config) => {
       //     console.log(`child process exited with code ${code}`);
       // });
       
-      new Promise(r => setTimeout(r, 1000)).then( () => {
+      new Promise(r => setTimeout(r, 5000)).then( () => {
         const client = new Client({
           user: 'postgres',
           host: 'localhost',
