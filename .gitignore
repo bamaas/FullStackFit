@@ -13,3 +13,10 @@ backend/target/
 .scannerwork
 # Database
 database/volumes/*
+# test
+/test/config
+/test/results/
+/test/log
+/test/cypress/screenshots
+/test/cypress/videos/
+/test/browserstack.json

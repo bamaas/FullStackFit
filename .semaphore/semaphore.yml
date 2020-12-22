@@ -84,11 +84,11 @@ blocks:
             - make build s="iam"
             - docker tag fullstackfit_iam:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_iam.${IMAGE_TAG}
             - docker push ${DOCKER_USERNAME}/registry:fullstackfit_iam.${IMAGE_TAG}
-        - name: Test
-          commands:
-            - bash ./.semaphore/scripts/create-test-env-file.sh
-            - docker-compose -f docker-compose-test.yml build
-            - docker push ${DOCKER_USERNAME}/fullstackfit_test:latest
+        # - name: Test
+        #   commands:
+        #     - bash ./.semaphore/scripts/create-test-env-file.sh
+        #     - docker-compose -f docker-compose-test.yml build
+        #     - docker push ${DOCKER_USERNAME}/fullstackfit_test:latest
   - name: Deploy to Kubernetes
     dependencies: ["Docker build"]
     task:
@@ -119,54 +119,76 @@ blocks:
             - sh ./.semaphore/scripts/rollout.sh test deployment backend
             - sh ./.semaphore/scripts/rollout.sh test deployment frontend
             - sh ./.semaphore/scripts/rollout.sh test deployment reverse-proxy
-  - name: Integration test
+  - name: Test
     dependencies: ["Deploy to Kubernetes"]
     task:
       prologue:
         commands:
           - checkout
-          - source ./.semaphore/scripts/export-git-env-vars.sh
-          - source ./.semaphore/scripts/create-test-env-file.sh
-          - kubectl -n test port-forward statefulset/database 5432:5432 --insecure-skip-tls-verify &
-          - docker pull ${DOCKER_USERNAME}/fullstackfit_test
+          - sem-version node 14.6.0
+          - cd test
+          - npm install
       jobs:
         - name: api
           commands:
-            - "bash ./test/rerunner.sh robotlooper -v environment:test testsuites/api.robot"
-      epilogue:
-        always:
+            - "npx cypress run --spec 'cypress/integration/api.spec.js' --browser chrome --record --key ${CYPRESS}"
+        - name: e2e
           commands:
-            - pkill kubectl
-            - artifact push job ./test/logs/log.html
+            - "npx cypress run --spec 'cypress/integration/e2e.spec.js' --browser chrome --record --key ${CYPRESS}"
       secrets:
         - name: kubectl
-        - name: docker
+        - name: cypress
       env_vars:
         - name: KUBECONFIG
           value: /home/semaphore/.kube/config.yaml
-  - name: E2E test
-    dependencies: ["Integration test"]
-    task:
-      prologue:
-        commands:
-          - checkout
-          - source ./.semaphore/scripts/export-git-env-vars.sh
-          - source ./.semaphore/scripts/create-test-env-file.sh
-          - docker pull ${DOCKER_USERNAME}/fullstackfit_test
-      jobs:
-        - name: MacOS - Chrome
-          commands:
-            - bash ./test/rerunner.sh robotlooper -v environment:test -v remote_webdriver:true -v capabilities:mac_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/e2e.robot
-        - name: Android - Samsung S10
-          commands:
-            - bash ./test/rerunner.sh robotlooper -v environment:test -v remote_webdriver:true -v capabilities:samsung_s10_plus -v maximize_window:false -v remote_url:${BROWSERSTACK_URL} testsuites/e2e.robot  
-      secrets:
-        - name: browserstack
-        - name: docker
-      epilogue:
-        always:
-          commands:
-            - artifact push job ./test/logs/log.html
+  # - name: Integration test
+  #   dependencies: ["Deploy to Kubernetes"]
+  #   task:
+  #     prologue:
+  #       commands:
+  #         - checkout
+  #         - source ./.semaphore/scripts/export-git-env-vars.sh
+  #         - source ./.semaphore/scripts/create-test-env-file.sh
+  #         - kubectl -n test port-forward statefulset/database 5432:5432 --insecure-skip-tls-verify &
+  #         - docker pull ${DOCKER_USERNAME}/fullstackfit_test
+  #     jobs:
+  #       - name: api
+  #         commands:
+  #           - "bash ./test/rerunner.sh robotlooper -v environment:test testsuites/api.robot"
+  #     epilogue:
+  #       always:
+  #         commands:
+  #           - pkill kubectl
+  #           - artifact push job ./test/logs/log.html
+  #     secrets:
+  #       - name: kubectl
+  #       - name: docker
+  #     env_vars:
+  #       - name: KUBECONFIG
+  #         value: /home/semaphore/.kube/config.yaml
+  # - name: E2E test
+  #   dependencies: ["Integration test"]
+  #   task:
+  #     prologue:
+  #       commands:
+  #         - checkout
+  #         - source ./.semaphore/scripts/export-git-env-vars.sh
+  #         - source ./.semaphore/scripts/create-test-env-file.sh
+  #         - docker pull ${DOCKER_USERNAME}/fullstackfit_test
+  #     jobs:
+  #       - name: MacOS - Chrome
+  #         commands:
+  #           - bash ./test/rerunner.sh robotlooper -v environment:test -v remote_webdriver:true -v capabilities:mac_chrome -v remote_url:${BROWSERSTACK_URL} testsuites/e2e.robot
+  #       - name: Android - Samsung S10
+  #         commands:
+  #           - bash ./test/rerunner.sh robotlooper -v environment:test -v remote_webdriver:true -v capabilities:samsung_s10_plus -v maximize_window:false -v remote_url:${BROWSERSTACK_URL} testsuites/e2e.robot  
+  #     secrets:
+  #       - name: browserstack
+  #       - name: docker
+  #     epilogue:
+  #       always:
+  #         commands:
+  #           - artifact push job ./test/logs/log.html
   - name: Promote Image
     dependencies: ["E2E test"]
     task:
