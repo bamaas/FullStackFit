@@ -190,7 +190,7 @@ blocks:
   #         commands:
   #           - artifact push job ./test/logs/log.html
   - name: Promote Image
-    dependencies: ["E2E test"]
+    dependencies: ["test"]
     task:
       secrets:
         - name: docker
