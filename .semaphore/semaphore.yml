@@ -37,7 +37,7 @@ blocks:
         - name: SonarQube
           priority:
             - value: 1
-              when: "branch = 'dev' OR branch = 'master'"
+              when: true
           commands:
             - export SONAR_SCANNER_VERSION=4.2.0.1873
             - export SONAR_SCANNER_HOME=$HOME/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux
@@ -59,14 +59,17 @@ blocks:
           - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
       jobs:
         - name: Database
+          priority:
+            - value: 65
+              when: true
           commands:
             - make build s="database"
             - docker tag fullstackfit_database:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_database.${IMAGE_TAG}
             - docker push ${DOCKER_USERNAME}/registry:fullstackfit_database.${IMAGE_TAG}
         - name: Backend
           priority:
-            - value: 99
-              when: "branch = 'dev' OR branch = 'master'"
+            - value: 80
+              when: true
           commands:
             - sem-version java 11
             - sed -i 's/localhost\:5432/database/g' ./backend/src/main/resources/application.properties
@@ -78,17 +81,23 @@ blocks:
         - name: Frontend
           priority:
           - value: 100
-            when: "branch = 'dev' OR branch = 'master'"
+            when: true
           commands:
             - make build s="frontend"
             - docker tag fullstackfit_frontend:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${IMAGE_TAG}
             - docker push ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${IMAGE_TAG}
         - name: Reverse proxy
+          priority:
+            - value: 65
+              when: true
           commands:
             - make build s="reverseproxy"
             - docker tag fullstackfit_reverseproxy:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${IMAGE_TAG}
             - docker push ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${IMAGE_TAG}
         - name: IAM
+          priority:
+            - value: 65
+              when: true
           commands:
             - make build s="iam"
             - docker tag fullstackfit_iam:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_iam.${IMAGE_TAG}
@@ -112,6 +121,9 @@ blocks:
           - source ./.semaphore/scripts/export-git-env-vars.sh
       jobs:
         - name: To test env
+          priority:
+            - value: 65
+              when: true
           commands:
             # change keycloak frontend url
             - sed -i -e "s/fit\.basmaas\.nl/test\.basmaas\.nl/g" ./.kubernetes/deployment/iam.yaml
@@ -136,11 +148,22 @@ blocks:
           - checkout
           - cd test
           - npm install
+          - kubectl -n test port-forward statefulset/database 5432:5432 --insecure-skip-tls-verify &
+      epilogue:
+        always:
+          commands:
+            - pkill kubectl
       jobs:
         - name: api
+          priority:
+            - value: 65
+              when: true
           commands:
             - "npx cypress run --spec 'cypress/integration/api.spec.js' --browser chrome --record --key ${CYPRESS_DASHBOARD_KEY}"
         - name: e2e
+          priority:
+            - value: 80
+              when: true
           commands:
             - "npx cypress run --spec 'cypress/integration/e2e.spec.js' --browser chrome --record --key ${CYPRESS_DASHBOARD_KEY}"
       secrets:
@@ -209,6 +232,9 @@ blocks:
           - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
       jobs:
         - name: To DockerHub
+          priority:
+            - value: 65
+              when: true
           commands:
           # Pull images from bamaas/registry
           - echo ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_database.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_iam.${IMAGE_TAG} | xargs -n 1 docker pull
