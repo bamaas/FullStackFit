@@ -35,6 +35,8 @@ blocks:
           - sem-version java 11
       jobs:
         - name: SonarQube
+          priority:
+            - value: 1
           commands:
             - export SONAR_SCANNER_VERSION=4.2.0.1873
             - export SONAR_SCANNER_HOME=$HOME/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux
@@ -61,6 +63,8 @@ blocks:
             - docker tag fullstackfit_database:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_database.${IMAGE_TAG}
             - docker push ${DOCKER_USERNAME}/registry:fullstackfit_database.${IMAGE_TAG}
         - name: Backend
+          priority:
+            - value: 99
           commands:
             - sem-version java 11
             - sed -i 's/localhost\:5432/database/g' ./backend/src/main/resources/application.properties
@@ -70,6 +74,8 @@ blocks:
             - docker tag fullstackfit_backend:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${IMAGE_TAG}
             - docker push ${DOCKER_USERNAME}/registry:fullstackfit_backend.${IMAGE_TAG}
         - name: Frontend
+          priority:
+          - value: 100
           commands:
             - make build s="frontend"
             - docker tag fullstackfit_frontend:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${IMAGE_TAG}
@@ -130,10 +136,10 @@ blocks:
       jobs:
         - name: api
           commands:
-            - "npx cypress run --spec 'cypress/integration/api.spec.js' --browser chrome --record --key ${CYPRESS}"
+            - "npx cypress run --spec 'cypress/integration/api.spec.js' --browser chrome --record --key ${CYPRESS_DASHBOARD_KEY}"
         - name: e2e
           commands:
-            - "npx cypress run --spec 'cypress/integration/e2e.spec.js' --browser chrome --record --key ${CYPRESS}"
+            - "npx cypress run --spec 'cypress/integration/e2e.spec.js' --browser chrome --record --key ${CYPRESS_DASHBOARD_KEY}"
       secrets:
         - name: kubectl
         - name: cypress
