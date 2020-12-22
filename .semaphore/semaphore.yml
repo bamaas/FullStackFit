@@ -11,20 +11,20 @@ fail_fast:
   cancel:
     when: "true"
 blocks:
-  - name: Unit test
-    dependencies: []
-    task:
-      prologue:
-        commands:
-          - checkout
-          - source ./.semaphore/scripts/export-git-env-vars.sh
-          - sem-version java 11
-      jobs:
-        - name: backend
-          commands: 
-            - mvn test -f ./backend
+  # - name: Unit test
+  #   dependencies: []
+  #   task:
+  #     prologue:
+  #       commands:
+  #         - checkout
+  #         - source ./.semaphore/scripts/export-git-env-vars.sh
+  #         - sem-version java 11
+  #     jobs:
+  #       - name: backend
+  #         commands: 
+  #           - mvn test -f ./backend
   - name: Code analysis
-    dependencies: ["Unit test"]
+    dependencies: []
     task:
       secrets:
         - name: sonarcloud
@@ -45,7 +45,7 @@ blocks:
             - mvn package -Dmaven.compiler.executable=javac -Dmaven.test.skip=true -f ./backend
             - sonar-scanner -Dsonar.organization=bamaas -Dsonar.projectKey=bamaas_FullStackFit -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.branch.name=${GIT_BRANCH} -Dsonar.java.binaries="backend/target" -Dsonar.exclusions="**/.archive/**, **/test/**, **/.github/**, **/.mergify/**"
   - name: Docker build
-    dependencies: ["Code analysis"]
+    dependencies: []
     task:
       secrets:
         - name: docker
@@ -114,18 +114,17 @@ blocks:
             - sed -i -e "s/fullstackfit_database:latest/registry:fullstackfit_database.$IMAGE_TAG/g" ./.kubernetes/statefulset/database.yaml
             - sed -i -e 's/EXPOSED-NODEPORT/30004/g' ./.kubernetes/service/reverse-proxy-nodeport.yaml
             - kubectl -n test apply -f ./.kubernetes/ --recursive --insecure-skip-tls-verify
-            - sh ./.semaphore/scripts/rollout.sh test statefulset database
-            - sh ./.semaphore/scripts/rollout.sh test deployment iam
-            - sh ./.semaphore/scripts/rollout.sh test deployment backend
-            - sh ./.semaphore/scripts/rollout.sh test deployment frontend
-            - sh ./.semaphore/scripts/rollout.sh test deployment reverse-proxy
+            # - sh ./.semaphore/scripts/rollout.sh test statefulset database
+            # - sh ./.semaphore/scripts/rollout.sh test deployment iam
+            # - sh ./.semaphore/scripts/rollout.sh test deployment backend
+            # - sh ./.semaphore/scripts/rollout.sh test deployment frontend
+            # - sh ./.semaphore/scripts/rollout.sh test deployment reverse-proxy
   - name: Test
     dependencies: ["Deploy to Kubernetes"]
     task:
       prologue:
         commands:
           - checkout
-          - sem-version node 14.6.0
           - cd test
           - npm install
       jobs:
