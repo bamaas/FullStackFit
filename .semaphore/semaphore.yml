@@ -148,11 +148,11 @@ blocks:
           - checkout
           - cd test
           - npm install
-          - kubectl -n test port-forward statefulset/database 5432:5432 --insecure-skip-tls-verify &
-      epilogue:
-        always:
-          commands:
-            - pkill kubectl
+          # - kubectl -n test port-forward statefulset/database 5432:5432 --insecure-skip-tls-verify &
+      # epilogue:
+      #   always:
+      #     commands:
+            # - pkill kubectl
       jobs:
         - name: api
           priority:
