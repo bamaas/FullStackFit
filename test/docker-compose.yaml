@@ -1,0 +1,17 @@
+version: '3.3'
+services:
+
+  test:
+    container_name: fullstackfit_test
+    image: bamaas/fullstackfit_test:latest
+    build:
+      context: ${PWD}
+      dockerfile: Dockerfile
+    # volumes:
+    #   - '${PWD}:/e2e'
+    network_mode: host
+    entrypoint:
+      - "cypress"
+      - "run"
+      - "--browser"
+      - "chrome"

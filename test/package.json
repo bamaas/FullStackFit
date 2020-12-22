@@ -1,0 +1,18 @@
+{
+  "name": "fittrack-cypress",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@kubernetes/client-node": "^0.13.1",
+    "browserstack-cypress-cli": "^1.6.0",
+    "cypress": "^6.1.0",
+    "cypress-xpath": "^1.6.1",
+    "pg": "^8.5.1"
+  }
+}

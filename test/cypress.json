@@ -1,0 +1,15 @@
+{
+    "projectId": "hduft5",
+    "retries": {
+        "runMode": 2,
+        "openMode": 0
+    },
+    "baseUrl": "https://test.basmaas.nl",
+    "env": {
+        "token_url": "/auth/realms/FitTrack/protocol/openid-connect/token",
+        "userinfo_url": "/auth/realms/FitTrack/protocol/openid-connect/userinfo",
+        "entry_url": "/api/entry",
+        "username_test": "test",
+        "password_test": "test"
+    }
+}
