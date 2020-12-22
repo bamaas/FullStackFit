@@ -37,6 +37,7 @@ blocks:
         - name: SonarQube
           priority:
             - value: 1
+              when: "branch = 'dev' OR branch = 'master'"
           commands:
             - export SONAR_SCANNER_VERSION=4.2.0.1873
             - export SONAR_SCANNER_HOME=$HOME/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux
@@ -65,6 +66,7 @@ blocks:
         - name: Backend
           priority:
             - value: 99
+              when: "branch = 'dev' OR branch = 'master'"
           commands:
             - sem-version java 11
             - sed -i 's/localhost\:5432/database/g' ./backend/src/main/resources/application.properties
@@ -76,6 +78,7 @@ blocks:
         - name: Frontend
           priority:
           - value: 100
+            when: "branch = 'dev' OR branch = 'master'"
           commands:
             - make build s="frontend"
             - docker tag fullstackfit_frontend:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${IMAGE_TAG}
