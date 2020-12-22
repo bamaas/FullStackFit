@@ -36,7 +36,7 @@ blocks:
       jobs:
         - name: SonarQube
           priority:
-            - value: 1
+            - value: 10
               when: true
           commands:
             - export SONAR_SCANNER_VERSION=4.2.0.1873
