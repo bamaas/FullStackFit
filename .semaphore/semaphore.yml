@@ -135,11 +135,11 @@ blocks:
             - sed -i -e "s/fullstackfit_database:latest/registry:fullstackfit_database.$IMAGE_TAG/g" ./.kubernetes/statefulset/database.yaml
             - sed -i -e 's/EXPOSED-NODEPORT/30004/g' ./.kubernetes/service/reverse-proxy-nodeport.yaml
             - kubectl -n test apply -f ./.kubernetes/ --recursive --insecure-skip-tls-verify
-            # - sh ./.semaphore/scripts/rollout.sh test statefulset database
-            # - sh ./.semaphore/scripts/rollout.sh test deployment iam
-            # - sh ./.semaphore/scripts/rollout.sh test deployment backend
-            # - sh ./.semaphore/scripts/rollout.sh test deployment frontend
-            # - sh ./.semaphore/scripts/rollout.sh test deployment reverse-proxy
+            - sh ./.semaphore/scripts/rollout.sh test statefulset database
+            - sh ./.semaphore/scripts/rollout.sh test deployment iam
+            - sh ./.semaphore/scripts/rollout.sh test deployment backend
+            - sh ./.semaphore/scripts/rollout.sh test deployment frontend
+            - sh ./.semaphore/scripts/rollout.sh test deployment reverse-proxy
   - name: Test
     dependencies: ["Deploy to Kubernetes"]
     task:
@@ -148,24 +148,13 @@ blocks:
           - checkout
           - cd test
           - npm install
-          # - kubectl -n test port-forward statefulset/database 5432:5432 --insecure-skip-tls-verify &
-      # epilogue:
-      #   always:
-      #     commands:
-            # - pkill kubectl
       jobs:
-        - name: api
+        - name: test e2e and api
           priority:
             - value: 65
               when: true
           commands:
-            - "npx cypress run --spec 'cypress/integration/api.spec.js' --browser chrome --record --key ${CYPRESS_DASHBOARD_KEY}"
-        - name: e2e
-          priority:
-            - value: 80
-              when: true
-          commands:
-            - "npx cypress run --spec 'cypress/integration/e2e.spec.js' --browser chrome --record --key ${CYPRESS_DASHBOARD_KEY}"
+            - "npx cypress run --browser chrome --record --key ${CYPRESS_DASHBOARD_KEY}"
       secrets:
         - name: kubectl
         - name: cypress
