@@ -45,13 +45,6 @@ dev-proxy:
 dev-proxy-restart:
 	docker exec -it fit_reverseproxy-dev nginx -s reload
 
-# TEST
-test-api:
-	sh ./test/testcontainer robotlooper -v environment:test testsuites/api.robot
-
-test-e2e:
-	sh ./test/testcontainer robotlooper -v remote_webdriver:false -v browser:chrome -v environment:test testsuites/gui.robot
-
 # BUILD
 build:
 	docker-compose -f docker-compose-build.yml build ${s}
