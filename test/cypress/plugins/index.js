@@ -13,48 +13,79 @@
 // the project's config changing)
 
 const { spawn } = require('child_process');
-const { Client } = require('pg')
-const client = new Client()
+const { Pool } = require('pg')
+const pool = new Pool({
+  host: 'localhost',
+  user: 'postgres',
+  password: 'postgres',
+  database: 'postgres',
+  port: 5432,
+  max: 20,
+  idleTimeoutMilis: 30000,
+  connectionTimeoutMillis: 2000,
+}) 
 
 /**
  * @type {Cypress.PluginConfig}
  */
 module.exports = (on, config) => {
+
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
   on('task', {
-    cleanDatabase () {
-      const portforward = spawn('kubectl', ['-n', 'test', 'port-forward', 'statefulset/database', '5432:5432', '--insecure-skip-tls-verify']);
 
-      // portforward.stdout.on('data', (data) => {
-      //     console.log(`stdout: ${data}`);
-      // });
-
-      // portforward.stderr.on('data', (data) => {
-      //     console.error(`stderr: ${data}`);
-      // });
-
-      // portforward.on('close', (code) => {
-      //     console.log(`child process exited with code ${code}`);
-      // });
-      
-      new Promise(r => setTimeout(r, 5000)).then( () => {
-        const client = new Client({
-          user: 'postgres',
-          host: 'localhost',
-          database: 'postgres',
-          password: 'postgres',
-          port: 5432,
-        })
-        client.connect().then(() => {
-          client.query('DELETE FROM public.entry').then(response => {
-            client.end().then( () => {
-              portforward.kill('SIGHUP')
-            })
-          })
-        })
+    'kubectl:forwardDB': (namespace) => {
+      spawn('kubectl', ['-n', `${namespace}`, 'port-forward', 'statefulset/database', '5432:5432', '--insecure-skip-tls-verify']);
+      return new Promise(r => setTimeout(r, 4000)).then( () => {
+        return null;
       });
+    },
+
+    'kubectl:kill': () => {
+      const pkill = spawn('pkill', ['kubectl']);
+      pkill.kill('SIGHUP');
       return null;
-    }
+    },
+
+    'db:clean': (userId) => {      
+        return pool
+        .query('DELETE FROM public.entry WHERE user_id = $1', [userId])
+        .then(result => {return result.rows;})
+    },
+
+    'db:insertEntry': (userId) => {
+        const weight = (Math.floor(Math.random() * 99) + 1)
+        const note  = Math.random().toString().substr(2, 8);
+        return pool
+        .query('INSERT INTO public.entry (date, weight, note, user_id) VALUES (CURRENT_TIMESTAMP, $1, $2, $3)', [weight, note, userId])
+        .then(() => {
+          return {weight, note, userId};
+        })
+    },
+
+    'db:createpool': () => {
+      return new Pool({
+            host: 'localhost',
+            user: 'postgres',
+            password: 'postgres',
+            database: 'postgres',
+            port: 5432,
+            max: 20,
+            idleTimeoutMilis: 30000,
+            connectionTimeoutMillis: 2000,
+          });
+    },
+
+    'db:endpool': () => {
+      return pool.end().then(() => {return null;});
+    },
+
+    'db:getAllEntries': (userId) => {
+      return pool
+      .query(`SELECT * FROM public.entry WHERE user_id = $1`, [userId])
+      .then(result => {return result.rows;})
+    },
+
+
   })
 }

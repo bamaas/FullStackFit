@@ -3,10 +3,23 @@
 context('FitTrack', () => {
 
   before(() => {
-    cy.task('cleanDatabase')
+    cy.login(Cypress.env('username_test'), Cypress.env('password_test'))
+  });
+
+  after(() => {
+    cy.logout();
   });
 
   beforeEach(() => {
+    Cypress.Cookies.preserveOnce(
+      'KEYCLOAK_SESSION_LEGACY', 
+      'KEYCLOAK_SESSION', 
+      'KEYCLOAK_IDENTITY_LEGACY', 
+      'AUTH_SESSION_ID_LEGACY', 
+      'KEYCLOAK_IDENTITY', 
+      'JSESSIONID', 
+      'AUTH_SESSION_ID'
+    )
     cy.request({
       method: 'POST',
       url: Cypress.env('token_url'),
@@ -32,87 +45,49 @@ context('FitTrack', () => {
           'Authorization': 'Bearer ' + token
         }
         }).then(response => {
+          cy.task('db:clean', response.body.sub);
           cy.wrap(response.body.sub).as('userId')
         });
       })
-
-    cy.visit('/')
-    cy.get('#username').type('test').should('have.value', 'test')
-    cy.get('#password').type('test').should('have.value', 'test')
-    cy.get('.submit').click();
-    cy.get('[test=username]').should('be.visible').contains('Test');
   })
 
 
   it('edit entry', () => {
-    const random = (Math.floor(Math.random() * 99) + 1).toString()
+    const weight = (Math.floor(Math.random() * 99) + 1).toString()
     cy.get('@userId').then(userId => {
-      cy.get('@accessToken').then(token => {
-        cy.request({
-          method: 'POST',
-          url: Cypress.env('entry_url'),
-          headers: {
-            'Authorization': 'Bearer ' + token
-          },
-          body: {
-            'weight': random,
-            'date': '2000-01-01T15:12:30',
-            'note': 'this is a test note',
-            'userId': userId
-          }
-        })
-      })
+      cy.task('db:insertEntry', userId)
     })
-    cy.visit('/');
-    cy.get('[test=username]').should('be.visible').contains('Test');
-    cy.xpath(`//table[@id='entries-table']//tr[td[1][normalize-space(.)='01-01-2000'] and td[2][normalize-space(.)='${random} kg']]//mat-icon[text()='more_vert']`).click();
+    cy.refresh();
+    cy.xpath(`//mat-icon[text()='more_vert']`).click();
     cy.xpath(`//mat-icon[text()='edit']`).click();
-    cy.get('#add-entry-input-weight').clear().type(random);
+    cy.get('#add-entry-input-weight').clear().type(weight);
     cy.get('#add-entry-btn-add').click();
-    cy.contains(random + ' kg').should('be.visible');
+    cy.contains(weight + ' kg').should('be.visible');
   });
 
   it('post entry', () => {
-    const random = (Math.floor(Math.random() * 99) + 1).toString()
+    const weight = (Math.floor(Math.random() * 99) + 1).toString()
     cy.get('[test=add-entry]').click();
-    cy.get('#add-entry-input-weight').type(random);
+    cy.get('#add-entry-input-weight').type(weight);
     cy.get('#add-entry-input-date').type('20-15-2020');
     cy.get('#add-entry-input-note').type('test note');
     cy.get('#add-entry-btn-add').click();
-    cy.contains(random).should('be.visible')
+    cy.contains(weight).should('be.visible')
   })
 
   it('delete entry', () => {
-    const random = (Math.floor(Math.random() * 99) + 1).toString()
     cy.get('@userId').then(userId => {
-      cy.get('@accessToken').then(token => {
-        cy.request({
-          method: 'POST',
-          url: Cypress.env('entry_url'),
-          headers: {
-            'Authorization': 'Bearer ' + token
-          },
-          body: {
-            'weight': random,
-            'date': '2000-01-01T15:12:30',
-            'note': 'this is a test note',
-            'userId': userId
-          }
-        })
+      cy.task('db:insertEntry', userId).then(entry => {
+        cy.wrap(entry.weight).as('entryWeight');
       })
     })
-    cy.visit('/');
-    cy.get('[test=username]').should('be.visible').contains('Test');
-    cy.xpath(`//table[@id='entries-table']//tr[td[1][normalize-space(.)='01-01-2000'] and td[2][normalize-space(.)='${random} kg']]//mat-icon[text()='more_vert']`).click();
+    cy.refresh();
+    cy.get('@entryWeight').then(weight => {
+    cy.xpath(`//table[@id='entries-table']//tr[td[2][normalize-space(.)='${weight} kg']]//mat-icon[text()='more_vert']`).click();
     cy.xpath(`//mat-icon[text()='delete']`).click();
     cy.xpath(`//span[text()='Delete']`).click();
-    cy.contains(random + ' kg').should('not.exist');
+    cy.contains(weight + ' kg').should('not.exist');
+    })
   });
-
-  it('logout', () => {
-    cy.get('[test=username]').click();
-    cy.contains('Sign out').click();
-    cy.get('#username').should('be.visible')
-  })
 
 })
