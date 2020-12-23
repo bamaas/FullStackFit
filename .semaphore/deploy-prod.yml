@@ -1,5 +1,5 @@
 version: v1.0
-name: deploy to production
+name: Deploy to production
 agent:
   machine:
     type: e1-standard-2
@@ -45,7 +45,7 @@ blocks:
       jobs:
         - name: On production
           commands:
-            - "VIEWPORT=mobile CYPRESS_INCLUDE_TAGS='smoke' CYPRESS_BASE_URL='https://test.basmaas.nl' npx cypress run --spec 'cypress/integration/e2e.spec.js' --env username=test,password=test --browser chrome"
+            - "VIEWPORT=mobile CYPRESS_INCLUDE_TAGS='smoke' CYPRESS_BASE_URL='https://fit.basmaas.nl' npx cypress run --spec 'cypress/integration/e2e.spec.js' --env username=test,password=test --browser chrome"
       secrets:
         - name: kubectl
         - name: cypress
