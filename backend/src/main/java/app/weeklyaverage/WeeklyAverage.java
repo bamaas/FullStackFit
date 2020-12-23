@@ -33,20 +33,20 @@ public class WeeklyAverage {
     }
 
     @Id
-    @Column(name="\"year\"", nullable = false)
+    @Column(name="year", nullable = false)
     private short year;
 
     @Id
-    @Column(name="\"week\"", nullable = false)
+    @Column(name="week", nullable = false)
     private byte week;
 
-    @Column(name="\"weight_average\"", nullable = false)
+    @Column(name="weight_average", nullable = false)
     private float weightAverage;
 
-    @Column(name="\"weight_measurement_count\"")
+    @Column(name="weight_measurement_count")
     private short weightMeasurementCount;
 
-    @Column(name="\"user_id\"", nullable = false)
+    @Column(name="user_id", nullable = false)
     private String userId;
 
     public short getYear() {
