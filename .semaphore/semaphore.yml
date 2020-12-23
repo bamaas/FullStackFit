@@ -30,8 +30,8 @@ blocks:
         - name: sonarcloud
       prologue:
         commands:
-          - cache restore
           - checkout
+          - cache restore
           - source ./.semaphore/scripts/export-git-env-vars.sh
           - sem-version java 11
       epilogue:
@@ -59,8 +59,8 @@ blocks:
         - name: docker
       prologue:
         commands:
-          - cache restore
           - checkout
+          - cache restore
           - source ./.semaphore/scripts/export-git-env-vars.sh
           - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
       epilogue:
@@ -151,8 +151,8 @@ blocks:
     task:
       prologue:
         commands:
-          - cache restore
           - checkout
+          - cache restore
           - cd test
           - kubectl -n test port-forward statefulset/database 5432:5432 --insecure-skip-tls-verify &
           - npm install
@@ -193,8 +193,8 @@ blocks:
         - name: docker
       prologue:
         commands:
-          - cache restore
           - checkout
+          - cache restore
           - source ./.semaphore/scripts/export-git-env-vars.sh
           - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
       epilogue:
