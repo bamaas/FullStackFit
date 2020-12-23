@@ -12,6 +12,6 @@
         "username": "test",
         "password": "test"
     },
-    "defaultCommandTimeout": 5000,
-    "pageLoadTimeout": 6000
+    "defaultCommandTimeout": 10000,
+    "pageLoadTimeout": 10000
 }
