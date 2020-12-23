@@ -30,20 +30,20 @@ public class Entry {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    @Column(name="\"id\"",unique=true,nullable=false)
+    @Column(name="id",unique=true,nullable=false)
     private long id;
 
-    @Column(name="\"user_id\"", nullable = false)
+    @Column(name="user_id", nullable = false)
     private String userId;
 
-    @Column(name="\"weight\"", nullable = false)
+    @Column(name="weight", nullable = false)
     private float weight;
 
-    @Column(name="\"note\"")
+    @Column(name="note")
     private String note;
 
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
-    @Column(name="\"date\"", unique = true, nullable = false)
+    @Column(name="date", unique = true, nullable = false)
     private Date date;
 
     public String getNote() {
