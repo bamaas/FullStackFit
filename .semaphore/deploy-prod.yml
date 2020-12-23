@@ -17,10 +17,11 @@ blocks:
         - name: To production
           commands:
             - kubectl -n prod apply -f ./.kubernetes/ --recursive --insecure-skip-tls-verify &
-            - sh ./.semaphore/scripts/rollout.sh prod deployment backend
-            - sh ./.semaphore/scripts/wait-until-pod-is-ready.sh prod iam
-            - sh ./.semaphore/scripts/wait-until-pod-is-ready.sh prod frontend
-            - sh ./.semaphore/scripts/wait-until-pod-is-ready.sh prod reverse-proxy
+            - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh prod database
+            - bash ./.semaphore/scripts/rollout.sh prod deployment backend
+            - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh prod iam
+            - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh prod frontend
+            - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh prod reverse-proxy
       secrets:
         - name: kubectl
       env_vars:
