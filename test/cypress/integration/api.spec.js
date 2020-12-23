@@ -87,6 +87,7 @@ context('FitTrack', () => {
         })
     });
 
+  
     it(['regression'], 'get entry', () => {
       cy.get('@userId').then(userId => {
         cy.task('db:insertEntry', userId)
@@ -108,6 +109,7 @@ context('FitTrack', () => {
       });
 
     });
+
 
     it(['regression'], 'delete entry', () => {
       cy.get('@userId').then(userId => {
@@ -134,6 +136,7 @@ context('FitTrack', () => {
       })
 
     });
+
 
     it(['regression'], 'edit entry', () => {
       cy.get('@userId').then(userId => {
