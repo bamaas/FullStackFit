@@ -51,7 +51,8 @@ context('FitTrack', () => {
     it(['regression'], 'post an entry', () => {
       const weight = (Math.floor(Math.random() * 99) + 1)
       const note  = Math.random().toString().substr(2, 8);
-      const date = '2000-01-01T15:12:30'
+      const year = Math.floor(Math.random() * 9000) + 1;
+      const date = `${year}-01-01T15:12:30`;
       cy.get('@userId').then(userId => {
           cy.get('@accessToken').then(token => {
             cy.request({
@@ -148,7 +149,8 @@ context('FitTrack', () => {
 
       const weight = (Math.floor(Math.random() * 99) + 1)
       const note  = Math.random().toString().substr(2, 8);
-      const date = '2002-01-01T15:12:30'
+      const year = Math.floor(Math.random() * 9000) + 1;
+      const date = `${year}-01-01T15:12:30`
 
       cy.get('@entryId').then(entryId => {
         cy.get('@userId').then(userId => {
