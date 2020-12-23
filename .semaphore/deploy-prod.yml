@@ -16,20 +16,11 @@ blocks:
       jobs:
         - name: To production
           commands:
-            # change image tags from :latest -> :$IMAGE_TAG .
-            - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/iam.yaml
-            - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/backend.yaml
-            - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/frontend.yaml
-            - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/reverse-proxy.yaml
-            - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/statefulset/database.yaml
-            - sed -i -e 's/EXPOSED-NODEPORT/30005/g' ./.kubernetes/service/reverse-proxy-nodeport.yaml
-            - sed -i -e 's/testdb/proddb/g' ./.kubernetes/statefulset/database.yaml
             - kubectl -n prod apply -f ./.kubernetes/ --recursive --insecure-skip-tls-verify &
-            - kubectl -n prod rollout status statefulset database --insecure-skip-tls-verify
-            - kubectl -n prod rollout status deployment iam --insecure-skip-tls-verify
-            - kubectl -n prod rollout status deployment backend --insecure-skip-tls-verify
-            - kubectl -n prod rollout status deployment frontend --insecure-skip-tls-verify
-            - kubectl -n prod rollout status deployment reverse-proxy --insecure-skip-tls-verify
+            - sh ./.semaphore/scripts/rollout.sh prod deployment backend
+            - sh ./.semaphore/scripts/wait-until-pod-is-ready.sh prod iam
+            - sh ./.semaphore/scripts/wait-until-pod-is-ready.sh prod frontend
+            - sh ./.semaphore/scripts/wait-until-pod-is-ready.sh prod reverse-proxy
       secrets:
         - name: kubectl
       env_vars:
@@ -41,41 +32,22 @@ blocks:
     task:
       prologue:
         commands:
+          - cache restore
           - checkout
           - cd test
           - kubectl -n prod port-forward statefulset/database 5432:5432 --insecure-skip-tls-verify &
           - npm install
-      jobs:
-        - name: On production
-          commands:
-            - "VIEWPORT=mobile CYPRESS_INCLUDE_TAGS='smoke' CYPRESS_BASE_URL='https://test.basmaas.nl' npx cypress run --spec 'cypress/integration/e2e.spec.js' --env username=test,password=test --browser chrome"
       epilogue:
         always:
           commands:
             - pkill kubectl
+      jobs:
+        - name: On production
+          commands:
+            - "VIEWPORT=mobile CYPRESS_INCLUDE_TAGS='smoke' CYPRESS_BASE_URL='https://test.basmaas.nl' npx cypress run --spec 'cypress/integration/e2e.spec.js' --env username=test,password=test --browser chrome"
       secrets:
         - name: kubectl
         - name: cypress
       env_vars:
         - name: KUBECONFIG
           value: /home/semaphore/.kube/config.yaml
-  - name: Tag to latest release
-    skip:
-      when: "branch != 'master'"
-    task:
-      prologue:
-        commands:
-          - checkout
-          - source ./.semaphore/scripts/export-git-env-vars.sh
-          - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
-      jobs:
-        - name: Docker tag latest
-          commands:
-          # Pull images
-          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_backend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_reverseproxy:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_database:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_iam:$IMAGE_TAG | xargs -n 1 docker pull
-          # Tag to :latest
-          - echo $DOCKER_USERNAME/fullstackfit_frontend:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/fullstackfit_backend:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/fullstackfit_database:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/fullstackfit_reverseproxy:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_reverseproxy:latest $DOCKER_USERNAME/fullstackfit_iam:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_iam:latest | xargs -n 2 docker tag
-          # Push :latest to public registry
-          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:latest ${DOCKER_USERNAME}/fullstackfit_backend:latest ${DOCKER_USERNAME}/fullstackfit_reverseproxy:latest ${DOCKER_USERNAME}/fullstackfit_database:latest ${DOCKER_USERNAME}/fullstackfit_iam:latest | xargs -n 1 docker push
-      secrets:
-        - name: docker
