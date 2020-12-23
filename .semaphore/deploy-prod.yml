@@ -42,24 +42,23 @@ blocks:
       prologue:
         commands:
           - checkout
-          - docker pull ${DOCKER_USERNAME}/fullstackfit_test
-          - source ./.semaphore/scripts/export-git-env-vars.sh
-          - source ./.semaphore/scripts/create-test-env-file.sh
+          - cd test
+          - kubectl -n prod port-forward statefulset/database 5432:5432 --insecure-skip-tls-verify &
+          - npm install
       jobs:
         - name: On production
           commands:
-            - bash ./test/rerunner.sh robotlooper -v environment:prod -v remote_webdriver:false -e DBconnection -i smoke -v browser:Chrome testsuites/e2e.robot
+            - "VIEWPORT=mobile CYPRESS_INCLUDE_TAGS='smoke' CYPRESS_BASE_URL='https://test.basmaas.nl' npx cypress run --spec 'cypress/integration/e2e.spec.js' --env username=test,password=test --browser chrome"
       epilogue:
         always:
           commands:
-            - make shutdown
-            - artifact push job ./test/logs/log.html
-        on_fail:
-            commands:
-              - make notify-gitter level=error
+            - pkill kubectl
       secrets:
-        - name: docker
-        - name: browserstack
+        - name: kubectl
+        - name: cypress
+      env_vars:
+        - name: KUBECONFIG
+          value: /home/semaphore/.kube/config.yaml
   - name: Tag to latest release
     skip:
       when: "branch != 'master'"

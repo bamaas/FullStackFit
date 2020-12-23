@@ -9,8 +9,8 @@
         "token_url": "/auth/realms/FitTrack/protocol/openid-connect/token",
         "userinfo_url": "/auth/realms/FitTrack/protocol/openid-connect/userinfo",
         "entry_url": "/api/entry",
-        "username_test": "test",
-        "password_test": "test"
+        "username": "test",
+        "password": "test"
     },
     "defaultCommandTimeout": 5000,
     "pageLoadTimeout": 6000

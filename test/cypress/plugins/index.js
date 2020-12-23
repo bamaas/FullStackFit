@@ -12,6 +12,7 @@
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 
+const tagify = require('cypress-tags');
 const { spawn } = require('child_process');
 const { Pool } = require('pg')
 const pool = new Pool({
@@ -29,6 +30,10 @@ const pool = new Pool({
  * @type {Cypress.PluginConfig}
  */
 module.exports = (on, config) => {
+
+  config.env.CYPRESS_EXCLUDE_TAGS = 'wip';
+  config.env.VIEWPORT = process.env.VIEWPORT;
+  on('file:preprocessor', tagify(config));
 
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
@@ -86,6 +91,6 @@ module.exports = (on, config) => {
       .then(result => {return result.rows;})
     },
 
-
   })
+  return config;
 }

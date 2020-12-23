@@ -1,9 +1,14 @@
-
+let sizes = ['iphone-6', 'macbook-16']
+if (Cypress.env('VIEWPORT') === 'mobile'){
+  sizes = ['iphone-6'];
+} else if (Cypress.env('VIEWPORT') === 'desktop'){
+  sizes = ['macbook-16']
+}
 
 context('FitTrack', () => {
 
   before(() => {
-    cy.login(Cypress.env('username_test'), Cypress.env('password_test'))
+    cy.login(Cypress.env('username'), Cypress.env('password'))
   });
 
   after(() => {
@@ -29,8 +34,8 @@ context('FitTrack', () => {
       },
       body: {
         client_id: 'fittrack-application',
-        username: Cypress.env('username_test'),
-        password: Cypress.env('password_test'),
+        username: Cypress.env('username'),
+        password: Cypress.env('password'),
         grant_type: 'password'
       }
     }).then(response => {
@@ -51,6 +56,52 @@ context('FitTrack', () => {
       })
   })
 
+
+  sizes.forEach((size) => {
+
+    it(['regression'], `edit entry on ${size} screen`, () => {
+      cy.viewport(size)
+      const weight = (Math.floor(Math.random() * 99) + 1).toString()
+      cy.get('@userId').then(userId => {
+        cy.task('db:insertEntry', userId)
+      })
+      cy.refresh();
+      cy.xpath(`//mat-icon[text()='more_vert']`).click();
+      cy.xpath(`//mat-icon[text()='edit']`).click();
+      cy.get('#add-entry-input-weight').clear().type(weight);
+      cy.get('#add-entry-btn-add').click();
+      cy.contains(weight + ' kg').should('be.visible');
+    });
+
+    it(['smoke', 'regression'], `post entry on ${size} screen`, () => {
+      cy.viewport(size)
+      const weight = (Math.floor(Math.random() * 99) + 1).toString()
+      cy.get('[test=add-entry]').click();
+      cy.get('#add-entry-input-weight').type(weight);
+      cy.get('#add-entry-input-date').type('20-15-2020');
+      cy.get('#add-entry-input-note').type('test note');
+      cy.get('#add-entry-btn-add').click();
+      cy.contains(weight).should('be.visible')
+    })
+
+    
+    it(['regression'], `delete entry on ${size} screen`, () => {
+      cy.viewport(size)
+      cy.get('@userId').then(userId => {
+        cy.task('db:insertEntry', userId).then(entry => {
+          cy.wrap(entry.weight).as('entryWeight');
+        })
+      })
+      cy.refresh();
+      cy.get('@entryWeight').then(weight => {
+      cy.xpath(`//table[@id='entries-table']//tr[td[2][normalize-space(.)='${weight} kg']]//mat-icon[text()='more_vert']`).click();
+      cy.xpath(`//mat-icon[text()='delete']`).click();
+      cy.xpath(`//span[text()='Delete']`).click();
+      cy.contains(weight + ' kg').should('not.exist');
+      })
+    });
+  })
+  
 
   it('edit entry', () => {
     const weight = (Math.floor(Math.random() * 99) + 1).toString()
@@ -90,4 +141,5 @@ context('FitTrack', () => {
     })
   });
 
+  
 })

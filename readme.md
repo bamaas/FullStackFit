@@ -17,12 +17,15 @@ In my free time I like to be in the gym and move some weights. For years I keep 
 - Frontend: Typescript, Angular.
 - Backend: Java, Spring Boot.
 - Database: PostgreSQL.
-- Test: Python, Robot Framework.
+- Test: Cypress
+- Test reports @ [Cypress dashboard](https://dashboard.cypress.io/projects/hduft5/runs)
 - CI/CD @ [Semaphore](https://bamaas.semaphoreci.com/projects/FullStackFit/)
 - Container Registry @ [DockerHub](https://hub.docker.com/u/bamaas)
 - Uptime Monitoring @ [Uptime Robot](https://stats.uptimerobot.com/zp8vnhRRwy)
-- E2E Test Reports (latest build only) @ [BrowserStack](https://automate.browserstack.com/public-build/SFlpQ0s5WW1GaWlJYjVjL3R4TGpRZHBUei9lY1J5Sng5QnY3NjdQSlhSQT0tLW5vY1FwamkyTituZDRldG1DOG0wNXc9PQ==--9bfa6e5f0a81668369f9ebb1ba200bc64ef3191f)
 - Code Quality & Security @ [Sonarcloud](https://sonarcloud.io/dashboard?id=bamaas_FullStackFit)
+
+[Old test framework](https://github.com/bamaas/robot-framework-fittrack): Python, Robot Framework.
+[Old test reports] @ [BrowserStack](https://automate.browserstack.com/public-build/SFlpQ0s5WW1GaWlJYjVjL3R4TGpRZHBUei9lY1J5Sng5QnY3NjdQSlhSQT0tLW5vY1FwamkyTituZDRldG1DOG0wNXc9PQ==--9bfa6e5f0a81668369f9ebb1ba200bc64ef3191f)
 
 ### Top 3 features I'm proud of
 
