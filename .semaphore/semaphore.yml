@@ -140,12 +140,12 @@ blocks:
             - sed -i -e "s/fullstackfit_database:latest/registry:fullstackfit_database.$IMAGE_TAG/g" ./.kubernetes/statefulset/database.yaml
             - sed -i -e 's/EXPOSED-NODEPORT/30004/g' ./.kubernetes/service/reverse-proxy-nodeport.yaml
             - kubectl -n test apply -f ./.kubernetes/ --recursive --insecure-skip-tls-verify
-            - sh ./.semaphore/scripts/wait-until-pod-is-ready.sh test database
+            - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test database
             # deploy backend with rollout strategy. workaround to prevent db issue.
-            - sh ./.semaphore/scripts/rollout.sh test deployment backend
-            - sh ./.semaphore/scripts/wait-until-pod-is-ready.sh test iam
-            - sh ./.semaphore/scripts/wait-until-pod-is-ready.sh test frontend
-            - sh ./.semaphore/scripts/wait-until-pod-is-ready.sh test reverse-proxy
+            - bash ./.semaphore/scripts/rollout.sh test deployment backend
+            - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test iam
+            - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test frontend
+            - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test reverse-proxy
   - name: Test
     dependencies: ["Deploy to Kubernetes"]
     task:
