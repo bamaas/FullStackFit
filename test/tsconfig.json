@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "baseUrl": "https://github.com/annaet/cypress-tags-example",
+    "target": "es5",
+    "lib": ["es5", "dom"],
+    "types": []
+  },
+  "include": [
+    "**/*.ts"
+  ]
+}

@@ -149,13 +149,24 @@ blocks:
           commands:
             - pkill kubectl
       jobs:
-        - name: e2e & api
-          parallelism: 4
+        - name: API | Chrome/Desktop
+          priority:
+            - value: 80
+              when: true
+          commands:
+            - "VIEWPORT=desktop npx cypress run --spec 'cypress/integration/api.spec.js' --parallel --group API-tests --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'API'"
+        - name: E2E | Chrome/Desktop
           priority:
             - value: 65
               when: true
           commands:
-            - "npx cypress run --parallel --browser chrome --record --key ${CYPRESS_DASHBOARD_KEY}"
+            - "VIEWPORT=desktop npx cypress run --spec 'cypress/integration/e2e.spec.js' --parallel --group Linux/Chrome-E2E-tests --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'Desktop, E2E'"
+        - name: E2E | Chrome/Mobile
+          priority:
+            - value: 65
+              when: true
+          commands:
+            - "VIEWPORT=mobile npx cypress run --spec 'cypress/integration/e2e.spec.js' --parallel --group Chrome/Mobile-E2E-tests --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'Mobile,E2E'"
       secrets:
         - name: kubectl
         - name: cypress

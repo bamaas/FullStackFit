@@ -1,4 +1,9 @@
-const sizes = ['iphone-6', 'macbook-16']
+let sizes = ['iphone-6', 'macbook-16']
+if (Cypress.env('VIEWPORT') === 'mobile'){
+  sizes = ['iphone-6'];
+} else if (Cypress.env('VIEWPORT') === 'desktop'){
+  sizes = ['macbook-16']
+}
 
 context('FitTrack', () => {
 
@@ -53,7 +58,7 @@ context('FitTrack', () => {
 
   sizes.forEach((size) => {
 
-    it(`edit entry on ${size} screen`, () => {
+    it(['regression'], `edit entry on ${size} screen`, () => {
       cy.viewport(size)
       const weight = (Math.floor(Math.random() * 99) + 1).toString()
       cy.get('@userId').then(userId => {
@@ -67,7 +72,7 @@ context('FitTrack', () => {
       cy.contains(weight + ' kg').should('be.visible');
     });
 
-    it(`post entry on ${size} screen`, () => {
+    it(['smoke', 'regression'], `post entry on ${size} screen`, () => {
       cy.viewport(size)
       const weight = (Math.floor(Math.random() * 99) + 1).toString()
       cy.get('[test=add-entry]').click();
@@ -78,7 +83,7 @@ context('FitTrack', () => {
       cy.contains(weight).should('be.visible')
     })
 
-    it(`delete entry on ${size} screen`, () => {
+    it(['regression'], `delete entry on ${size} screen`, () => {
       cy.viewport(size)
       cy.get('@userId').then(userId => {
         cy.task('db:insertEntry', userId).then(entry => {

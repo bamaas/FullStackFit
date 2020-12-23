@@ -48,7 +48,7 @@ context('FitTrack', () => {
         })
     })
     
-    it('post an entry', () => {
+    it(['regression'], 'post an entry', () => {
       const weight = (Math.floor(Math.random() * 99) + 1)
       const note  = Math.random().toString().substr(2, 8);
       const date = '2000-01-01T15:12:30'
@@ -87,7 +87,7 @@ context('FitTrack', () => {
         })
     });
 
-    it('get entry', () => {
+    it(['regression'], 'get entry', () => {
       cy.get('@userId').then(userId => {
         cy.task('db:insertEntry', userId)
       })
@@ -109,7 +109,7 @@ context('FitTrack', () => {
 
     });
 
-    it('delete entry', () => {
+    it(['regression'], 'delete entry', () => {
       cy.get('@userId').then(userId => {
         cy.task('db:insertEntry', userId)
       })
@@ -135,7 +135,7 @@ context('FitTrack', () => {
 
     });
 
-    it('edit entry', () => {
+    it(['regression'], 'edit entry', () => {
       cy.get('@userId').then(userId => {
         cy.task('db:insertEntry', userId)
       })
