@@ -32,8 +32,8 @@ blocks:
     task:
       prologue:
         commands:
-          - cache restore
           - checkout
+          - cache restore
           - cd test
           - kubectl -n prod port-forward statefulset/database 5432:5432 --insecure-skip-tls-verify &
           - npm install
