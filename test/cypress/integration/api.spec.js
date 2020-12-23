@@ -26,8 +26,8 @@ context('FitTrack', () => {
         },
         body: {
           client_id: 'fittrack-application',
-          username: Cypress.env('username_test'),
-          password: Cypress.env('password_test'),
+          username: Cypress.env('username'),
+          password: Cypress.env('password'),
           grant_type: 'password'
         }
       }).then(response => {

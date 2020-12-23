@@ -26,8 +26,8 @@
 Cypress.Commands.add(
     'login', (username, password) => {
         cy.visit('/')
-        cy.get('#username').type('test').should('have.value', username)
-        cy.get('#password').type('test').should('have.value', password)
+        cy.get('#username').type(username).should('have.value', username)
+        cy.get('#password').type(password).should('have.value', password)
         cy.get('.submit').click();
         cy.get('[test=username]').should('be.visible').contains(username.charAt(0).toUpperCase() + username.slice(1));
     }
