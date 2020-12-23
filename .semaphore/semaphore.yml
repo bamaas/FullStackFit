@@ -150,11 +150,12 @@ blocks:
             - pkill kubectl
       jobs:
         - name: e2e & api
+          parallelism: 4
           priority:
             - value: 65
               when: true
           commands:
-            - "npx cypress run --browser chrome --record --key ${CYPRESS_DASHBOARD_KEY}"
+            - "npx cypress run --parallel --browser chrome --record --key ${CYPRESS_DASHBOARD_KEY}"
       secrets:
         - name: kubectl
         - name: cypress
