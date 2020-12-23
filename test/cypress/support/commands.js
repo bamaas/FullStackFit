@@ -23,3 +23,29 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+Cypress.Commands.add(
+    'login', (username, password) => {
+        cy.visit('/')
+        cy.get('#username').type('test').should('have.value', username)
+        cy.get('#password').type('test').should('have.value', password)
+        cy.get('.submit').click();
+        cy.get('[test=username]').should('be.visible').contains(username.charAt(0).toUpperCase() + username.slice(1));
+    }
+)
+
+Cypress.Commands.add(
+    'refresh', () => {
+        cy.get('[test=username]').invoke('text').then(username => {
+            cy.reload();
+            cy.get('[test=username]').should('be.visible').contains(username);
+        })
+    }
+)
+
+Cypress.Commands.add(
+    'logout', () => {
+        cy.get('[test=username]').click();
+        cy.contains('Sign out').click();
+        cy.get('#username').should('be.visible')
+    }
+)

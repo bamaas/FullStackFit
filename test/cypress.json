@@ -11,5 +11,7 @@
         "entry_url": "/api/entry",
         "username_test": "test",
         "password_test": "test"
-    }
+    },
+    "defaultCommandTimeout": 5000,
+    "pageLoadTimeout": 6000
 }
