@@ -5,7 +5,7 @@ COPY nginx.conf /etc/nginx/nginx.conf
 RUN rm -rf /usr/share/nginx/html/*
 
 WORKDIR /usr/share/nginx/html
-COPY ./dist/angu/ .
+COPY dist/angu/ .
 
 ENV PORT=4200
 
