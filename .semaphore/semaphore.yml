@@ -150,7 +150,7 @@ blocks:
             - sed -i -e "s/fullstackfit_reverseproxy:latest/registry:fullstackfit_reverseproxy.$IMAGE_TAG/g" ./.kubernetes/deployment/reverse-proxy.yaml
             - sed -i -e "s/fullstackfit_database:latest/registry:fullstackfit_database.$IMAGE_TAG/g" ./.kubernetes/statefulset/database.yaml
             - sed -i -e 's/EXPOSED-NODEPORT/30004/g' ./.kubernetes/service/reverse-proxy-nodeport.yaml
-            - kubectl -n test apply -f ./.kubernetes/ --recursive --insecure-skip-tls-verify
+            - kubectl -n test apply -f ./.kubernetes/deployment --recursive --insecure-skip-tls-verify
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test database
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test backend
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test iam
