@@ -99,7 +99,8 @@ blocks:
             - cd frontend
             - npm ci --no-progress
             - npm install -g @angular/cli@7.3.9 --no-progress
-            - ng build --configuration="production"
+            - ng build --configuration="production" --no-progress
+            - cd ..
             - make build s="frontend"
         - name: Reverse proxy
           priority:
