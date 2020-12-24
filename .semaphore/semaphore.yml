@@ -117,6 +117,7 @@ blocks:
     task:
       secrets:
         - name: kubectl
+        - name: keycloak
       env_vars:
         - name: KUBECONFIG
           value: /home/semaphore/.kube/config.yaml
@@ -137,6 +138,9 @@ blocks:
             - sed -i -e "s/fullstackfit_backend:latest/registry:fullstackfit_backend.$IMAGE_TAG/g" ./.kubernetes/deployment/backend.yaml
             - sed -i -e "s/fullstackfit_frontend:latest/registry:fullstackfit_frontend.$IMAGE_TAG/g" ./.kubernetes/deployment/frontend.yaml
             - sed -i -e "s/fullstackfit_reverseproxy:latest/registry:fullstackfit_reverseproxy.$IMAGE_TAG/g" ./.kubernetes/deployment/reverse-proxy.yaml
+            # iam credentials
+            - sed -i -e "s/keycloakuser:$KEYCLOAK_ADMIN_USERNAME_TEST/g" ./.kubernetes/deployment/iam.yaml
+            - sed -i -e "s/keycloakpassword:$KEYCLOAK_ADMIN_PASSWORD_TEST/g" ./.kubernetes/deployment/iam.yaml
             - sed -i -e "s/fullstackfit_database:latest/registry:fullstackfit_database.$IMAGE_TAG/g" ./.kubernetes/statefulset/database.yaml
             - sed -i -e 's/EXPOSED-NODEPORT/30004/g' ./.kubernetes/service/reverse-proxy-nodeport.yaml
             - kubectl -n test apply -f ./.kubernetes/ --recursive --insecure-skip-tls-verify

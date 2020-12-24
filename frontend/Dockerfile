@@ -8,8 +8,8 @@ ENV PATH /app/node_modules/.bin:$PATH
 
 # install and cache app dependencies
 COPY package.json package-lock.json ./
-RUN npm install \
-    && npm install -g @angular/cli@7.3.9
+RUN npm ci --no-progress \
+    && npm install -g @angular/cli@7.3.9 --no-progress
 
 COPY . ./
 
@@ -19,11 +19,11 @@ RUN : "${config:?Build argument needs to be set and non-empty.}"
 RUN ng build --configuration="$config"
 
 # Step 2: Use build output from 'builder'
-FROM nginx:stable-alpine
-
-LABEL version="1.0"
+FROM nginx:1.19.6-alpine
+LABEL maintainer="Bas Maas"
 
 COPY nginx.conf /etc/nginx/nginx.conf
+RUN rm -rf /usr/share/nginx/html/*
 
 WORKDIR /usr/share/nginx/html
 COPY --from=builder /usr/src/app/dist/angu/ .

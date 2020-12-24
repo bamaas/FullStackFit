@@ -16,6 +16,10 @@ blocks:
       jobs:
         - name: To production
           commands:
+            # set iam secrets
+            - sed -i -e "s/keycloakuser:$KEYCLOAK_ADMIN_USERNAME_PROD/g" ./.kubernetes/deployment/iam.yaml
+            - sed -i -e "s/keycloakpassword:$KEYCLOAK_ADMIN_PASSWORD_PROD/g" ./.kubernetes/deployment/iam.yaml
+            # deploy
             - kubectl -n prod apply -f ./.kubernetes/ --recursive --insecure-skip-tls-verify &
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh prod database
             - bash ./.semaphore/scripts/rollout.sh prod deployment backend
@@ -24,6 +28,7 @@ blocks:
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh prod reverse-proxy
       secrets:
         - name: kubectl
+        - name: keycloak
       env_vars:
         - name: KUBECONFIG
           value: /home/semaphore/.kube/config.yaml
