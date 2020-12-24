@@ -93,9 +93,13 @@ blocks:
           - value: 100
             when: true
           commands:
+            # - make build s="frontend"
+            # - docker tag fullstackfit_frontend:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${IMAGE_TAG}
+            # - docker push ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${IMAGE_TAG}
+            - npm ci --no-progress
+            - npm install -g @angular/cli@7.3.9 --no-progress
+            - ng build --configuration="production"
             - make build s="frontend"
-            - docker tag fullstackfit_frontend:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${IMAGE_TAG}
-            - docker push ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${IMAGE_TAG}
         - name: Reverse proxy
           priority:
             - value: 65
