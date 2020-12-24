@@ -22,7 +22,7 @@ blocks:
             # deploy
             - kubectl -n prod apply -f ./.kubernetes/ --recursive --insecure-skip-tls-verify &
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh prod database
-            - bash ./.semaphore/scripts/rollout.sh prod deployment backend
+            - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test backend
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh prod iam
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh prod frontend
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh prod reverse-proxy

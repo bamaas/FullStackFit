@@ -65,7 +65,7 @@ spec:
       terminationGracePeriodSeconds: 30
       volumes:
       - hostPath:
-          path: /home/bas/rancher/volumes/testdb
+          path: /home/bas/rancher/prod/volumes/database
           type: DirectoryOrCreate
         name: vol1
   updateStrategy:

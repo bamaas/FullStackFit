@@ -15,9 +15,6 @@ clean-fe:
 	rm -rf ./frontend/dist/angu
 	rm -rf ./frontend/node_modules
 
-clean-be:
-	rm -rf ./backend/env
-
 lint-dockerfile:
 	docker run --rm -i hadolint/hadolint < ${f}
 
