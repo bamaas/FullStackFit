@@ -1,5 +1,5 @@
 version: v1.0
-name: deploy to production
+name: Deploy to production
 agent:
   machine:
     type: e1-standard-2
@@ -16,14 +16,19 @@ blocks:
       jobs:
         - name: To production
           commands:
+            # set iam secrets
+            - sed -i -e "s/keycloakuser/$KEYCLOAK_ADMIN_USERNAME_PROD/g" ./.kubernetes/deployment/iam.yaml
+            - sed -i -e "s/keycloakpassword/$KEYCLOAK_ADMIN_PASSWORD_PROD/g" ./.kubernetes/deployment/iam.yaml
+            # deploy
             - kubectl -n prod apply -f ./.kubernetes/ --recursive --insecure-skip-tls-verify &
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh prod database
-            - bash ./.semaphore/scripts/rollout.sh prod deployment backend
+            - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test backend
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh prod iam
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh prod frontend
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh prod reverse-proxy
       secrets:
         - name: kubectl
+        - name: keycloak
       env_vars:
         - name: KUBECONFIG
           value: /home/semaphore/.kube/config.yaml
@@ -45,7 +50,7 @@ blocks:
       jobs:
         - name: On production
           commands:
-            - "VIEWPORT=mobile CYPRESS_INCLUDE_TAGS='smoke' CYPRESS_BASE_URL='https://test.basmaas.nl' npx cypress run --spec 'cypress/integration/e2e.spec.js' --env username=test,password=test --browser chrome"
+            - "VIEWPORT=mobile CYPRESS_INCLUDE_TAGS='smoke' CYPRESS_BASE_URL='https://fit.basmaas.nl' npx cypress run --spec 'cypress/integration/e2e.spec.js' --env username=test,password=test --browser chrome"
       secrets:
         - name: kubectl
         - name: cypress

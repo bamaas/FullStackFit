@@ -4,7 +4,7 @@
         "runMode": 2,
         "openMode": 0
     },
-    "baseUrl": "https://test.basmaas.nl",
+    "baseUrl": "http://localhost:4200",
     "env": {
         "token_url": "/auth/realms/FitTrack/protocol/openid-connect/token",
         "userinfo_url": "/auth/realms/FitTrack/protocol/openid-connect/userinfo",
@@ -13,5 +13,7 @@
         "password": "test"
     },
     "defaultCommandTimeout": 10000,
-    "pageLoadTimeout": 10000
+    "pageLoadTimeout": 10000,
+    "viewportHeight": 667,
+    "viewportWidth": 375
 }

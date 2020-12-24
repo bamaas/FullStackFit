@@ -19,9 +19,9 @@ spec:
         image: bamaas/fullstackfit_iam:latest
         env:
         - name: KEYCLOAK_USER
-          value: "admin"
+          value: "keycloakuser"
         - name: KEYCLOAK_PASSWORD
-          value: "admin"
+          value: "keycloakpassword"
         - name: PROXY_ADDRESS_FORWARDING
           value: "true"
         - name: KEYCLOAK_FRONTEND_URL

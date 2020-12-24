@@ -96,6 +96,12 @@ blocks:
             - make build s="frontend"
             - docker tag fullstackfit_frontend:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${IMAGE_TAG}
             - docker push ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${IMAGE_TAG}
+            # - cd frontend
+            # - npm ci --no-progress
+            # - npm install -g @angular/cli@7.3.9 --no-progress
+            # - ng build --configuration="production" --no-progress
+            # - cd ..
+            # - make build s="frontend"
         - name: Reverse proxy
           priority:
             - value: 65
@@ -117,6 +123,7 @@ blocks:
     task:
       secrets:
         - name: kubectl
+        - name: keycloak
       env_vars:
         - name: KUBECONFIG
           value: /home/semaphore/.kube/config.yaml
@@ -130,8 +137,12 @@ blocks:
             - value: 65
               when: true
           commands:
-            # change keycloak frontend url
+            # change keycloak frontend url & credentials
             - sed -i -e "s/fit\.basmaas\.nl/test\.basmaas\.nl/g" ./.kubernetes/deployment/iam.yaml
+            - sed -i -e "s/keycloakuser/$KEYCLOAK_ADMIN_USERNAME_TEST/g" ./.kubernetes/deployment/iam.yaml
+            - sed -i -e "s/keycloakpassword/$KEYCLOAK_ADMIN_PASSWORD_TEST/g" ./.kubernetes/deployment/iam.yaml
+            # Database volume mount point
+            - sed -i -e "s/prod\/volumes/test\/volumes/g" ./.kubernetes/statefulset/database.yaml
             # change image tags from :latest -> :$IMAGE_TAG
             - sed -i -e "s/fullstackfit_iam:latest/registry:fullstackfit_iam.$IMAGE_TAG/g" ./.kubernetes/deployment/iam.yaml
             - sed -i -e "s/fullstackfit_backend:latest/registry:fullstackfit_backend.$IMAGE_TAG/g" ./.kubernetes/deployment/backend.yaml
@@ -141,8 +152,7 @@ blocks:
             - sed -i -e 's/EXPOSED-NODEPORT/30004/g' ./.kubernetes/service/reverse-proxy-nodeport.yaml
             - kubectl -n test apply -f ./.kubernetes/ --recursive --insecure-skip-tls-verify
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test database
-            # deploy backend with rollout strategy. workaround to prevent db issue.
-            - bash ./.semaphore/scripts/rollout.sh test deployment backend
+            - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test backend
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test iam
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test frontend
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test reverse-proxy
@@ -167,19 +177,19 @@ blocks:
             - value: 80
               when: true
           commands:
-            - "VIEWPORT=desktop npx cypress run --spec 'cypress/integration/api.spec.js' --env username=api,password=api --group API --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'API'"
+            - "VIEWPORT=desktop CYPRESS_BASE_URL='https://test.basmaas.nl' npx cypress run --spec 'cypress/integration/api.spec.js' --env username=api,password=api --group API --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'API'"
         - name: E2E | Desktop
           priority:
             - value: 65
               when: true
           commands:
-            - "VIEWPORT=desktop npx cypress run --spec 'cypress/integration/e2e.spec.js' --group 'E2E | Desktop' --env username=desktop-e2e,password=desktop-e2e --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'Desktop, E2E'"
+            - "VIEWPORT=desktop CYPRESS_BASE_URL='https://test.basmaas.nl' npx cypress run --spec 'cypress/integration/e2e.spec.js' --group 'E2E | Desktop' --env username=desktop-e2e,password=desktop-e2e --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'Desktop, E2E'"
         - name: E2E | Mobile
           priority:
             - value: 65
               when: true
           commands:
-            - "VIEWPORT=mobile npx cypress run --spec 'cypress/integration/e2e.spec.js' --group 'E2E | Mobile' --env username=mobile-e2e,password=mobile-e2e --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'Mobile,E2E'"
+            - "VIEWPORT=mobile CYPRESS_BASE_URL='https://test.basmaas.nl' npx cypress run --spec 'cypress/integration/e2e.spec.js' --group 'E2E | Mobile' --env username=mobile-e2e,password=mobile-e2e --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'Mobile,E2E'"
       secrets:
         - name: kubectl
         - name: cypress
