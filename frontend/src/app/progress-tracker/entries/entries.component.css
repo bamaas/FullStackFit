@@ -46,6 +46,10 @@ tr.detail-row {
   border-bottom-width: 0;
 }
 
+.detail-row-expanded{
+  background-color:rgba(0, 0, 0, 0.03);
+}
+
 .entry-detail {
   overflow: hidden;
   display: flex;

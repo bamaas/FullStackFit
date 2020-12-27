@@ -98,6 +98,8 @@ export class EntryService {
   addEntryToPage(entry: Entry): void{
     this.postEntry(entry).subscribe(
       entry => {
+        this.entries.forEach(entry => { entry.expanded = false; })
+        entry.expanded = true;
         this.entries.push(entry);
         this.sortEntriesByDate()
         this.emitEntries();
@@ -113,6 +115,7 @@ export class EntryService {
   editEntryOnTable(entry: Entry): void{
     this.putEntry(entry).subscribe(
       updatedEntry => {
+        updatedEntry.expanded = true;
         this.entries = this.entries.filter(item => item['id'] != entry.id);
         if (this.entries.length != 0){    // If there are multiple entries
           let lastEntry = this.entries[this.entries.length-1]

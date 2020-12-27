@@ -83,8 +83,8 @@ context('FitTrack', () => {
       cy.get('#add-entry-input-note').type(note);
       cy.get('#add-entry-btn-add').click();
       cy.contains(weight).should('be.visible');
-      cy.xpath(`//mat-icon[text()='expand_less']`).click();
-      cy.contains(note).should('be.visible')
+      cy.xpath(`//mat-icon[text()='expand_more']`).should('be.visible')
+      cy.contains(note).should('be.visible');
     })
 
     it(['regression'], `delete entry on ${size} screen`, () => {
