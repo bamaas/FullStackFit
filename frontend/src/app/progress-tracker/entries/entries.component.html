@@ -31,8 +31,7 @@
 
                     <ng-container matColumnDef="note">
                         <th mat-header-cell *matHeaderCellDef>Note</th>
-                        <td mat-cell class="entry-content" [class.hide]="entry.expanded" *matCellDef="let entry">{{ entry.note }}</td>
-                        
+                        <td mat-cell class="entry-content" [class.hide]="entry.expanded" *matCellDef="let entry">{{ entry.note | truncate:[40, '...'] }}</td>
                     </ng-container>
 
                       <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
