@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, Inject } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Inject, forwardRef } from '@angular/core';
 import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -57,12 +57,12 @@ export class AddEntrySheet implements OnInit{
   public entryForm: FormGroup;
   public userId: string;
 
-  ngOnInit(): void{
+  ngOnInit(): void {
     this.initEntryForm(this.data.weight, this.data.date, this.data.note);
     this.getUserId();
   }
 
-  getUserId(): void{
+  getUserId(): void {
     this.profileService.userInfo.subscribe(userInfo => {this.userId = userInfo['sub']});
   }
 
@@ -106,14 +106,14 @@ export class AddEntrySheet implements OnInit{
       if (id != null){
         // If editing etry
         const date = dateMoment.format("YYYY-MM-DD[T]HH:mm:ss");
-        const entry: Entry = { id, userId, weight, date, note};
+        const entry: Entry = { id, userId, weight, date, note, expanded: false};
         this.edit(entry);
       } else {
         // If new entry - Get current time and add it to the date
         const dateformat: string = dateMoment.format("YYYY-MM-DD");
         const time:string = moment().format("HH:mm:ss")
         const date: string = dateformat + 'T' + time;
-        const entry: Entry = { id, userId, weight, date, note}
+        const entry: Entry = { id, userId, weight, date, note, expanded: false}
         this.add(entry);
         this._submitEnabled = false;
         setTimeout(f => this._submitEnabled = true, 1000);

@@ -13,20 +13,50 @@ import { TableVirtualScrollDataSource } from 'ng-table-virtual-scroll';
 import { StyleService } from 'src/app/services/style.service'
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import {MatTable} from '@angular/material';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import {MatCardModule} from '@angular/material/card';
 
 @Component({
   selector: 'app-entries',
   templateUrl: './entries.component.html',
-  styleUrls: ['./entries.component.css']
+  styleUrls: ['./entries.component.css'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class EntriesComponent implements OnInit, OnDestroy {
 
-  displayedColumns: string[] = ['date', 'weight', 'note', 'actions'];
+  displayedColumns: string[] = ['date', 'weight', 'note', 'expand'];
   
   private mediaSub: Subscription;
   private _entriesSub: Subscription;
   public screenHeight: number;
   public tableBodyHeight: number; // initalized in ngAfterViewInit
+
+  // Toggle entries
+  expandedEntry: Entry | null;
+  public detailState = 'collapsed';
+  public expandedEntryId: number = null;
+
+  toggleEntryState(entryId){
+    if (entryId === this.expandedEntryId){
+      this.detailState = this.detailState == 'expanded' ? 'collapsed' : 'expanded';
+    } else {
+      this.detailState = 'expanded';
+    }
+    this.dataSource.data.forEach(entry => {
+      if (entry.id == entryId){
+        entry.expanded = this.detailState == 'expanded' ? true : false;
+        this.expandedEntryId = entryId;
+      } else {
+        entry.expanded = false;
+      }
+    });
+  }
 
   // @ViewChild(MatSort, {static: true}) sort: MatSort;
   @ViewChild(MatTable) table: MatTable<any>;
@@ -63,6 +93,7 @@ export class EntriesComponent implements OnInit, OnDestroy {
         }
       });
       this.onResize();
+    console.log(this.expandedentry)
   }
 
   public data: Entry[] = [];

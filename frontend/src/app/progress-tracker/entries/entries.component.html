@@ -7,22 +7,15 @@
     <div fxLayout="row" fxLayoutAlign="left end">
         <div fxFill> 
             <cdk-virtual-scroll-viewport itemSize="48" tvsItemSize [style.height.px]="tableBodyHeight" infiniteScroll [scrollWindow]="false" [infiniteScrollDistance]="2" [infiniteScrollThrottle]="60" (scrolled)="onScrollDown()">
-                    <table id="entries-table" mat-table [dataSource]="dataSource">
+                    <table id="entries-table" mat-table [dataSource]="dataSource" multiTemplateDataRows>
 
                     <ng-container matColumnDef="actions">
-                        <th mat-header-cell *matHeaderCellDef>Actions</th>
+                        <th mat-header-cell *matHeaderCellDef></th>
                         <td mat-cell *matCellDef="let entry">
-                            <button mat-icon-button [matMenuTriggerFor]="actionsMenu">
-                                <mat-icon>more_vert</mat-icon>
+                            <button mat-icon-button (click)="expandedEntry = expandedEntry === entry ? null : entry ; toggleEntryState(entry.id)">
+                                <mat-icon *ngIf="entry.expanded === true">expand_more</mat-icon>
+                                <mat-icon *ngIf="entry.expanded === false">expand_less</mat-icon>
                             </button>
-                            <mat-menu #actionsMenu="matMenu">
-                                <button mat-menu-item (click)="editEntry(entry.id, entry.weight, entry.date, entry.note)">
-                                    <mat-icon>edit</mat-icon>Edit
-                                </button>
-                                <button mat-menu-item (click)="deleteEntry(entry.id)">
-                                    <mat-icon>delete</mat-icon>Delete
-                                </button>
-                            </mat-menu>
                         </td>
                     </ng-container>
 
@@ -41,8 +34,50 @@
                         <td mat-cell *matCellDef="let entry">{{ entry.note | truncate:[40, '...'] }}</td>
                     </ng-container>
 
+                      <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+                    <ng-container matColumnDef="expandedDetail">
+                        <td mat-cell *matCellDef="let entry" [attr.colspan]="getDisplayedColumns().length">
+                            <div class="entry-detail" [@detailExpand]="entry == expandedEntry ? 'expanded' : 'collapsed'">
+                                <mat-card style="margin: 18px 0px 18px 0px; width: 100%">
+                                    <div fxLayout="row">
+                                        <div fxLayout="column" fxFlex="20" style="width: 100%; font-size: 14px;" fxLayoutGap="10px">
+                                            <mat-list style="padding-top: 0px;">
+                                                <mat-list-item>Date</mat-list-item>
+                                                <mat-list-item>Time</mat-list-item>
+                                                <mat-list-item>Weight</mat-list-item>
+                                                <mat-list-item>Note</mat-list-item>
+                                            </mat-list>
+                                        </div>
+                                        <div fxLayout="column" fxFill style="width: 100%; font-size: 14px;" fxLayoutGap="10px">
+                                            <mat-list style="padding-top: 0px;">
+                                                <mat-list-item>{{ entry.date | date:'dd-MM-yyyy' }}</mat-list-item>
+                                                <mat-list-item>{{ entry.date | date:'HH:mm' }}</mat-list-item>
+                                                <mat-list-item>{{entry.weight}}</mat-list-item>
+                                                <mat-list-item>{{entry.note}}</mat-list-item>
+                                            </mat-list>
+                                        </div>
+                                    </div>
+                                    <div fxLayout="row" fxLayoutGap="10px">
+                                        <div fxLayout="column">
+                                            <button mat-menu-item (click)="deleteEntry(entry.id)">
+                                                <mat-icon>delete</mat-icon>Delete
+                                            </button>
+                                        </div>
+                                        <div fxLayout="column">
+                                            <button mat-menu-item (click)="editEntry(entry.id, entry.weight, entry.date, entry.note)">
+                                                <mat-icon>edit</mat-icon>Edit
+                                            </button>
+                                        </div>
+                                    </div>
+                                </mat-card>
+                            </div>
+                        </td>
+                    </ng-container>
+
                     <tr mat-header-row *matHeaderRowDef="getDisplayedColumns(); sticky: true"></tr>
-                    <tr mat-row *matRowDef="let row; columns: getDisplayedColumns();" class="table-row-hover"></tr>
+                    <tr mat-row *matRowDef="let entry; columns: getDisplayedColumns();" class="table-row-hover entry-row"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+
                 </table>
             </cdk-virtual-scroll-viewport>
         </div>

@@ -36,3 +36,25 @@ table {
   flex: 0 0 15% !important;
   width: 15% !important;
 }
+
+tr.detail-row {
+  background-color:rgba(0, 0, 0, 0.03);
+  height: 0;
+}
+
+.entry-row td {
+  border-bottom-width: 0;
+}
+
+.entry-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+:host /deep/ .mat-list-item-content {
+  font-size: 14px;
+}
+
+.mat-list-base .mat-list-item, .mat-list-base .mat-list-option{
+  height: 40px;
+}

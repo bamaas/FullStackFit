@@ -11,6 +11,7 @@ export interface Entry {
   weight: number,
   date: string,
   note: string,
+  expanded: boolean
 }
 
 @Injectable({
@@ -62,7 +63,10 @@ export class EntryService {
     if (!this.lastPageReached){
       this.getEntries(pageNumber, pageSize).subscribe(
         (entries: Entry[]) => {
-          entries.forEach(entry => this.entries.push(entry));
+          entries.forEach(entry => {
+            entry.expanded = false;
+            this.entries.push(entry)
+          });
           if (entries.length != pageSize){
             this.lastPageReached = true;
           }
