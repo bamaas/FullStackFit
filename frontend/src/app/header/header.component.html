@@ -1,6 +1,6 @@
 <mat-toolbar color="primary" fxLayout="column" #mainHeader>
     <mat-toolbar-row class="nav sticky">
-        <div fxFlex="90" fxLayout="row">
+        <div fxFlex="90" fxLayout="row" fxLayoutGap="5px">
             <button mat-button [matMenuTriggerFor]="menu" test="nav-profile">
                 <fa-icon [icon]="faUser"></fa-icon>
                 <span class="nav-text" test="username">{{ (userInfo !== null) ? (userInfo.preferred_username | titlecase ) : "Profile" }}</span>
