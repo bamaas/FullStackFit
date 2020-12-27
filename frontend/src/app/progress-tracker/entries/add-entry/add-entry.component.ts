@@ -106,14 +106,14 @@ export class AddEntrySheet implements OnInit{
       if (id != null){
         // If editing etry
         const date = dateMoment.format("YYYY-MM-DD[T]HH:mm:ss");
-        const entry: Entry = { id, userId, weight, date, note, expanded: false};
+        const entry: Entry = { id, userId, weight, date, note };
         this.edit(entry);
       } else {
         // If new entry - Get current time and add it to the date
         const dateformat: string = dateMoment.format("YYYY-MM-DD");
         const time:string = moment().format("HH:mm:ss")
         const date: string = dateformat + 'T' + time;
-        const entry: Entry = { id, userId, weight, date, note, expanded: false}
+        const entry: Entry = { id, userId, weight, date, note }
         this.add(entry);
         this._submitEnabled = false;
         setTimeout(f => this._submitEnabled = true, 1000);

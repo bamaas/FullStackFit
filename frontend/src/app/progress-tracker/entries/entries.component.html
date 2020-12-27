@@ -21,18 +21,18 @@
 
                     <ng-container matColumnDef="date">
                         <th mat-header-cell *matHeaderCellDef>Date</th>
-                        <td mat-cell class="entry-content" [class.hide]="entry.expanded === true" *matCellDef="let entry">{{ entry.date | date:'dd-MM-yyyy' }}</td>
-                        <!-- <td mat-cell class="entry-content" [hidden]="true" [class.hide]="entry.expanded === true" *matCellDef="let entry">{{ entry.date | date:'dd-MM-yyyy' }}</td> -->
+                        <td mat-cell class="entry-content" [class.hide]="entry.expanded" *matCellDef="let entry">{{ entry.date | date:'dd-MM-yyyy' }}</td>
                     </ng-container>
                 
                     <ng-container matColumnDef="weight">
                         <th mat-header-cell *matHeaderCellDef>Weight</th>
-                        <td mat-cell class="entry-content" [class.hide]="entry.expanded === true" *matCellDef="let entry">{{entry.weight}} kg</td>
+                        <td mat-cell class="entry-content" [class.hide]="entry.expanded" *matCellDef="let entry">{{entry.weight}} kg</td>
                     </ng-container>
 
                     <ng-container matColumnDef="note">
                         <th mat-header-cell *matHeaderCellDef>Note</th>
-                        <td mat-cell class="entry-content" [class.hide]="entry.expanded === true" *matCellDef="let entry">{{ entry.note | truncate:[40, '...'] }}</td>
+                        <td mat-cell class="entry-content" [class.hide]="entry.expanded" *matCellDef="let entry">{{ entry.note }}</td>
+                        
                     </ng-container>
 
                       <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
@@ -53,19 +53,19 @@
                                             <mat-list style="padding-top: 0px;">
                                                 <mat-list-item>{{ entry.date | date:'dd-MM-yyyy' }}</mat-list-item>
                                                 <mat-list-item>{{ entry.date | date:'HH:mm' }}</mat-list-item>
-                                                <mat-list-item>{{entry.weight}}</mat-list-item>
+                                                <mat-list-item>{{entry.weight}} kg</mat-list-item>
                                                 <mat-list-item>{{entry.note}}</mat-list-item>
                                             </mat-list>
                                         </div>
                                     </div>
-                                    <div fxLayout="row" fxLayoutGap="10px">
+                                    <div fxLayout="row" fxLayoutGap="10px" style="margin-top: 12px;">
                                         <div fxLayout="column">
-                                            <button mat-menu-item (click)="deleteEntry(entry.id)">
+                                            <button mat-menu-item (click)="deleteEntry(entry.id)" class="entry-detail-button">
                                                 <mat-icon>delete</mat-icon>Delete
                                             </button>
                                         </div>
                                         <div fxLayout="column">
-                                            <button mat-menu-item (click)="editEntry(entry.id, entry.weight, entry.date, entry.note)">
+                                            <button mat-menu-item (click)="editEntry(entry.id, entry.weight, entry.date, entry.note)" class="entry-detail-button">
                                                 <mat-icon>edit</mat-icon>Edit
                                             </button>
                                         </div>

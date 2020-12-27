@@ -16,6 +16,12 @@ blocks:
       jobs:
         - name: To production
           commands:
+            # change image tags from :latest -> :$IMAGE_TAG .
+            - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/iam.yaml
+            - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/backend.yaml
+            - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/frontend.yaml
+            - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/reverse-proxy.yaml
+            - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/statefulset/database.yaml
             # set iam secrets
             - sed -i -e "s/keycloakuser/$KEYCLOAK_ADMIN_USERNAME_PROD/g" ./.kubernetes/deployment/iam.yaml
             - sed -i -e "s/keycloakpassword/$KEYCLOAK_ADMIN_PASSWORD_PROD/g" ./.kubernetes/deployment/iam.yaml
@@ -57,3 +63,23 @@ blocks:
       env_vars:
         - name: KUBECONFIG
           value: /home/semaphore/.kube/config.yaml
+  - name: Release image
+    skip:
+      when: "branch != 'master'"
+    task:
+      prologue:
+        commands:
+          - checkout
+          - source ./.semaphore/scripts/export-git-env-vars.sh
+          - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+      jobs:
+        - name: Tag latest
+          commands:
+          # Pull images
+          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_backend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_reverseproxy:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_database:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_iam:$IMAGE_TAG | xargs -n 1 docker pull
+          # Tag to :latest
+          - echo $DOCKER_USERNAME/fullstackfit_frontend:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/fullstackfit_backend:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/fullstackfit_database:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/fullstackfit_reverseproxy:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_reverseproxy:latest $DOCKER_USERNAME/fullstackfit_iam:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_iam:latest | xargs -n 2 docker tag
+          # Push :latest to public registry
+          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:latest ${DOCKER_USERNAME}/fullstackfit_backend:latest ${DOCKER_USERNAME}/fullstackfit_reverseproxy:latest ${DOCKER_USERNAME}/fullstackfit_database:latest ${DOCKER_USERNAME}/fullstackfit_iam:latest | xargs -n 1 docker push
+      secrets:
+        - name: docker

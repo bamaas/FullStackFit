@@ -11,7 +11,7 @@ export interface Entry {
   weight: number,
   date: string,
   note: string,
-  expanded: boolean
+  expanded?: boolean
 }
 
 @Injectable({
