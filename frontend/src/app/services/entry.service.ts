@@ -11,6 +11,7 @@ export interface Entry {
   weight: number,
   date: string,
   note: string,
+  expanded: boolean
 }
 
 @Injectable({
@@ -62,7 +63,10 @@ export class EntryService {
     if (!this.lastPageReached){
       this.getEntries(pageNumber, pageSize).subscribe(
         (entries: Entry[]) => {
-          entries.forEach(entry => this.entries.push(entry));
+          entries.forEach(entry => {
+            entry.expanded = false;
+            this.entries.push(entry)
+          });
           if (entries.length != pageSize){
             this.lastPageReached = true;
           }
@@ -94,6 +98,8 @@ export class EntryService {
   addEntryToPage(entry: Entry): void{
     this.postEntry(entry).subscribe(
       entry => {
+        this.entries.forEach(entry => { entry.expanded = false; })
+        entry.expanded = true;
         this.entries.push(entry);
         this.sortEntriesByDate()
         this.emitEntries();
@@ -109,6 +115,7 @@ export class EntryService {
   editEntryOnTable(entry: Entry): void{
     this.putEntry(entry).subscribe(
       updatedEntry => {
+        updatedEntry.expanded = true;
         this.entries = this.entries.filter(item => item['id'] != entry.id);
         if (this.entries.length != 0){    // If there are multiple entries
           let lastEntry = this.entries[this.entries.length-1]

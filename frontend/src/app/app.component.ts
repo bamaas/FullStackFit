@@ -37,8 +37,9 @@ export class AppComponent implements OnInit, AfterViewInit{
      * Otherwise, redirect to login.
     */
     keycloakInstance.onTokenExpired = () => {
+      console.log('expired '+new Date());
       if (keycloakInstance.refreshToken) {
-          this.keycloak.updateToken();
+          this.keycloak.updateToken()
       } else {
           this.profileService.login();
       }
