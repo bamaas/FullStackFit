@@ -93,7 +93,6 @@ export class EntriesComponent implements OnInit, OnDestroy {
         }
       });
       this.onResize();
-    console.log(this.expandedentry)
   }
 
   public data: Entry[] = [];
