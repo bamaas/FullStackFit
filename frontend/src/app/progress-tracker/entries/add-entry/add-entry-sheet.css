@@ -5,9 +5,19 @@ h6{
     font-weight: 500;
     margin-top: 0px;
 }
+
 ::ng-deep .mat-form-field-wrapper{
     margin-bottom: -1.25em;
  }
+
  ::ng-deep .mat-bottom-sheet-container{
-     padding: 24px !important;
+     padding: 0px !important;
  }
+
+ .tab-padding{
+    padding: 24px 24px 12px 24px;
+}
+
+.row-padding{
+    padding-top: 12px;
+}
