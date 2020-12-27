@@ -62,3 +62,23 @@ tr.detail-row {
 .mat-list-base .mat-list-item, .mat-list-base .mat-list-option{
   height: 40px;
 }
+
+/* Hide content if expanded */
+.entry-content{
+  transition: color 0.25s;
+}
+
+.hide {
+  color: rgba(0, 0, 0, 0) !important;
+}
+
+
+/* Expand icon */
+
+td.mat-cell:last-of-type, td.mat-footer-cell:last-of-type, th.mat-header-cell:last-of-type {
+  padding-right: 29px;
+}
+
+.mat-column-actions{
+  text-align: right;
+}
