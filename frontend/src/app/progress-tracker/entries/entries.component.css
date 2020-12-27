@@ -75,3 +75,19 @@ tr.detail-row {
 .mat-column-actions{
   text-align: right;
 }
+
+.entry-detail-button{
+  border-radius: 3px;
+}
+
+.entry-detail-button > mat-icon{
+  font-size: 19px;
+  padding-top: 2px;
+  margin-right: 5px;
+  margin-left: -3px;
+}
+
+.mat-menu-item{
+  line-height: 42px;
+  height: 42px;
+}

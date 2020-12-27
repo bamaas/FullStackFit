@@ -6,7 +6,7 @@
     <p class="mat-body">{{data.message}}</p>
   </div>
   <div fxLayout="row" mat-dialog-actions fxLayoutGap="12px">
-    <button mat-stroked-button color="primary" (click)="onNoClick()">{{data.btn_cancel}}</button>
+    <button mat-button color="primary" (click)="onNoClick()">{{data.btn_cancel}}</button>
     <button mat-flat-button color="primary" [mat-dialog-close]="true" cdkFocusInitial>{{data.btn_confirm}}</button>
   </div>
 </div>
