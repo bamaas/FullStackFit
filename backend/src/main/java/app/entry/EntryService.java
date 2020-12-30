@@ -18,6 +18,11 @@ public class EntryService {
     @Autowired
     private EntryRepository entryRepository;
 
+    public Entry getEntry(long id){
+        logger.info("Getting entry with id: {}", id);
+        return entryRepository.findEntryById(id);
+    }
+
     public Entry addEntry(Entry entry){
         logger.info("Adding entry: {}", entry);
         return entryRepository.save(entry);

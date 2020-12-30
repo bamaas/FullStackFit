@@ -27,7 +27,7 @@ context('FitTrack', () => {
     )
     cy.request({
       method: 'POST',
-      url: Cypress.env('token_url'),
+      url: Cypress.env('auth_url') + Cypress.env('token_url'),
       form: true,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -45,7 +45,7 @@ context('FitTrack', () => {
     cy.get('@accessToken').then(token => {
       cy.request({
         method: 'GET',
-        url: Cypress.env('userinfo_url'),
+        url: Cypress.env('auth_url') + Cypress.env('userinfo_url'),
         headers:{
           'Authorization': 'Bearer ' + token
         }
@@ -62,14 +62,16 @@ context('FitTrack', () => {
       cy.viewport(size)
       const weight = (Math.floor(Math.random() * 99) + 1).toString()
       cy.get('@userId').then(userId => {
-        cy.task('db:insertEntry', userId)
+        cy.task('db:insertEntry', userId).then(entryBefore => {
+          const weightBefore = entryBefore.weight;
+          cy.refresh();
+          cy.contains(weightBefore + ' kg').click();
+          cy.xpath(`//mat-icon[text()='edit']`).click();
+          cy.get('#add-entry-input-weight').clear().type(weight);
+          cy.get('#add-entry-btn-add').click();
+          cy.contains(weight + ' kg').should('be.visible');
+        })
       })
-      cy.refresh();
-      cy.xpath(`//mat-icon[text()='expand_less']`).click();
-      cy.xpath(`//mat-icon[text()='edit']`).click();
-      cy.get('#add-entry-input-weight').clear().type(weight);
-      cy.get('#add-entry-btn-add').click();
-      cy.contains(weight + ' kg').should('be.visible');
     });
 
     it(['smoke', 'regression'], `post entry on ${size} screen`, () => {
@@ -83,7 +85,6 @@ context('FitTrack', () => {
       cy.get('#add-entry-input-note').type(note);
       cy.get('#add-entry-btn-add').click();
       cy.contains(weight).should('be.visible');
-      cy.xpath(`//mat-icon[text()='expand_more']`).should('be.visible')
       cy.contains(note).should('be.visible');
     })
 
@@ -96,7 +97,7 @@ context('FitTrack', () => {
       })
       cy.refresh();
       cy.get('@entryWeight').then(weight => {
-      cy.xpath(`//table[@id='entries-table']//tr[td[2][normalize-space(.)='${weight} kg']]//mat-icon[text()='expand_less']`).click();
+      cy.xpath(`//table[@id='entries-table']//tr[td[2][normalize-space(.)='${weight} kg']]`).click();
       cy.xpath(`//mat-icon[text()='delete']`).click();
       cy.xpath(`//span[text()='Delete']`).click();
       cy.contains(weight + ' kg').should('not.exist');

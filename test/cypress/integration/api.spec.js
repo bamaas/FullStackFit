@@ -19,7 +19,7 @@ context('FitTrack', () => {
     beforeEach(() => {
       cy.request({
         method: 'POST',
-        url: Cypress.env('token_url'),
+        url: Cypress.env('auth_url') + Cypress.env('token_url'),
         form: true,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
@@ -37,7 +37,7 @@ context('FitTrack', () => {
       cy.get('@accessToken').then(token => {
         cy.request({
           method: 'GET',
-          url: Cypress.env('userinfo_url'),
+          url: Cypress.env('auth_url') + Cypress.env('userinfo_url'),
           headers:{
             'Authorization': 'Bearer ' + token
           }
@@ -52,20 +52,37 @@ context('FitTrack', () => {
       const weight = (Math.floor(Math.random() * 99) + 1)
       const note  = Math.random().toString().substr(2, 8);
       const year = '1' + (Math.floor(Math.random() * 900) + 1).toString();
-      const date = `${year}-01-01T15:12:30`;
+      const date = `${year}-01-01T15:12`;
       cy.get('@userId').then(userId => {
           cy.get('@accessToken').then(token => {
             cy.request({
               method: 'POST',
-              url: '/api/entry',
+              url: Cypress.env('backend_url') + '/entry',
               headers: {
                 'Authorization': 'Bearer ' + token
               },
               body: {
+                'id': null,
                 'weight': weight,
                 'date': date,
                 'note': note,
-                'userId': userId
+                'userId': userId,
+                "skinfold": {
+                  "biceps": null,
+                  "triceps": null,
+                  "abdominal": null,
+                  "chest": null,
+                  "thigh": null,
+                  "calf": null
+                },
+                "circumference": {
+                  "arm": null,
+                  "leg": null,
+                  "chest": null,
+                  "calf": null,
+                  "neck": null,
+                  "waist": null
+                }
               }
             })
           })
@@ -88,7 +105,7 @@ context('FitTrack', () => {
         })
     });
 
-    it(['regression'], 'get entry', () => {
+    it(['regression'], 'get entry page', () => {
       cy.get('@userId').then(userId => {
         cy.task('db:insertEntry', userId)
       })
@@ -96,7 +113,7 @@ context('FitTrack', () => {
       cy.get('@accessToken').then(token => {
           cy.request({
               method: 'GET',
-              url: Cypress.env('entry_url') + '?pageNumber=0&pageSize=28',
+              url: Cypress.env('backend_url') + '/entry/page?pageNumber=0&pageSize=28',
               headers: {
                   'Authorization': 'Bearer ' + token
               }
@@ -110,6 +127,29 @@ context('FitTrack', () => {
 
     });
 
+    it(['regression'], 'get single entry', () => {
+      cy.get('@userId').then(userId => {
+        cy.task('db:insertEntry', userId).then
+        cy.task('db:getAllEntries', userId).then(result => {
+          const entryId = result[0].id;
+          cy.get('@accessToken').then(token => {
+            cy.request({
+                method: 'GET',
+                url: Cypress.env('backend_url') + '/entry/' + entryId,
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+              }).then(response => {
+                expect(response.body.weight).to.be.a('number');
+                expect(response.body.note).to.be.a('string');
+                expect(response.body.id).to.to.be.a('number')
+                expect(response.body.date).to.be.a('string');
+              }) ;
+          });
+        });
+      });
+    });
+
     it(['regression'], 'delete entry', () => {
       cy.get('@userId').then(userId => {
         cy.task('db:insertEntry', userId)
@@ -121,7 +161,7 @@ context('FitTrack', () => {
           cy.get('@accessToken').then(token => {
             cy.request({
               method: 'DELETE',
-              url: Cypress.env('entry_url') + `/${entryId}`,
+              url: Cypress.env('backend_url') + `/entry/${entryId}`,
               headers: {
                   'Authorization': 'Bearer ' + token
               }
@@ -150,25 +190,41 @@ context('FitTrack', () => {
       const weight = (Math.floor(Math.random() * 99) + 1)
       const note  = Math.random().toString().substr(2, 8);
       const year = '1' + (Math.floor(Math.random() * 900) + 1).toString();
-      const date = `${year}-01-01T15:12:30`
+      const date = `${year}-01-01T15:12`
 
       cy.get('@entryId').then(entryId => {
         cy.get('@userId').then(userId => {
             cy.get('@accessToken').then(token => {
-              cy.request({
-                method: 'PUT',
-                url: '/api/entry',
-                headers: {
-                  'Authorization': 'Bearer ' + token
-                },
-                body: {
-                  'id': entryId,
-                  'weight': weight,
-                  'date': date,
-                  'note': note,
-                  'userId': userId
-                }
-              })
+                cy.request({
+                  method: 'PUT',
+                  url: Cypress.env('backend_url') + '/entry',
+                  headers: {
+                    'Authorization': 'Bearer ' + token
+                  },
+                  body: {
+                    'id': entryId,
+                    'weight': weight,
+                    'date': date,
+                    'note': note,
+                    'userId': userId,
+                    "skinfold": {
+                      "biceps": null,
+                      "triceps": null,
+                      "abdominal": null,
+                      "chest": null,
+                      "thigh": null,
+                      "calf": null
+                    },
+                    "circumference": {
+                      "arm": null,
+                      "leg": null,
+                      "chest": null,
+                      "calf": null,
+                      "neck": null,
+                      "waist": null
+                    }
+                  }
+                })
             })
           }).then(response => {
               expect(response.body.weight).to.equal(weight);

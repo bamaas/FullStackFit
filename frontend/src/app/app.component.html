@@ -1,4 +1,16 @@
-<div *ngIf="isLoggedIn" fxLayout="column" fxFlexFill>
-    <app-header></app-header>
-    <router-outlet></router-outlet>
-</div>
+<mat-sidenav-container *ngIf="isLoggedIn">
+    <mat-sidenav #sidenav mode="over"></mat-sidenav>
+    <mat-sidenav-content>
+        <div fxLayout="column" fxFlexFill>
+            <app-header style="position: sticky; top: 0; z-index: 1000;"></app-header>
+            <router-outlet></router-outlet>
+            <div id="fab-icon">
+                <div id="wrapper">
+                    <button test="add-entry" (click)="addEntry()" color="primary" mat-fab>
+                        <mat-icon>add</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>  
+    </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,0 +1,21 @@
+#fab-icon {
+    z-index: 10;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    bottom: 2%;
+    right: 2%;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+mat-sidenav-container{
+    height: 100%;
+}
+
+mat-sidenav{
+    width: 20%;
+    padding: 24px;
+}

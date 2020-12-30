@@ -13,50 +13,22 @@ import { TableVirtualScrollDataSource } from 'ng-table-virtual-scroll';
 import { StyleService } from 'src/app/services/style.service'
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import {MatTable} from '@angular/material';
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import {MatCardModule} from '@angular/material/card';
+import * as moment from 'moment';
+import { WeeklyAverageService } from 'src/app/services/weekly-average.service';
 
 @Component({
   selector: 'app-entries',
   templateUrl: './entries.component.html',
-  styleUrls: ['./entries.component.css'],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({height: '0px', minHeight: '0'})),
-      state('expanded', style({height: '*'})),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ],
+  styleUrls: ['./entries.component.css']
 })
 export class EntriesComponent implements OnInit, OnDestroy {
 
-  displayedColumns: string[] = ['date', 'weight', 'note', 'expand'];
+  displayedColumns: string[] = ['date', 'weight', 'note', 'actions'];
   
   private mediaSub: Subscription;
   private _entriesSub: Subscription;
   public screenHeight: number;
   public tableBodyHeight: number; // initalized in ngAfterViewInit
-
-  // Toggle entries
-  expandedEntry: Entry | null;
-  public detailState = 'collapsed';
-  public expandedEntryId: number = null;
-
-  toggleEntryState(entryId){
-    if (entryId === this.expandedEntryId){
-      this.detailState = this.detailState == 'expanded' ? 'collapsed' : 'expanded';
-    } else {
-      this.detailState = 'expanded';
-    }
-    this.dataSource.data.forEach(entry => {
-      if (entry.id == entryId){
-        entry.expanded = this.detailState == 'expanded' ? true : false;
-        this.expandedEntryId = entryId;
-      } else {
-        entry.expanded = false;
-      }
-    });
-  }
 
   // @ViewChild(MatSort, {static: true}) sort: MatSort;
   @ViewChild(MatTable) table: MatTable<any>;
@@ -69,6 +41,7 @@ export class EntriesComponent implements OnInit, OnDestroy {
   constructor(
     private snackBar: MatSnackBar,
     private _entryService: EntryService,
+    private weeklyAverageService: WeeklyAverageService,
     private _dialog: MatDialog,
     private _bottomSheet: MatBottomSheet,
     private mediaObserver: MediaObserver,
@@ -84,6 +57,7 @@ export class EntriesComponent implements OnInit, OnDestroy {
       }
     );
     this._entryService.emitEntries();
+
     this.mediaSub = this.mediaObserver.media$.subscribe(
       (change: MediaChange) => {
         if (change.mqAlias == 'xs'){
@@ -149,11 +123,13 @@ export class EntriesComponent implements OnInit, OnDestroy {
       // this.tableBodyHeight = this.screenHeight - this._styleService.headerHeight; // this doesn't work for some reason. Need to retrigger something else.
     }
 
-  editEntry(id: number, weight: number, date: string, note: string): void{
-    this._bottomSheet.open(AddEntrySheet, {
-      data: {title: 'Edit entry...', btn_cancel: 'Cancel', btn_confirm: 'Save', id: id, weight: weight, date: date, note: note}
-    });
-  }
+    editEntry(entry: Entry): void{
+      const time: string = moment(entry.date).format('HH:mm');
+      entry.time = time;
+      this._bottomSheet.open(AddEntrySheet, {
+        data: {title: 'Edit entry...', btn_cancel: 'Cancel', btn_confirm: 'Save', entry: entry}
+      });
+    }
 
   deleteEntry(id: number): void{
     const dialogRef = this._dialog.open(AlertDialogComponent, {
@@ -163,9 +139,22 @@ export class EntriesComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe(confirmed => {
       if (confirmed){
-        this._entryService.deleteEntryFromTable(id);
+        this._entryService.deleteEntry(id).subscribe(
+          success => {
+            this._entryService.removeEntryFromEntriesTable(id);
+            this.weeklyAverageService.addWeeklyAveragesToSubject();
+          },
+          error => {
+              this.snackBar.open('Error occured while deleting entry.', 'Dismiss', {duration: 6000, panelClass: ['mat-toolbar', 'mat-basic']})
+              console.log(error)
+          }
+        )
       }
     });
+  }
+
+  onClickRowMenu(e) {
+    e.stopPropagation();
   }
 
   public columnFilterFormGroup: FormGroup = new FormGroup({
