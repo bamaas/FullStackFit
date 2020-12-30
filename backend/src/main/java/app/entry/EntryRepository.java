@@ -16,6 +16,9 @@ public interface EntryRepository extends PagingAndSortingRepository<Entry, Long>
     @Query("SELECT e FROM entry e WHERE user_id = ?#{ principal?.name }")
     Page<Entry> getEntriesPage(Pageable pageable);
 
+    @Query("SELECT e FROM entry e WHERE id = :id AND user_id = ?#{ principal?.name }")
+    Entry findEntryById(@Param("id") long id);
+
     @Transactional
     @Modifying
     @Query("DELETE FROM entry e WHERE id = :id AND user_id = ?#{ principal?.name }")

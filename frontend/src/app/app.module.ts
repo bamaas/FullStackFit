@@ -27,6 +27,7 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { StatisticsComponent } from './statistics/statistics.component';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { environment } from '../environments/environment';
+import { EntryDetailComponent } from './progress-tracker/entries/entry-detail/entry-detail.component';
 
 export function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
@@ -56,7 +57,8 @@ export function initializeKeycloak(keycloak: KeycloakService) {
     AlertDialogComponent,
     FilterColumnsComponent,
     TruncatePipe,
-    StatisticsComponent
+    StatisticsComponent,
+    EntryDetailComponent
   ],
   imports: [
     BrowserModule,
@@ -73,7 +75,7 @@ export function initializeKeycloak(keycloak: KeycloakService) {
     TableVirtualScrollModule,
     InfiniteScrollModule,
     NgxChartsModule,
-    KeycloakAngularModule,
+    KeycloakAngularModule
   ],
   providers: [ 
     KeycloakService,

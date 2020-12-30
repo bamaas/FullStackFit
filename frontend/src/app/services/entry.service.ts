@@ -4,14 +4,35 @@ import { environment } from '../../environments/environment';
 import { Observable, Subject } from 'rxjs';
 import { MatSnackBar } from '@angular/material';
 import { WeeklyAverageService } from './../services/weekly-average.service';
+import {Router} from "@angular/router";
 
 export interface Entry {
   id: number,
   userId: string,
   weight: number,
   date: string,
+  time?: string,
   note: string,
-  expanded?: boolean
+  circumference: Circumference,
+  skinfold: Skinfold
+}
+
+interface Circumference{
+  neck: number,
+  waist: number,
+  leg: number,
+  arm: number,
+  chest: number,
+  calf: number
+}
+
+interface Skinfold{
+  chest: number,
+  thigh: number,
+  biceps: number,
+  triceps: number,
+  calf: number,
+  abdominal: number
 }
 
 @Injectable({
@@ -22,15 +43,20 @@ export class EntryService {
   constructor(
     private _http: HttpClient, 
     private _snackBar: MatSnackBar,
-    private _weeklyAverageService: WeeklyAverageService
+    private _weeklyAverageService: WeeklyAverageService,
+    private router: Router
   ){}
 
-  private entriesSubject = new Subject();
+  public entriesSubject = new Subject();
   public entriesObservable = this.entriesSubject.asObservable();
   public entries: Entry[] = [];
   public lastPageReached: boolean = false;
 
   // Low level
+  getEntry(id: number): Observable<any>{
+    return this._http.get(environment.apiBaseUrl + '/entry/' + id);
+  }
+
   postEntry(entry: Entry): Observable<any>{
     return this._http.post(environment.apiBaseUrl + '/entry', entry );
   }
@@ -44,7 +70,7 @@ export class EntryService {
   }
 
   getEntries(pageNumber: number = 0, pageSize: number = 0): Observable<any>{
-    return this._http.get(environment.apiBaseUrl + '/entry?pageNumber=' + pageNumber + '&pageSize=' + pageSize);
+    return this._http.get(environment.apiBaseUrl + '/entry/page?pageNumber=' + pageNumber + '&pageSize=' + pageSize);
   }
 
   emitEntries(): void{
@@ -58,13 +84,16 @@ export class EntryService {
     });
   }
 
-  // High level
+  // workaround to fix duplicate entries when updating a entry on edit screen and not added any pages yet.
+  private entriesTableInitialized: boolean = false;   
   addEntryPageToTable(pageNumber: number, pageSize: number): void{
     if (!this.lastPageReached){
+      if (!this.entriesTableInitialized){
+        this.entries = [];
+      }
       this.getEntries(pageNumber, pageSize).subscribe(
         (entries: Entry[]) => {
           entries.forEach(entry => {
-            entry.expanded = false;
             this.entries.push(entry)
           });
           if (entries.length != pageSize){
@@ -72,41 +101,34 @@ export class EntryService {
           }
           this.emitEntries();
           this._weeklyAverageService.addWeeklyAveragesToSubject();
+          this.entriesTableInitialized = true;
         },
         error => {
-          this._snackBar.open('Error occured while getting entries.', 'Dismiss', {duration: 6000})
+          this._snackBar.open('Error occured while getting entries.', 'Dismiss', {duration: 6000, panelClass: ['mat-toolbar', 'mat-basic']})
           console.log(error)
         }
       );
     }
   }
 
-  deleteEntryFromTable(id: number): void{
-    this.deleteEntry(id).subscribe(
-      response => {
-        this.entries = this.entries.filter(entry => entry['id'] != id);
-        this.emitEntries();
-        this._weeklyAverageService.addWeeklyAveragesToSubject();
-      }, 
-      error => {
-        this._snackBar.open('Error occured while deleting entry.', 'Dismiss', {duration: 6000})
-        console.log(error)
-      }
-    )
+  removeEntryFromEntriesTable(id: number): void{
+    this.entries = this.entries.filter(entry => entry['id'] != id);
+    this.emitEntries();
   }
 
   addEntryToPage(entry: Entry): void{
     this.postEntry(entry).subscribe(
       entry => {
-        this.entries.forEach(entry => { entry.expanded = false; })
         entry.expanded = true;
         this.entries.push(entry);
         this.sortEntriesByDate()
         this.emitEntries();
         this._weeklyAverageService.addWeeklyAveragesToSubject();
+        this.emitEntryDetail(entry);
+        this.router.navigate([`/entry/${entry.id}`])
       }, 
       error => {
-        this._snackBar.open('Error occured while adding entry.', 'Dismiss', {duration: 6000})
+        this._snackBar.open('Error occured while adding entry.', 'Dismiss', {duration: 6000, panelClass: ['mat-toolbar', 'mat-basic']})
         console.log(error)
       }
     )
@@ -133,12 +155,26 @@ export class EntryService {
         this.sortEntriesByDate()
         this.emitEntries();
         this._weeklyAverageService.addWeeklyAveragesToSubject();
+        this.emitEntryDetail(entry);
       },
       error => {
-        this._snackBar.open('Error occured while updating entry.', 'Dismiss', {duration: 6000});
+        this._snackBar.open('Error occured while updating entry.', 'Dismiss', { duration: 6000, panelClass: ['mat-toolbar', 'mat-basic']});
         console.log(error);
       }
     ) 
+  }
+
+  // Entry detail
+  public entryDetailSubject = new Subject<Entry>();
+
+  getEntryDetail(id: number){
+    this.getEntry(id).subscribe(entry => {
+      this.emitEntryDetail(entry);
+    })
+  }
+
+  emitEntryDetail(entry: Entry){
+    this.entryDetailSubject.next(entry);
   }
 
 }

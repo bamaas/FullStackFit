@@ -21,3 +21,7 @@ h6{
 .row-padding{
     padding-top: 12px;
 }
+
+::ng-deep .mat-form-field-wrapper{
+    height: 51px !important;
+}

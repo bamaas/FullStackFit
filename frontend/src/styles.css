@@ -1,3 +1,11 @@
+.sticky-sub-mat-toolbar{
+    background: rgb(247 247 247); 
+    padding: 14px; 
+    position: sticky; 
+    top: 56px; 
+    z-index: 1000;
+}
+
 html, body {
     height: 100%;
     box-sizing: border-box;
@@ -13,4 +21,8 @@ html, body {
 }
 .table-row-hover:hover {
     background-color:rgba(0, 0, 0, 0.03);
+}
+
+.red-snackbar {
+    background: #F44336;
 }

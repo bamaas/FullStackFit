@@ -6,6 +6,8 @@
     },
     "baseUrl": "http://localhost:4200",
     "env": {
+        "auth_url": "http://localhost:8080",
+        "backend_url": "http://localhost:5000",
         "token_url": "/auth/realms/FitTrack/protocol/openid-connect/token",
         "userinfo_url": "/auth/realms/FitTrack/protocol/openid-connect/userinfo",
         "entry_url": "/api/entry",

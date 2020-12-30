@@ -3,7 +3,6 @@ package app.entry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import java.security.Principal;
 import java.util.List;
 
 @CrossOrigin
@@ -12,6 +11,11 @@ public class EntryController {
 
     @Autowired
     private EntryService entryService;
+
+    @GetMapping("/entry/{id}")
+    public Entry getEntry(@PathVariable long id){
+        return entryService.getEntry(id);
+    }
 
     @PreAuthorize("#entry.userId == principal.name")
     @PostMapping("/entry")
@@ -30,7 +34,7 @@ public class EntryController {
         return entryService.updateEntry(entry);
     }
 
-    @GetMapping("/entry")
+    @GetMapping("/entry/page")
     public List<Entry> getAllEntries(
             @RequestParam(defaultValue = "0") Integer pageNumber,
             @RequestParam(defaultValue = "30") Integer pageSize,

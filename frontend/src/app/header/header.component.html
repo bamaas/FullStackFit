@@ -1,6 +1,9 @@
 <mat-toolbar color="primary" fxLayout="column" #mainHeader>
-    <mat-toolbar-row class="nav sticky">
+    <mat-toolbar-row class="nav">
         <div fxFlex="90" fxLayout="row" fxLayoutGap="5px">
+            <!-- <button mat-button>
+                <mat-icon>menu</mat-icon>
+            </button> -->
             <button mat-button [matMenuTriggerFor]="menu" test="nav-profile">
                 <fa-icon [icon]="faUser"></fa-icon>
                 <span class="nav-text" test="username">{{ (userInfo !== null) ? (userInfo.preferred_username | titlecase ) : "Profile" }}</span>
@@ -21,7 +24,7 @@
             </button>  
         </div>
         <div fxFlex="10" fxLayoutAlign="end center" fxLayoutGap="10px">
-            <button mat-stroked-button (click)="openAddEntryDialog()" id="nav-btn-add-entry" test="add-entry"><app-add-entry></app-add-entry></button>
+            
         </div>
     </mat-toolbar-row>
 </mat-toolbar>

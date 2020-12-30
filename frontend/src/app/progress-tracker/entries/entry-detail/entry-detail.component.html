@@ -1,0 +1,91 @@
+<mat-toolbar fxLayout="row" class="sticky-sub-mat-toolbar" fxLayoutAlign="space-between center">
+    <div fxFlex="10">
+        <button mat-button (click)="navigateToEntriesPage()" class="entry-detail-button">
+            <mat-icon style="font-size: 24px;">keyboard_arrow_left</mat-icon>
+        </button>
+    </div>
+    <div fxLayoutGap="5px">
+        <button mat-button (click)="editEntry(entry)" class="entry-detail-button">
+            <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-button (click)="deleteEntry(entry.id)" class="entry-detail-button">
+            <mat-icon>delete</mat-icon>
+        </button>
+    </div>
+</mat-toolbar>
+<div fxLayout="row" fxLayout.xs="column" *ngIf="entry" fxLayoutGap="24px" style="padding: 24px;">
+    <div fxFlex="33">
+        <mat-card>
+            <div fxLayout="row">
+                <div fxFlex="50">
+                    <mat-list>
+                        <mat-list-item class="mat-body-strong">Date</mat-list-item>
+                        <mat-list-item class="mat-body-strong">Time</mat-list-item>
+                        <mat-list-item class="mat-body-strong">Bodyweight</mat-list-item>
+                        <mat-list-item class="mat-body-strong">Note</mat-list-item>
+                    </mat-list>
+                </div>
+                <div fxFlex="50">
+                    <mat-list>
+                        <mat-list-item>{{ entry.date | date:'dd-MM-yyyy' }}</mat-list-item>
+                        <mat-list-item>{{ entry.date | date:'HH:mm' }}</mat-list-item>
+                        <mat-list-item>{{entry.weight}} kg</mat-list-item>
+                        <mat-list-item>{{entry.note}}</mat-list-item>
+                    </mat-list>
+                </div>
+            </div>
+        </mat-card>
+    </div>
+    <div fxFlex="33">
+        <mat-card>
+            <div fxLayout="row">
+                <div fxFlex="50">
+                    <mat-list>
+                        <mat-list-item class="mat-body-strong">Waist</mat-list-item>
+                        <mat-list-item class="mat-body-strong">Neck</mat-list-item>
+                        <mat-list-item class="mat-body-strong">Leg</mat-list-item>
+                        <mat-list-item class="mat-body-strong">Arm</mat-list-item>
+                        <mat-list-item class="mat-body-strong">Calf</mat-list-item>
+                        <mat-list-item class="mat-body-strong">Chest</mat-list-item>
+                    </mat-list>
+                </div>
+                <div fxFlex="50">
+                    <mat-list>
+                        <mat-list-item>{{ (entry.circumference.waist !== null) ? (entry.circumference.waist + ' cm') : '-' }}</mat-list-item>
+                        <mat-list-item>{{ (entry.circumference.neck !== null) ? (entry.circumference.neck + ' cm') : '-' }}</mat-list-item>
+                        <mat-list-item>{{ (entry.circumference.leg !== null) ? (entry.circumference.leg + ' cm') : '-' }}</mat-list-item>
+                        <mat-list-item>{{ (entry.circumference.arm !== null) ? (entry.circumference.arm + ' cm') : '-' }}</mat-list-item>
+                        <mat-list-item>{{ (entry.circumference.calf !== null) ? (entry.circumference.calf + ' cm') : '-' }}</mat-list-item>
+                        <mat-list-item>{{ (entry.circumference.chest !== null) ? (entry.circumference.chest + ' cm') : '-' }}</mat-list-item>
+                    </mat-list>
+                </div>
+            </div>
+        </mat-card>
+    </div>
+    <div fxFlex="33">
+        <mat-card>
+            <div fxLayout="row">
+                <div fxFlex="50">
+                    <mat-list>
+                        <mat-list-item class="mat-body-strong">Abdominal</mat-list-item>
+                        <mat-list-item class="mat-body-strong">Chest</mat-list-item>
+                        <mat-list-item class="mat-body-strong">Thigh</mat-list-item>
+                        <mat-list-item class="mat-body-strong">Biceps</mat-list-item>
+                        <mat-list-item class="mat-body-strong">Triceps</mat-list-item>
+                        <mat-list-item class="mat-body-strong">Calf</mat-list-item>
+                    </mat-list>
+                </div>
+                <div fxFlex="50">
+                    <mat-list>
+                        <mat-list-item>{{ (entry.skinfold.abdominal !== null) ? (entry.skinfold.abdominal + ' mm') : '-' }}</mat-list-item>
+                        <mat-list-item>{{ (entry.skinfold.chest !== null) ? (entry.skinfold.chest + ' mm') : '-' }}</mat-list-item>
+                        <mat-list-item>{{ (entry.skinfold.thigh !== null) ? (entry.skinfold.thigh + ' mm') : '-' }}</mat-list-item>
+                        <mat-list-item>{{ (entry.skinfold.biceps !== null) ? (entry.skinfold.biceps + ' mm') : '-' }}</mat-list-item>
+                        <mat-list-item>{{ (entry.skinfold.triceps !== null) ? (entry.skinfold.triceps + ' mm') : '-' }}</mat-list-item>
+                        <mat-list-item>{{ (entry.skinfold.calf !== null) ? (entry.skinfold.calf + ' mm') : '-' }}</mat-list-item>
+                    </mat-list>
+                </div>
+            </div>
+        </mat-card>
+    </div>
+</div>

@@ -1,0 +1,22 @@
+{
+  "id": 235,
+  "weight": 5,
+  "date": "2020-12-30T20:29",
+  "note": null,
+  "skinfold": {
+    "biceps": null,
+    "triceps": null,
+    "abdominal": null,
+    "chest": null,
+    "thigh": null,
+    "calf": null
+  },
+  "circumference": {
+    "arm": null,
+    "leg": null,
+    "chest": null,
+    "calf": null,
+    "neck": null,
+    "waist": null
+  }
+}

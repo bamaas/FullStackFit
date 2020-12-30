@@ -36,7 +36,7 @@ Cypress.Commands.add(
 Cypress.Commands.add(
     'refresh', () => {
         cy.get('[test=username]').invoke('text').then(username => {
-            cy.reload();
+            cy.visit('/')
             cy.get('[test=username]').should('be.visible').contains(username);
         })
     }

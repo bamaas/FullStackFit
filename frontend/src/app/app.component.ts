@@ -1,6 +1,7 @@
 import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
 import { KeycloakService } from 'keycloak-angular';
+import { AddEntryComponent } from './progress-tracker/entries/add-entry/add-entry.component';
 import { ProfileService } from './services/profile.service';
 
 @Component({
@@ -16,6 +17,7 @@ export class AppComponent implements OnInit, AfterViewInit{
     private readonly keycloak: KeycloakService,
     private mediaObserver: MediaObserver,
     private profileService: ProfileService,
+    private addEntryComponent: AddEntryComponent,
   ){
 
   }
@@ -50,6 +52,10 @@ export class AppComponent implements OnInit, AfterViewInit{
         console.log(change.mqAlias);
       }
     );
+  }
+
+  addEntry(): void{
+    this.addEntryComponent.openAddEntrySheet();
   }
 
   ngAfterViewInit(){
