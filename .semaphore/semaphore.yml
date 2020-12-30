@@ -83,7 +83,7 @@ blocks:
           commands:
             - cd database/liquibase
             - docker build -t ${DOCKER_USERNAME}/registry:fullstackfit_liquibase.${IMAGE_TAG} .
-            - docker push ${DOCKER_USERNAME}/registry:fullstackfit_database.${IMAGE_TAG}
+            - docker push ${DOCKER_USERNAME}/registry:fullstackfit_liquibase.${IMAGE_TAG}
         - name: Backend
           priority:
             - value: 80
