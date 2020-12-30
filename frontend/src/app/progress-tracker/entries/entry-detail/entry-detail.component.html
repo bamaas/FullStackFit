@@ -4,7 +4,7 @@
             <mat-icon style="font-size: 24px;">keyboard_arrow_left</mat-icon>
         </button>
     </div>
-    <div fxLayoutGap="5px">
+    <div fxLayoutGap="5px" *ngIf="entry">
         <button mat-button (click)="editEntry(entry)" class="entry-detail-button">
             <mat-icon>edit</mat-icon>
         </button>
@@ -13,7 +13,7 @@
         </button>
     </div>
 </mat-toolbar>
-<div fxLayout="row" fxLayout.xs="column" *ngIf="entry" fxLayoutGap="24px" style="padding: 24px;">
+<div fxLayout="row" fxLayout.xs="column" fxLayoutGap="24px" style="padding: 24px;">
     <div fxFlex="33">
         <mat-card>
             <div fxLayout="row">
@@ -27,10 +27,10 @@
                 </div>
                 <div fxFlex="50">
                     <mat-list>
-                        <mat-list-item>{{ entry.date | date:'dd-MM-yyyy' }}</mat-list-item>
-                        <mat-list-item>{{ entry.date | date:'HH:mm' }}</mat-list-item>
-                        <mat-list-item>{{entry.weight}} kg</mat-list-item>
-                        <mat-list-item>{{entry.note}}</mat-list-item>
+                        <mat-list-item *ngIf="entry">{{ entry.date | date:'dd-MM-yyyy' }}</mat-list-item>
+                        <mat-list-item *ngIf="entry">{{ entry.date | date:'HH:mm' }}</mat-list-item>
+                        <mat-list-item *ngIf="entry">{{entry.weight}} kg</mat-list-item>
+                        <mat-list-item *ngIf="entry">{{entry.note}}</mat-list-item>
                     </mat-list>
                 </div>
             </div>
@@ -51,12 +51,12 @@
                 </div>
                 <div fxFlex="50">
                     <mat-list>
-                        <mat-list-item>{{ (entry.circumference.waist !== null) ? (entry.circumference.waist + ' cm') : '-' }}</mat-list-item>
-                        <mat-list-item>{{ (entry.circumference.neck !== null) ? (entry.circumference.neck + ' cm') : '-' }}</mat-list-item>
-                        <mat-list-item>{{ (entry.circumference.leg !== null) ? (entry.circumference.leg + ' cm') : '-' }}</mat-list-item>
-                        <mat-list-item>{{ (entry.circumference.arm !== null) ? (entry.circumference.arm + ' cm') : '-' }}</mat-list-item>
-                        <mat-list-item>{{ (entry.circumference.calf !== null) ? (entry.circumference.calf + ' cm') : '-' }}</mat-list-item>
-                        <mat-list-item>{{ (entry.circumference.chest !== null) ? (entry.circumference.chest + ' cm') : '-' }}</mat-list-item>
+                        <mat-list-item *ngIf="entry">{{ (entry.circumference.waist !== null) ? (entry.circumference.waist + ' cm') : '-' }}</mat-list-item>
+                        <mat-list-item *ngIf="entry">{{ (entry.circumference.neck !== null) ? (entry.circumference.neck + ' cm') : '-' }}</mat-list-item>
+                        <mat-list-item *ngIf="entry">{{ (entry.circumference.leg !== null) ? (entry.circumference.leg + ' cm') : '-' }}</mat-list-item>
+                        <mat-list-item *ngIf="entry">{{ (entry.circumference.arm !== null) ? (entry.circumference.arm + ' cm') : '-' }}</mat-list-item>
+                        <mat-list-item *ngIf="entry">{{ (entry.circumference.calf !== null) ? (entry.circumference.calf + ' cm') : '-' }}</mat-list-item>
+                        <mat-list-item *ngIf="entry">{{ (entry.circumference.chest !== null) ? (entry.circumference.chest + ' cm') : '-' }}</mat-list-item>
                     </mat-list>
                 </div>
             </div>
@@ -77,12 +77,12 @@
                 </div>
                 <div fxFlex="50">
                     <mat-list>
-                        <mat-list-item>{{ (entry.skinfold.abdominal !== null) ? (entry.skinfold.abdominal + ' mm') : '-' }}</mat-list-item>
-                        <mat-list-item>{{ (entry.skinfold.chest !== null) ? (entry.skinfold.chest + ' mm') : '-' }}</mat-list-item>
-                        <mat-list-item>{{ (entry.skinfold.thigh !== null) ? (entry.skinfold.thigh + ' mm') : '-' }}</mat-list-item>
-                        <mat-list-item>{{ (entry.skinfold.biceps !== null) ? (entry.skinfold.biceps + ' mm') : '-' }}</mat-list-item>
-                        <mat-list-item>{{ (entry.skinfold.triceps !== null) ? (entry.skinfold.triceps + ' mm') : '-' }}</mat-list-item>
-                        <mat-list-item>{{ (entry.skinfold.calf !== null) ? (entry.skinfold.calf + ' mm') : '-' }}</mat-list-item>
+                        <mat-list-item *ngIf="entry">{{ (entry.skinfold.abdominal !== null) ? (entry.skinfold.abdominal + ' mm') : '-' }}</mat-list-item>
+                        <mat-list-item *ngIf="entry">{{ (entry.skinfold.chest !== null) ? (entry.skinfold.chest + ' mm') : '-' }}</mat-list-item>
+                        <mat-list-item *ngIf="entry">{{ (entry.skinfold.thigh !== null) ? (entry.skinfold.thigh + ' mm') : '-' }}</mat-list-item>
+                        <mat-list-item *ngIf="entry">{{ (entry.skinfold.biceps !== null) ? (entry.skinfold.biceps + ' mm') : '-' }}</mat-list-item>
+                        <mat-list-item *ngIf="entry">{{ (entry.skinfold.triceps !== null) ? (entry.skinfold.triceps + ' mm') : '-' }}</mat-list-item>
+                        <mat-list-item *ngIf="entry">{{ (entry.skinfold.calf !== null) ? (entry.skinfold.calf + ' mm') : '-' }}</mat-list-item>
                     </mat-list>
                 </div>
             </div>
