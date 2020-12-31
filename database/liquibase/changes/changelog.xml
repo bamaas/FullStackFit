@@ -11,5 +11,5 @@
     http://www.liquibase.org/xml/ns/dbchangelog 
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd
     ">
-    <include file="000000_add_circumference_and_skinfold_to_entry.sql" relativeToChangelogFile="true"/>
+    <!-- <include file="000000_add_circumference_and_skinfold_to_entry.sql" relativeToChangelogFile="true"/> -->
 </databaseChangeLog>
