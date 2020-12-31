@@ -1,22 +1,22 @@
-<mat-sidenav-container >
-    <mat-sidenav #sidenav mode="over">
+<mat-sidenav-container [hasBackdrop]="true">
+    <mat-sidenav [autoFocus]="false" #sidenav mode="over">
         <div fxLayout="column" fxLayoutGap="14px">
             <div fxLayout="column">
                 <fa-icon class="fa-user-circle-icon" [icon]="faUserCircle"></fa-icon>
                 <span class="nav-username mat-h2" test="username">{{ (userInfo !== null) ? (userInfo.preferred_username | titlecase ) : "Profile" }}</span>
             </div>
             <mat-divider></mat-divider>
-            <button (click)="toggleSidenav()" mat-button routerLink="/entries" test="nav-entries">
+            <button (click)="closeSidenav()" mat-button routerLink="/entries" test="nav-entries">
                 <mat-icon>history</mat-icon><span>Entries</span>
             </button>
-            <button (click)="toggleSidenav()" mat-button routerLink="/statistics" test="nav-statistics">
+            <button (click)="closeSidenav()" mat-button routerLink="/statistics" test="nav-statistics">
                 <mat-icon>bar_chart</mat-icon><span>Statistics</span>
             </button>
             <mat-divider></mat-divider>
             <button mat-button>
                 <mat-icon style="font-size: 22px; padding-top: 2px;">share</mat-icon><span>Share</span>
             </button>
-            <button mat-button href="https://github.com/bamaas/FullStackFit" target="_blank">
+            <button mat-button (click)="navigateGithub()">
                 <mat-icon>code</mat-icon><span>Github</span>
             </button>
             <mat-divider></mat-divider>

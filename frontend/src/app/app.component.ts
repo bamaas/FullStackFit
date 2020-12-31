@@ -75,8 +75,12 @@ export class AppComponent implements OnInit, AfterViewInit{
     this.addEntryComponent.openAddEntrySheet();
   }
 
-  toggleSidenav() {
-    this.sidenavService.toggle();
+  closeSidenav() {
+    this.sidenavService.close();
+  }
+
+  navigateGithub(){
+    window.open('https://github.com/bamaas/FullStackFit', '_blank');
   }
 
   ngAfterViewInit(): void {
