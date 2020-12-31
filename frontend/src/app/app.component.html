@@ -1,6 +1,31 @@
-<mat-sidenav-container *ngIf="isLoggedIn">
-    <mat-sidenav #sidenav mode="over"></mat-sidenav>
-    <mat-sidenav-content>
+<mat-sidenav-container >
+    <mat-sidenav #sidenav mode="over">
+        <div fxLayout="column" fxLayoutGap="14px">
+            <div fxLayout="column">
+                <fa-icon class="fa-user-circle-icon" [icon]="faUserCircle"></fa-icon>
+                <span class="nav-username mat-h2" test="username">{{ (userInfo !== null) ? (userInfo.preferred_username | titlecase ) : "Profile" }}</span>
+            </div>
+            <mat-divider></mat-divider>
+            <button (click)="toggleSidenav()" mat-button routerLink="/entries" test="nav-entries">
+                <mat-icon>history</mat-icon><span>Entries</span>
+            </button>
+            <button (click)="toggleSidenav()" mat-button routerLink="/statistics" test="nav-statistics">
+                <mat-icon>bar_chart</mat-icon><span>Statistics</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-button>
+                <mat-icon style="font-size: 22px; padding-top: 2px;">share</mat-icon><span>Share</span>
+            </button>
+            <button mat-button href="https://github.com/bamaas/FullStackFit" target="_blank">
+                <mat-icon>code</mat-icon><span>Github</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-button (click)="logout()">
+                <mat-icon>logout</mat-icon><span>Sign out</span>
+            </button>
+        </div>
+    </mat-sidenav>
+    <mat-sidenav-content *ngIf="isLoggedIn">
         <div fxLayout="column" fxFlexFill>
             <app-header style="position: sticky; top: 0; z-index: 1000;"></app-header>
             <router-outlet></router-outlet>

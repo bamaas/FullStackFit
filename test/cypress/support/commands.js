@@ -29,7 +29,7 @@ Cypress.Commands.add(
         cy.get('#username').type(username).should('have.value', username)
         cy.get('#password').type(password).should('have.value', password)
         cy.get('.submit').click();
-        cy.get('[test=username]').should('be.visible').contains(username.charAt(0).toUpperCase() + username.slice(1));
+        cy.get('[test=username]').should('exist').contains(username.charAt(0).toUpperCase() + username.slice(1));
     }
 )
 
@@ -37,14 +37,14 @@ Cypress.Commands.add(
     'refresh', () => {
         cy.get('[test=username]').invoke('text').then(username => {
             cy.visit('/')
-            cy.get('[test=username]').should('be.visible').contains(username);
+            cy.get('[test=username]').should('exist').contains(username);
         })
     }
 )
 
 Cypress.Commands.add(
     'logout', () => {
-        cy.get('[test=username]').click();
+        cy.get('[test=header-menu]').click();
         cy.contains('Sign out').click();
         cy.get('#username').should('be.visible')
     }

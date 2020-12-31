@@ -13,3 +13,9 @@
     font-weight: 500px;
     font-size: 12px;
 }
+
+#header-title{
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    padding-top: 4px;
+}
