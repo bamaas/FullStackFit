@@ -1,50 +1,41 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { AddEntryComponent } from '../progress-tracker/entries/add-entry/add-entry.component';
-import { faUser, faHistory, faChartBar, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
-import { ProfileService } from '../services/profile.service'
-import { KeycloakProfile } from 'keycloak-js';
+import { SidenavService } from '../services/sidenav.service';
+import { HeaderService } from '../services/header.service';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements OnInit, AfterViewInit {
-
-  public userInfo: any = null;
+export class HeaderComponent implements OnInit {
 
   constructor(
     private addEntryComponent: AddEntryComponent,
-    private profileService: ProfileService
+    private sidenavService: SidenavService,
+    private headerService: HeaderService
   )
   {}
 
-  ngOnInit() {
-    this.getUserProfile();
+  ngOnInit() { 
+    this.getHeaderTitle();
   }
 
-  @ViewChild('mainHeader', {read: ElementRef, static:false}) mainHeaderElement: ElementRef;
-
   public headerHeight: number;
-  public faUser = faUser;
-  public faHistory = faHistory;
-  public faSignOut = faSignOutAlt;
-  public faChartBar = faChartBar;
+  public headerTitle: string;
 
   openAddEntryDialog(): void{
     this.addEntryComponent.openAddEntrySheet();
   }
 
-  ngAfterViewInit(): void{
-    this.headerHeight = this.mainHeaderElement.nativeElement.offsetHeight;
+  toggleSidenav() {
+    this.sidenavService.toggle();
   }
 
-  getUserProfile(): void{
-    this.profileService.userInfo.subscribe(userInfo => {this.userInfo = userInfo})
-  }
-
-  public logout(): void {
-    this.profileService.logout();
+  getHeaderTitle(){
+    this.headerService.headerTitle.subscribe(title => {
+      this.headerTitle = title;
+    })
   }
 
 }

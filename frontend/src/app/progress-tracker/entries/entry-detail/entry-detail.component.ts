@@ -7,6 +7,7 @@ import * as moment from 'moment';
 import { MatBottomSheet, MatDialog, MatSnackBar } from '@angular/material';
 import { Location } from '@angular/common';
 import { WeeklyAverageService } from 'src/app/services/weekly-average.service';
+import { HeaderService } from 'src/app/services/header.service';
 
 @Component({
   selector: 'app-entry-detail',
@@ -15,6 +16,7 @@ import { WeeklyAverageService } from 'src/app/services/weekly-average.service';
 })
 export class EntryDetailComponent implements OnInit {
 
+  public headerTitle: string = 'Entry detail';
   public entry: Entry;
   public id: number;
 
@@ -26,15 +28,21 @@ export class EntryDetailComponent implements OnInit {
     private bottomSheet: MatBottomSheet,
     private snackBar: MatSnackBar,
     private location: Location,
-    private router: Router
+    private router: Router,
+    private headerService: HeaderService
   ) { } 
 
   ngOnInit(): void {
+    this.setHeaderTitle();
     this.id = Number(this.route.snapshot.paramMap.get('id'));
     this.entryService.getEntryDetail(this.id);
     this.entryService.entryDetailSubject.subscribe(entry => {
       this.entry = entry;
     })
+  }
+
+  setHeaderTitle(){
+    this.headerService.setHeaderTitle(this.headerTitle);
   }
 
   editEntry(entry: Entry): void{

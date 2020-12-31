@@ -1,30 +1,10 @@
-<mat-toolbar color="primary" fxLayout="column" #mainHeader>
+<mat-toolbar color="primary" fxLayout="column">
     <mat-toolbar-row class="nav">
-        <div fxFlex="90" fxLayout="row" fxLayoutGap="5px">
-            <!-- <button mat-button>
+        <div fxFlex="90" fxLayout="row" fxLayoutGap="14px">
+            <button (click)="toggleSidenav()" mat-button test="header-menu">
                 <mat-icon>menu</mat-icon>
-            </button> -->
-            <button mat-button [matMenuTriggerFor]="menu" test="nav-profile">
-                <fa-icon [icon]="faUser"></fa-icon>
-                <span class="nav-text" test="username">{{ (userInfo !== null) ? (userInfo.preferred_username | titlecase ) : "Profile" }}</span>
             </button>
-            <mat-menu #menu="matMenu">
-                <button mat-menu-item (click)="logout()">
-                    <mat-icon>logout</mat-icon>
-                    <span>Sign out</span>
-                </button>
-            </mat-menu>
-            <button mat-button routerLink="/entries" id="nav-btn-entries" test="nav-entries">
-                <!-- <fa-icon [icon]="faHistory"></fa-icon> -->
-                <span>Entries</span>
-            </button>
-            <button mat-button routerLink="/statistics" test="nav-statistics">
-                <!-- <fa-icon [icon]="faChartBar"></fa-icon> -->
-                <span>Statistics</span>
-            </button>  
-        </div>
-        <div fxFlex="10" fxLayoutAlign="end center" fxLayoutGap="10px">
-            
+            <h1 id="header-title">{{headerTitle}}</h1>
         </div>
     </mat-toolbar-row>
 </mat-toolbar>

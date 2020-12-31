@@ -10,11 +10,11 @@ import { AddEntrySheet } from 'src/app/progress-tracker/entries/add-entry/add-en
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
 import { Subscription, Observable, merge } from 'rxjs';
 import { TableVirtualScrollDataSource } from 'ng-table-virtual-scroll'; 
-import { StyleService } from 'src/app/services/style.service'
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import {MatTable} from '@angular/material';
 import * as moment from 'moment';
 import { WeeklyAverageService } from 'src/app/services/weekly-average.service';
+import { HeaderService } from 'src/app/services/header.service';
 
 @Component({
   selector: 'app-entries',
@@ -23,6 +23,7 @@ import { WeeklyAverageService } from 'src/app/services/weekly-average.service';
 })
 export class EntriesComponent implements OnInit, OnDestroy {
 
+  public headerTitle: string = 'Entries overview';
   displayedColumns: string[] = ['date', 'weight', 'note', 'actions'];
   
   private mediaSub: Subscription;
@@ -45,11 +46,12 @@ export class EntriesComponent implements OnInit, OnDestroy {
     private _dialog: MatDialog,
     private _bottomSheet: MatBottomSheet,
     private mediaObserver: MediaObserver,
-    private _styleService: StyleService,
-    private _cdr: ChangeDetectorRef
+    private _cdr: ChangeDetectorRef,
+    private headerService: HeaderService
   ) {}
 
   ngOnInit() {
+    this.setHeaderTitle();
     this._entriesSub = this._entryService.entriesObservable.subscribe(
       (entries: Entry[]) => {
         // this.dataSource.data = entries;    Use this when enabled sorting
@@ -68,6 +70,11 @@ export class EntriesComponent implements OnInit, OnDestroy {
       });
       this.onResize();
   }
+
+  setHeaderTitle(){
+    this.headerService.setHeaderTitle(this.headerTitle);
+  }
+
 
   public data: Entry[] = [];
   dataSource = new TableVirtualScrollDataSource<Entry>(this.data);

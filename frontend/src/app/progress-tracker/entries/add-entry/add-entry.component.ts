@@ -72,12 +72,12 @@ export class AddEntrySheet implements OnInit{
     const chest: Number = entry == null ? null : entry.circumference.chest;
     const calf: Number = entry == null ? null : entry.circumference.calf;
     this.circumferenceForm = new FormGroup({
-      waist: new FormControl(waist, [Validators.min(0)]),
-      neck: new FormControl(neck, [Validators.min(0)]),
-      leg: new FormControl(leg, [Validators.min(0)]),
-      arm: new FormControl(arm, [Validators.min(0)]),
-      chest: new FormControl(chest, [Validators.min(0)]),
-      calf: new FormControl(calf, [Validators.min(0)])
+      waist: new FormControl(waist, [Validators.min(0), Validators.max(400)]),
+      neck: new FormControl(neck, [Validators.min(0), Validators.max(100)]),
+      leg: new FormControl(leg, [Validators.min(0), Validators.max(400)]),
+      arm: new FormControl(arm, [Validators.min(0), Validators.max(100)]),
+      chest: new FormControl(chest, [Validators.min(0), Validators.max(400)]),
+      calf: new FormControl(calf, [Validators.min(0), Validators.max(100)])
     })
   }
 
@@ -89,12 +89,12 @@ export class AddEntrySheet implements OnInit{
     const triceps: Number = entry == null ? null : entry.skinfold.triceps;
     const calf: Number = entry == null ? null : entry.skinfold.calf;
     this.skinfoldForm = new FormGroup({
-      chest: new FormControl(chest, [Validators.min(0)]),
-      abdominal: new FormControl(abdominal, [Validators.min(0)]),
-      thigh: new FormControl(thigh, [Validators.min(0)]),
-      biceps: new FormControl(biceps, [Validators.min(0)]),
-      triceps: new FormControl(triceps, [Validators.min(0)]),
-      calf: new FormControl(calf, [Validators.min(0)])
+      chest: new FormControl(chest, [Validators.min(0), Validators.max(300)]),
+      abdominal: new FormControl(abdominal, [Validators.min(0), Validators.max(300)]),
+      thigh: new FormControl(thigh, [Validators.min(0), Validators.max(300)]),
+      biceps: new FormControl(biceps, [Validators.min(0), Validators.max(300)]),
+      triceps: new FormControl(triceps, [Validators.min(0), Validators.max(300)]),
+      calf: new FormControl(calf, [Validators.min(0), Validators.max(300)])
     })
   }
 

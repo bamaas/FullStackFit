@@ -5,8 +5,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    bottom: 2%;
-    right: 2%;
+    bottom: 3%;
+    right: 3%;
     border-radius: 50%;
     cursor: pointer;
 }
@@ -16,6 +16,32 @@ mat-sidenav-container{
 }
 
 mat-sidenav{
-    width: 20%;
-    padding: 24px;
+    width: 300px;
+}
+
+.mat-button{
+    text-align: left;
+    height: 48px;
+    border-radius: 0px;
+    color: rgba(0,0,0,.80);
+}
+
+.mat-button span {
+    padding-left: 40px;
+}
+
+.fa-user-circle-icon{
+    margin-bottom: 8px;
+    font-size: 70px;
+    text-align: center;
+    color: #3545a5;
+    margin-top: 30px;
+}
+
+.nav-username{
+    text-align: center;
+    margin-left: -8px;
+    color: rgba(0,0,0,.80);
+    margin-bottom: 12px;
+    font-size: 17px;
 }
