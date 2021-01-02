@@ -1,0 +1,22 @@
+.mat-button{
+    text-align: center;
+    height: 48px;
+    border-radius: 0px;
+    color: rgba(0,0,0,.80);
+}
+
+.fa-user-circle-icon{
+    margin-bottom: 8px;
+    font-size: 70px;
+    text-align: center;
+    color: #3545a5;
+    margin-top: 25px;
+}
+
+.nav-username{
+    text-align: center;
+    margin-left: -6px;
+    color: rgba(0,0,0,.80);
+    margin-bottom: 14px;
+    font-size: 17px;
+}
