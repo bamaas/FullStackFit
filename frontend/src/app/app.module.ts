@@ -29,6 +29,7 @@ import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { environment } from '../environments/environment';
 import { EntryDetailComponent } from './progress-tracker/entries/entry-detail/entry-detail.component';
 import { SidenavService } from './services/sidenav.service';
+import { ProfileComponent } from './profile/profile.component';
 
 export function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
@@ -59,7 +60,8 @@ export function initializeKeycloak(keycloak: KeycloakService) {
     FilterColumnsComponent,
     TruncatePipe,
     StatisticsComponent,
-    EntryDetailComponent
+    EntryDetailComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,

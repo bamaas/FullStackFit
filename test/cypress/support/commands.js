@@ -45,6 +45,7 @@ Cypress.Commands.add(
 Cypress.Commands.add(
     'logout', () => {
         cy.get('[test=header-menu]').click();
+        cy.get('[test=username').click();
         cy.contains('Sign out').click();
         cy.get('#username').should('be.visible')
     }
