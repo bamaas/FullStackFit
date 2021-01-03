@@ -1,7 +1,7 @@
 .mat-button{
     text-align: center;
-    height: 48px;
-    border-radius: 0px;
+    /* height: 48px; */
+    /* border-radius: 0px; */
     color: rgba(0,0,0,.80);
 }
 
@@ -19,4 +19,9 @@
     color: rgba(0,0,0,.80);
     margin-bottom: 14px;
     font-size: 17px;
+}
+
+:host /deep/ .mat-list-item-content {
+    font-size: 14px;
+    color: rgba(0,0,0,0.75);
 }
