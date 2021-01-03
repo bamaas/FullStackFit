@@ -4,8 +4,9 @@
         <span class="nav-username mat-h2" test="username">{{ (userInfo !== null) ? (userInfo.preferred_username | titlecase ) : "Profile" }}</span>
     </div>
 </mat-toolbar>
-<div fxLayout="row" fxLayout.xs="column" fxLayoutGap="24px" style="padding: 24px 24px 10px 24px;">
-        <mat-card>
+<div fxLayout="row" fxLayout.xs="column" fxLayoutGap="24px" style="padding: 24px 24px 10px 24px;" fxLayoutAlign="center center">
+        <mat-card fxFlex="30" fxFlex.md="50" fxFlex.sm="70" fxFlex.xs="100">
+            <mat-card-content>
             <div fxLayout="row">
                 <div fxFlex="50">
                     <mat-list>
@@ -18,10 +19,11 @@
                     <mat-list>
                         <mat-list-item *ngIf="userInfo">{{ userInfo.preferred_username }}</mat-list-item>
                         <mat-list-item *ngIf="userInfo">{{ userInfo.name }}</mat-list-item>
-                        <mat-list-item *ngIf="userInfo">{{userInfo.email }}</mat-list-item>
+                        <mat-list-item *ngIf="userInfo" style="margin-right: 24px;">{{userInfo.email }}</mat-list-item>
                     </mat-list>
                 </div>
             </div>
+            </mat-card-content>
         </mat-card>
 </div>
 <div fxLayout="row" fxLayoutGap="24px" fxLayoutAlign="center center">

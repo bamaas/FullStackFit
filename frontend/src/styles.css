@@ -23,6 +23,6 @@ html, body {
     background-color:rgba(0, 0, 0, 0.03);
 }
 
-.red-snackbar {
-    background: #F44336;
+.cursor-pointer{
+    cursor: pointer;
 }
