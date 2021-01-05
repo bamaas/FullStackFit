@@ -125,7 +125,7 @@ export class EntryService {
         this.emitEntries();
         this._weeklyAverageService.addWeeklyAveragesToSubject();
         this.emitEntryDetail(entry);
-        this.router.navigate([`/entry/${entry.id}`])
+        this.router.navigate([`/log/${entry.id}`])
       }, 
       error => {
         this._snackBar.open('Error occured while adding entry.', 'Dismiss', {duration: 6000, panelClass: ['mat-toolbar', 'mat-basic']})

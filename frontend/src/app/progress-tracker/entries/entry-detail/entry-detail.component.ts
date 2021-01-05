@@ -16,7 +16,7 @@ import { HeaderService } from 'src/app/services/header.service';
 })
 export class EntryDetailComponent implements OnInit {
 
-  public headerTitle: string = 'Entry detail';
+  public headerTitle: string = 'Log detail';
   public entry: Entry;
   public id: number;
 
@@ -54,7 +54,7 @@ export class EntryDetailComponent implements OnInit {
   }
 
   navigateToEntriesPage(){
-    this.router.navigate(['/entries']);
+    this.router.navigate(['/log']);
   }
 
   deleteEntry(id: number): void{

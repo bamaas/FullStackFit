@@ -6,10 +6,10 @@ import { StatisticsComponent } from './statistics/statistics.component';
 import { ProfileComponent } from './profile/profile.component';
 
 const routes: Routes = [
-  { path: 'entries', component: ProgressTrackerComponent},
+  { path: 'log', component: ProgressTrackerComponent},
   { path: 'statistics', component: StatisticsComponent},
   { path: '', component: ProgressTrackerComponent },
-  { path: 'entry/:id', component: EntryDetailComponent },
+  { path: 'log/:id', component: EntryDetailComponent },
   { path: 'profile', component: ProfileComponent }
 ];
 
