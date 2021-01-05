@@ -45,7 +45,7 @@
                     </ng-container>
 
                     <tr mat-header-row *matHeaderRowDef="getDisplayedColumns(); sticky: true"></tr>
-                    <tr mat-row *matRowDef="let entry; columns: getDisplayedColumns();" routerLink="/entry/{{entry.id}}"class="table-row-hover"></tr>
+                    <tr mat-row *matRowDef="let entry; columns: getDisplayedColumns();" routerLink="/log/{{entry.id}}"class="table-row-hover"></tr>
                 </table>
             </cdk-virtual-scroll-viewport>
         </div>

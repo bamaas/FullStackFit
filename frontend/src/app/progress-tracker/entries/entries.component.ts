@@ -23,7 +23,7 @@ import { HeaderService } from 'src/app/services/header.service';
 })
 export class EntriesComponent implements OnInit, OnDestroy {
 
-  public headerTitle: string = 'Entries overview';
+  public headerTitle: string = 'Log overview';
   displayedColumns: string[] = ['date', 'weight', 'note', 'actions'];
   
   private mediaSub: Subscription;
