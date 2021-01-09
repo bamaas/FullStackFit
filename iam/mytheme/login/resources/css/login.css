@@ -1,8 +1,8 @@
 /* Disable Apple iOs styling */
-input {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+input[type="text"], input[type="button"], input[type="submit"], input[type] {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
 }
 
 body, html {
