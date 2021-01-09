@@ -1,3 +1,10 @@
+/* Disable Apple iOs styling */
+input[type="text"], input[type="button"], input[type="submit"], input[type] {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+}
+
 body, html {
   display: flex;
   flex-direction: column;
