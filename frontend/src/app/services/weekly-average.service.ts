@@ -46,6 +46,8 @@ export class WeeklyAverageService {
               if (typeof prevWeeklyAverage !== "undefined"){
                 if (prevWeeklyAverage['week'] == (weeklyAverage['week']-1)){
                   weeklyAverage.weightDifference = Number((weeklyAverage['weightAverage'] - prevWeeklyAverage['weightAverage']).toFixed(1));
+                } else if (weeklyAverage['week'] == 0 && (prevWeeklyAverage['week'] == 52 || prevWeeklyAverage['week'] == 53)) { 
+                  weeklyAverage.weightDifference = Number((weeklyAverage['weightAverage'] - prevWeeklyAverage['weightAverage']).toFixed(1));
                 } else {
                   weeklyAverage.weightDifference = null;
                 };
