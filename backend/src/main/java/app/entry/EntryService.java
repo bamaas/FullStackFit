@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import java.util.*;
 
@@ -46,6 +48,11 @@ public class EntryService {
         } else {
             return new ArrayList<Entry>();
         }
+    }
+
+    public List<Entry> search(Specification<Entry> spec, Sort sort) {
+        return entryRepository.findAll(spec, sort);
+
     }
 
 }
