@@ -2,6 +2,7 @@ package app.entry;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import javax.transaction.Transactional;
 
 @Repository
-public interface EntryRepository extends PagingAndSortingRepository<Entry, Long> {
+public interface EntryRepository extends PagingAndSortingRepository<Entry, Long>, JpaSpecificationExecutor<Entry> {
 
     @Query("SELECT e FROM entry e WHERE user_id = ?#{ principal?.name }")
     Page<Entry> getEntriesPage(Pageable pageable);

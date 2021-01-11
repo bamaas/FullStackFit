@@ -1,5 +1,8 @@
 package app.weeklyaverage;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -17,6 +20,8 @@ class WeeklyAverageId implements Serializable {
 
 }
 
+@Getter
+@Setter
 @Entity(name="weekly_average")
 @IdClass(WeeklyAverageId.class)
 @Table(name="weekly_average")
@@ -49,39 +54,4 @@ public class WeeklyAverage {
     @Column(name="user_id", nullable = false)
     private String userId;
 
-    public short getYear() {
-        return year;
-    }
-
-    public void setYear(short year) {
-        this.year = year;
-    }
-
-    public byte getWeek() {
-        return week;
-    }
-
-    public void setWeek(byte week) {
-        this.week = week;
-    }
-
-    public float getWeightAverage() {
-        return weightAverage;
-    }
-
-    public void setWeightAverage(float weightAverage) {
-        this.weightAverage = weightAverage;
-    }
-
-    public short getWeightMeasurementCount() {
-        return weightMeasurementCount;
-    }
-
-    public void setWeightMeasurementCount(short weightMeasurementCount) {
-        this.weightMeasurementCount = weightMeasurementCount;
-    }
-
-    public void setUserId(String id) { this.userId = id; }
-
-    public String getUserId() { return this.userId; }
 }
