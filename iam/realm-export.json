@@ -1279,7 +1279,19 @@
     "xXSSProtection": "1; mode=block",
     "strictTransportSecurity": "max-age=31536000; includeSubDomains"
   },
-  "smtpServer": {},
+  "smtpServer": {
+    "password": "smtpServerPassword",
+    "replyToDisplayName": "No-reply | FitTrack",
+    "starttls": "true",
+    "auth": "true",
+    "port": "465",
+    "host": "smtpServerHost",
+    "replyTo": "no-reply@basmaas.nl",
+    "from": "no-reply@basmaas.nl",
+    "fromDisplayName": "FitTrack",
+    "ssl": "true",
+    "user": "smtpServerUser"
+  },
   "loginTheme": "mytheme",
   "eventsEnabled": false,
   "eventsListeners": [

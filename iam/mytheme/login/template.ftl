@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="robots" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=yes"/>
-
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"/>
     <title><#nested "title"></title>
     <#if properties.styles?has_content>
         <#list properties.styles?split(' ') as style>
@@ -17,7 +17,7 @@
 </head>
 
 	<body>
-        <#nested "header">
+        <#-- <#nested "header"> -->
         <div class="login-content" style="background-image: url(&quot;${url.resourcesPath}/img/background.jpg&quot;);">
             <div class="box">
         <#if displayMessage && message?has_content>

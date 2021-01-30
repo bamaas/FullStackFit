@@ -131,8 +131,25 @@ body {
   top: 50px;
   color: white;
 }
+.login-content .box .box-container .forgot-password {
+  color: #393939;
+  font-size: 13px;
+  text-decoration: none;
+  font-family: Roboto;
+}
+.login-content .box .box-container .forgot-password:hover {
+  text-decoration: underline;
+}
+.login-content .box .box-container #forgot-pw {
+  display: block;
+  text-align: center;
+  margin-top: 12px;
+}
 .alert {
   text-align: center;
+}
+.alert-error .message-text{
+  color: #b8082a;
 }
 .message-text {
   opacity: 0.87;
@@ -144,7 +161,7 @@ body {
   line-height: 0;
   letter-spacing: -0.4px;
   text-align: center;
-  color: #b8082a;
+  color: #3545a5;
   border: 0px;
   top: 100px;
   align-items: center;
