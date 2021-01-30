@@ -268,6 +268,6 @@ form#kc-reset-password-form a:hover {
 text-decoration: underline;
 }
 
-.login-content .box{
-padding: 30px;
+#kc-form-options > div {
+  margin-top: 15px;
 }

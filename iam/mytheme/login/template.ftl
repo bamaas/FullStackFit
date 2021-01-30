@@ -20,16 +20,22 @@
         <#-- <#nested "header"> -->
         <div class="login-content" style="background-image: url(&quot;${url.resourcesPath}/img/background.jpg&quot;);">
             <div class="box">
-        <#if displayMessage && message?has_content>
-        <div class="alert alert-${message.type}">
-             <#if message.type = 'success'><span class="${properties.kcFeedbackSuccessIcon!}"></span></#if>
-             <#if message.type = 'warning'><span class="${properties.kcFeedbackWarningIcon!}"></span></#if>
-             <#if message.type = 'error'><span class="${properties.kcFeedbackErrorIcon!}"></span></#if>
-             <#if message.type = 'info'><span class="${properties.kcFeedbackInfoIcon!}"></span></#if>
-             <span class="message-text">${message.summary?no_esc}</span>
-        </div>
+                <#if displayMessage && message?has_content>
+                <div class="alert alert-${message.type}">
+                <#if message.type = 'success'><span class="${properties.kcFeedbackSuccessIcon!}"></span></#if>
+                <#if message.type = 'warning'><span class="${properties.kcFeedbackWarningIcon!}"></span></#if>
+                <#if message.type = 'error'><span class="${properties.kcFeedbackErrorIcon!}"></span></#if>
+                <#if message.type = 'info'><span class="${properties.kcFeedbackInfoIcon!}"></span></#if>
+                <span class="message-text">${message.summary?no_esc}</span>
+            </div>
         </#if>
+        <div>
+                <p class="application-name">FitTrack</p>
+        </div>
         <#nested "form">
+            <div>
+                <p class="copyright">&copy; ${msg("copyright", "${.now?string('yyyy')}")}</p>
+            </div>
             </div> 
         </div>
 	</body>
