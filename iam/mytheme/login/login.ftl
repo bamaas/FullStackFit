@@ -35,6 +35,11 @@
                 <input id="password" class="login-field" placeholder="${msg("password")}" type="password" name="password" tabindex="2">
                 <input class="submit" type="submit" value="${msg("doLogIn")}" tabindex="3">
                 </form>
+                <div class="${properties.kcFormOptionsWrapperClass!}" id="forgot-pw">
+                    <#if realm.resetPasswordAllowed>
+                        <span><a class="forgot-password" href="${url.loginResetCredentialsUrl}">${msg("doForgotPassword")}</a></span>
+                    </#if>
+                </div>
             </div>
         </#if>
         <#if social.providers??>
