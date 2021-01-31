@@ -21,9 +21,6 @@
             <img class="logo" src="${url.resourcesPath}/img/fittrack-logo.svg" alt="FitTrack">
         </div> -->
         <div class="box-container">
-            <div>
-                <p class="application-name">FitTrack</p>
-            </div>
         <#if realm.password>
             <div>
                <form id="kc-form-login" class="form" onsubmit="login.disabled = true; return true;" action="${url.loginAction}" method="post">
@@ -49,8 +46,5 @@
                 </#list>
             </div>
         </#if>
-        <div>
-            <p class="copyright">&copy; ${msg("copyright", "${.now?string('yyyy')}")}</p>
-        </div>
     </#if>
 </@layout.registrationLayout>

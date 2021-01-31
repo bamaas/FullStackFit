@@ -9,6 +9,13 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=yes"/>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"/>
     <title><#nested "title"></title>
+    <script>
+        window.onload = function() {
+            document.getElementById('username').placeholder = 'Username or email';
+            var submitButtonWidth = String(document.getElementsByClassName('btn btn-primary btn-block btn-lg')[0].offsetWidth);
+            document.getElementById('username').style.width = submitButtonWidth + 'px';
+        };
+    </script>
     <#if properties.styles?has_content>
         <#list properties.styles?split(' ') as style>
             <link href="${url.resourcesPath}/${style}" rel="stylesheet" />
@@ -20,16 +27,22 @@
         <#-- <#nested "header"> -->
         <div class="login-content" style="background-image: url(&quot;${url.resourcesPath}/img/background.jpg&quot;);">
             <div class="box">
-        <#if displayMessage && message?has_content>
-        <div class="alert alert-${message.type}">
-             <#if message.type = 'success'><span class="${properties.kcFeedbackSuccessIcon!}"></span></#if>
-             <#if message.type = 'warning'><span class="${properties.kcFeedbackWarningIcon!}"></span></#if>
-             <#if message.type = 'error'><span class="${properties.kcFeedbackErrorIcon!}"></span></#if>
-             <#if message.type = 'info'><span class="${properties.kcFeedbackInfoIcon!}"></span></#if>
-             <span class="message-text">${message.summary?no_esc}</span>
-        </div>
+                <#if displayMessage && message?has_content>
+                <div class="alert alert-${message.type}">
+                <#if message.type = 'success'><span class="${properties.kcFeedbackSuccessIcon!}"></span></#if>
+                <#if message.type = 'warning'><span class="${properties.kcFeedbackWarningIcon!}"></span></#if>
+                <#if message.type = 'error'><span class="${properties.kcFeedbackErrorIcon!}"></span></#if>
+                <#if message.type = 'info'><span class="${properties.kcFeedbackInfoIcon!}"></span></#if>
+                <span class="message-text">${message.summary?no_esc}</span>
+            </div>
         </#if>
+        <div>
+                <p class="application-name">FitTrack</p>
+        </div>
         <#nested "form">
+            <div id="copyright-container">
+                <p class="copyright">&copy; ${msg("copyright", "${.now?string('yyyy')}")}</p>
+            </div>
             </div> 
         </div>
 	</body>
