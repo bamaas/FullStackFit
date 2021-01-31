@@ -36,7 +36,7 @@
                         <span><a class="forgot-password" href="${url.loginResetCredentialsUrl}">${msg("doForgotPassword")}</a></span>
                     </#if>
                     <#if realm.password && realm.registrationAllowed && !usernameEditDisabled??>
-                            <span class="forgot-password"> | <a tabindex="6" href="${url.registrationUrl}">${msg("doRegister")}</a></span>
+                            <span> | <a class="forgot-password" tabindex="6" href="${url.registrationUrl}">${msg("doRegister")}</a></span>
                     </#if>
                 </div>
             </div>

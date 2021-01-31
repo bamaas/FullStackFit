@@ -12,11 +12,11 @@
     <script>
         window.onload = function() {
             document.getElementById('username').placeholder = 'Email';
-            var submitButtonWidth = String(document.getElementsByClassName('btn btn-primary btn-block btn-lg')[0].offsetWidth);
-            document.getElementById('username').style.width = submitButtonWidth + 'px';
             if (document.getElementsByClassName('alert').length > 0){
                 document.getElementsByClassName('application-name')[0].style.marginBottom = '60px';
             }
+            var submitButtonWidth = String(document.getElementsByClassName('btn btn-primary btn-block btn-lg')[0].offsetWidth);
+            document.getElementById('username').style.width = submitButtonWidth + 'px';
         };
     </script>
     <#if properties.styles?has_content>
