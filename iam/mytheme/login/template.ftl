@@ -33,7 +33,7 @@
                 <p class="application-name">FitTrack</p>
         </div>
         <#nested "form">
-            <div>
+            <div id="copyright-container">
                 <p class="copyright">&copy; ${msg("copyright", "${.now?string('yyyy')}")}</p>
             </div>
             </div> 
