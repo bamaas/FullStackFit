@@ -175,7 +175,7 @@ body {
   line-height: 0.83;
   letter-spacing: -0.4px;
   text-align: left;
-  color: #0055B8;
+  color: #000;
   margin-left: 32px;
   margin-top: 20px;
 }
@@ -215,12 +215,7 @@ form#kc-reset-password-form {
   margin: 0 auto;
 }
 
-.form-group div:nth-child(1){
-  display: none;
-}
-
 input#username {
-  width: 100%;
   max-width: 300px;
   height: 24px;
   font-family: Roboto;
@@ -237,11 +232,16 @@ input#username {
   background-color: #fff;
 }
 
+#kc-reset-password-form input#username{
+  width: 100%;
+}
+
 form#kc-reset-password-form input.btn.btn-primary.btn-block.btn-lg {
-  width: 80%;
+  width: 100%;
   max-width: 300px;
   height: 36px;
   border-radius: 2px;
+  padding: 0;
   background-color: #3545a5;
   font-family: Roboto;
   font-size: 14px;
@@ -292,6 +292,10 @@ p.instruction{
 
 #kc-reset-password-form div#kc-form-options > div{
   position: relative;
-  top: 58px;
+  top: 65px;
   text-align: center;
+}
+
+label.control-label{
+  display: none;
 }

@@ -16,11 +16,6 @@
                 }
             }
         </script> -->
-        <script>
-        window.onload = function() {
-            document.getElementById('username').placeholder = 'Username or email';
-        };
-        </script>
     <#elseif section = "form">
         <#-- <div>
             <img class="logo" src="${url.resourcesPath}/img/fittrack-logo.svg" alt="FitTrack">

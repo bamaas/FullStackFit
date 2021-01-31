@@ -9,6 +9,13 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=yes"/>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"/>
     <title><#nested "title"></title>
+    <script>
+        window.onload = function() {
+            document.getElementById('username').placeholder = 'Username or email';
+            var submitButtonWidth = String(document.getElementsByClassName('btn btn-primary btn-block btn-lg')[0].offsetWidth);
+            document.getElementById('username').style.width = submitButtonWidth + 'px';
+        };
+    </script>
     <#if properties.styles?has_content>
         <#list properties.styles?split(' ') as style>
             <link href="${url.resourcesPath}/${style}" rel="stylesheet" />
