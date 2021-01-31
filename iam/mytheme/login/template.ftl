@@ -11,7 +11,7 @@
     <title><#nested "title"></title>
     <script>
         window.onload = function() {
-            document.getElementById('username').placeholder = 'Username or email';
+            document.getElementById('username').placeholder = 'Email';
             var submitButtonWidth = String(document.getElementsByClassName('btn btn-primary btn-block btn-lg')[0].offsetWidth);
             document.getElementById('username').style.width = submitButtonWidth + 'px';
         };
