@@ -14,7 +14,7 @@ export class AddEntryComponent implements OnInit {
 
   constructor(private _addEntrySheet: MatBottomSheet) { }
 
-  faPlus = faPlus;
+  faPlus = faPlus;  
 
   ngOnInit(): void {
   }
@@ -32,6 +32,7 @@ import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material';
 import {MAT_BOTTOM_SHEET_DATA} from '@angular/material/bottom-sheet';
 import * as moment from 'moment';
 import { ProfileService } from 'src/app/services/profile.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-add-entry-sheet',
@@ -67,14 +68,12 @@ export class AddEntrySheet implements OnInit{
   private initCircumreferenceForm(entry: Entry): void{
     const waist: Number = entry == null ? null : entry.circumference.waist;
     const neck: Number = entry == null ? null : entry.circumference.neck;
-    const leg: Number = entry == null ? null : entry.circumference.leg;
     const arm: Number = entry == null ? null : entry.circumference.arm;
     const chest: Number = entry == null ? null : entry.circumference.chest;
     const calf: Number = entry == null ? null : entry.circumference.calf;
     this.circumferenceForm = new FormGroup({
       waist: new FormControl(waist, [Validators.min(0), Validators.max(400)]),
       neck: new FormControl(neck, [Validators.min(0), Validators.max(100)]),
-      leg: new FormControl(leg, [Validators.min(0), Validators.max(400)]),
       arm: new FormControl(arm, [Validators.min(0), Validators.max(100)]),
       chest: new FormControl(chest, [Validators.min(0), Validators.max(400)]),
       calf: new FormControl(calf, [Validators.min(0), Validators.max(100)])
