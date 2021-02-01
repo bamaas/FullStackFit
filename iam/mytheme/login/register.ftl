@@ -120,7 +120,7 @@
                     <input class="${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonLargeClass!}" type="submit" value="${msg("doRegister")}"/>
                 </div>
 
-                <div id="kc-form-options" class="${properties.kcFormOptionsClass!}">
+                <div id="kc-form-options" class="back-to-login">
                     <div class="${properties.kcFormOptionsWrapperClass!}">
                         <span><a href="${url.loginUrl}">${msg("backToLogin")?no_esc}</a></span>
                     </div>
