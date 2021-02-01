@@ -258,14 +258,14 @@ form#kc-reset-password-form input.btn.btn-primary.btn-block.btn-lg {
   margin-bottom: 15px;
 }
 
-form#kc-reset-password-form a {
+form a {
   color: #393939;
   font-size: 13px;
   text-decoration: none;
   font-family: Roboto;
 }
 
-form#kc-reset-password-form a:hover {
+form a:hover {
 text-decoration: underline;
 }
 
@@ -298,4 +298,53 @@ p.instruction{
 
 label.control-label{
   display: none;
+}
+
+/* REGISTER */
+form#kc-register-form {
+  font-family: Roboto;
+  width: 80%;
+  display: block;
+  margin: 0 auto;
+}
+
+form#kc-register-form input.btn.btn-primary.btn-block.btn-lg {
+  width: 100%;
+  max-width: 300px;
+  height: 36px;
+  border-radius: 2px;
+  padding: 0;
+  background-color: #3545a5;
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  color: #ffffff;
+  border-style: none;
+  margin-top: 15px;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+form#kc-register-form input[type="text"], form#kc-register-form input[type="password"] {
+  width: 100%;
+  max-width: 300px;
+  height: 24px;
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.4px;
+  text-align: left;
+  color: #000000;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  outline: none;
+  background-color: #fff;
+  margin-bottom: 20px;
 }
