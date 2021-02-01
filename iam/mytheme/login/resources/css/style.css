@@ -330,7 +330,7 @@ form#kc-register-form input[type='submit'] {
   margin-bottom: 15px;
 }
 
-form#kc-register-form .back-to-login{
+form#kc-register-form .back-to-login, form#kc-register-form .back-to-login > div{
   text-align: center;
   margin-top: 0px !important;
 }
