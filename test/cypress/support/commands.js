@@ -35,7 +35,7 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
     'refresh', () => {
-        window.localStorage.setItem(plausible_ignore, true); // disable anlytics tracking
+        window.localStorage.setItem('plausible_ignore', true); // disable anlytics tracking
         cy.get('[test=username]').invoke('text').then(username => {
             cy.visit('/')
             cy.get('[test=username]').should('exist').contains(username);
