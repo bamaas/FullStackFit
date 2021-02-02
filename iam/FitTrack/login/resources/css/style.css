@@ -1,0 +1,355 @@
+/* Disable Apple iOs styling */
+input[type="text"], input[type="button"], input[type="submit"], input[type] {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  border-radius: 0;
+}
+
+body, html {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+  font-size: 14px;
+  color:rgba(0,0,0,.87);
+  margin:0;
+  height: 100%;
+}
+body {
+  margin: 0;
+}
+.login-content {
+  background-size:cover;
+  background-position:center;
+  min-height: 100%;
+  min-width: 320px;
+  display:flex;
+  justify-content:center;
+  flex-direction:column;
+}
+.login-content .box {
+  width: 92%;
+  max-width: 300px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+  margin: auto;
+}
+.login-content .box .box-container {
+  /* width:100%;
+  padding-left: 32px; */
+}
+.login-content .box .logo {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+}
+.login-content .box .application-name {
+  text-align: center;
+  font-family: Roboto;
+  font-size: 24px;
+  font-weight: 600;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 0.83;
+  letter-spacing: -0.4px;
+  color: #3545a5;
+  margin-top: 0px;
+}
+.login-content .box .form {
+  text-align: center;
+  margin-top: 30px;
+}
+.login-content .box .login-field {
+  width: 80%;
+  max-width: 300px;
+  height: 24px;
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.4px;
+  text-align: left;
+  color: #000000;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  outline: none;
+  background-color: #fff;
+}
+.login-content .box input[type="text"]:focus, .login-content .box input[type="password"]:focus {
+  border-bottom: 2px solid #0055B8 !important;
+}
+.login-content .box input[type="text"]:-webkit-autofill, .login-content .box input[type="password"]:-webkit-autofill
+{
+  box-shadow: 0 0 0px 1000px white inset !important;
+}
+.login-content .box .submit{
+  width: 80%;
+  max-width: 300px;
+  height: 36px;
+  border-radius: 2px;
+  background-color: #3545a5;
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  color: #ffffff;
+  border-style: none;
+  margin-top: 30px;
+  cursor: pointer;
+}
+.login-content .box .visibility {
+  /* disabled */
+  position: relative;
+  /* left: 140px; */
+  left: 0px;
+  z-index: -999;
+  opacity: 0;
+  top: 20px;
+  width: 24px;
+  height: 24px;
+  /* opacity: 0.54; */
+  border: none;
+}
+.login-content .box .copyright {
+  min-width: 300px;
+  text-align: center;
+  font-size: 13px;
+  font-family: Roboto;
+  opacity: .54;
+  position: relative;
+  top: 55px;
+  color: white;
+}
+.login-content .box .box-container .forgot-password {
+  color: #393939;
+  font-size: 13px;
+  text-decoration: none;
+  font-family: Roboto;
+}
+.login-content .box .box-container .forgot-password:hover {
+  text-decoration: underline;
+}
+.login-content .box .box-container #forgot-pw {
+  display: block;
+  text-align: center;
+  margin-top: 15px;
+}
+.alert {
+  text-align: center;
+}
+.alert-error .message-text{
+  color: #b8082a;
+}
+.message-text {
+  opacity: 0.87;
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 0;
+  letter-spacing: -0.4px;
+  text-align: center;
+  color: #000;
+  border: 0px;
+  top: 47px;
+  align-items: center;
+  position: relative;
+}
+.identity-providers {
+  width: 270px;
+  font-family: Roboto;
+  font-size: 16px;
+  font-weight: 600;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 0.83;
+  letter-spacing: -0.4px;
+  text-align: left;
+  color: #000;
+  margin-left: 32px;
+  margin-top: 20px;
+}
+
+.login-content .box .social-link-style {
+  width: 320px;
+  height: 36px;
+  border-radius: 2px;
+  background-color: var(--white);
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  color: #3545a5;
+  border-style: solid;
+  border-color: #3545a5;
+  margin-top: 0px;
+  margin-left: 30px;
+  margin-bottom: 10px;
+}
+
+.login-content .box .para {
+  font-family: Roboto;
+  font-size: 14px;
+  margin-left: 30px;
+}
+
+/* password reset screen */
+form#kc-reset-password-form {
+  font-family: Roboto;
+  width: 80%;
+  display: block;
+  margin: 0 auto;
+}
+
+input#username {
+  max-width: 300px;
+  height: 24px;
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.4px;
+  text-align: left;
+  color: #000000;
+  border: none;	
+  border-bottom: 1px solid #ccc;
+  outline: none;
+  background-color: #fff;
+}
+
+#kc-reset-password-form input#username{
+  width: 100%;
+}
+
+form#kc-reset-password-form input.btn.btn-primary.btn-block.btn-lg {
+  width: 100%;
+  max-width: 300px;
+  height: 36px;
+  border-radius: 2px;
+  padding: 0;
+  background-color: #3545a5;
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  color: #ffffff;
+  border-style: none;
+  margin-top: 15px;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+form a {
+  color: #393939;
+  font-size: 13px;
+  text-decoration: none;
+  font-family: Roboto;
+}
+
+form a:hover {
+text-decoration: underline;
+}
+
+#kc-form-options > div {
+  margin-top: 15px;
+}
+
+.login-content .box {
+  padding: 60px 30px 40px 30px !important;
+}
+
+#copyright-container{
+  height: 0px;
+}
+
+p.instruction{
+  font-family: Roboto;
+  text-align: center;
+}
+
+#kc-reset-password-form div#kc-form-options{
+  height: 0px;
+}
+
+#kc-reset-password-form div#kc-form-options > div{
+  position: relative;
+  top: 65px;
+  text-align: center;
+}
+
+label.control-label{
+  display: none;
+}
+
+/* REGISTER */
+form#kc-register-form {
+  font-family: Roboto;
+  width: 80%;
+  display: block;
+  margin: 0 auto;
+}
+
+form#kc-register-form input[type='submit'] {
+  width: 100%;
+  max-width: 300px;
+  height: 36px;
+  border-radius: 2px;
+  padding: 0;
+  background-color: #3545a5;
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  color: #ffffff;
+  border-style: none;
+  margin-top: 10px;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+form#kc-register-form .back-to-login, form#kc-register-form .back-to-login > div{
+  text-align: center;
+  margin-top: 0px !important;
+}
+
+form#kc-register-form input[type="text"], form#kc-register-form input[type="password"] {
+  width: 100%;
+  max-width: 300px;
+  height: 24px;
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.4px;
+  text-align: left;
+  color: #000000;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  outline: none;
+  background-color: #fff;
+  margin-bottom: 20px;
+}
