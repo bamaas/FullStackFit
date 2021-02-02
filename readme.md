@@ -24,6 +24,7 @@ In my free time I like to be in the gym and move some weights. For years I keep 
 - Container Registry @ [DockerHub](https://hub.docker.com/u/bamaas)
 - Uptime Monitoring @ [Uptime Robot](https://stats.uptimerobot.com/zp8vnhRRwy)
 - Code Quality & Security @ [Sonarcloud](https://sonarcloud.io/dashboard?id=bamaas_FullStackFit)
+- Webanalytics Plausible @ [analytics.basmaas.nl](https://analytics.basmaas.nl/)
 
 [Old test framework](https://github.com/bamaas/robot-framework-fittrack): Python, Robot Framework.
 

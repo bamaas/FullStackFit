@@ -69,6 +69,7 @@ export class AddEntrySheet implements OnInit{
     const waist: Number = entry == null ? null : entry.circumference.waist;
     const neck: Number = entry == null ? null : entry.circumference.neck;
     const arm: Number = entry == null ? null : entry.circumference.arm;
+    const leg: Number = entry == null ? null : entry.circumference.leg;
     const chest: Number = entry == null ? null : entry.circumference.chest;
     const calf: Number = entry == null ? null : entry.circumference.calf;
     this.circumferenceForm = new FormGroup({
@@ -76,7 +77,8 @@ export class AddEntrySheet implements OnInit{
       neck: new FormControl(neck, [Validators.min(0), Validators.max(100)]),
       arm: new FormControl(arm, [Validators.min(0), Validators.max(100)]),
       chest: new FormControl(chest, [Validators.min(0), Validators.max(400)]),
-      calf: new FormControl(calf, [Validators.min(0), Validators.max(100)])
+      calf: new FormControl(calf, [Validators.min(0), Validators.max(100)]),
+      leg: new FormControl(leg, [Validators.min(0), Validators.max(400)])
     })
   }
 
