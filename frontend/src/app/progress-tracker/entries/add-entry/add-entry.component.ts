@@ -58,11 +58,9 @@ export class AddEntrySheet implements OnInit{
   public entryForm: FormGroup;
   public circumferenceForm: FormGroup;
   public skinfoldForm: FormGroup;
-  public userId: string;
 
   ngOnInit(): void {
     this.initEntryForm(this.data.entry);
-    this.getUserId();
   }
 
   private initCircumreferenceForm(entry: Entry): void{
@@ -97,10 +95,6 @@ export class AddEntrySheet implements OnInit{
       triceps: new FormControl(triceps, [Validators.min(0), Validators.max(300)]),
       calf: new FormControl(calf, [Validators.min(0), Validators.max(300)])
     })
-  }
-
-  getUserId(): void {
-    this.profileService.userInfo.subscribe(userInfo => {this.userId = userInfo['sub']});
   }
 
   initEntryForm(entry: Entry): void{
@@ -162,15 +156,13 @@ export class AddEntrySheet implements OnInit{
         neck: this.entryForm.get('circumference.neck').value
       }
       const id: number = this.data.entry == null ? null : this.data.entry.id;
-      const userId: string = this.userId;
       const weight: number = this.entryForm.controls['weight'].value;
       const note: string = this.entryForm.controls['note'].value;
       const date = moment(new Date(this.entryForm.controls['date'].value)).format('YYYY-MM-DD');
       const time = this.entryForm.controls['time'].value;
       const datetime = date + 'T' + time;
       const entry: Entry = { 
-        id: id, 
-        userId: userId, 
+        id: id,
         weight: weight, 
         date: datetime, 
         circumference: circumference,

@@ -10,9 +10,10 @@
         "backend_url": "http://localhost:5000",
         "token_url": "/auth/realms/FitTrack/protocol/openid-connect/token",
         "userinfo_url": "/auth/realms/FitTrack/protocol/openid-connect/userinfo",
-        "entry_url": "/api/entry",
         "username": "test",
-        "password": "test"
+        "password": "test",
+        "username_secondary": "bas",
+        "password_secondary": "bas"
     },
     "defaultCommandTimeout": 10000,
     "pageLoadTimeout": 10000,

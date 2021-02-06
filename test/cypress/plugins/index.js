@@ -39,19 +39,6 @@ module.exports = (on, config) => {
   // `config` is the resolved Cypress config
   on('task', {
 
-    'kubectl:forwardDB': (namespace) => {
-      spawn('kubectl', ['-n', `${namespace}`, 'port-forward', 'statefulset/database', '5432:5432', '--insecure-skip-tls-verify']);
-      return new Promise(r => setTimeout(r, 4000)).then( () => {
-        return null;
-      });
-    },
-
-    'kubectl:kill': () => {
-      const pkill = spawn('pkill', ['kubectl']);
-      pkill.kill('SIGHUP');
-      return null;
-    },
-
     'db:clean': (userId) => {      
         return pool
         .query('DELETE FROM public.entry WHERE user_id = $1', [userId])

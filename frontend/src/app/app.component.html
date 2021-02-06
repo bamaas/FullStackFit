@@ -3,7 +3,7 @@
         <div fxLayout="column" fxLayoutGap="14px">
             <div fxLayout="column" class="cursor-pointer" routerLink="/profile" (click)="closeSidenav()">
                 <fa-icon class="fa-user-circle-icon cursoir-pointer" [icon]="faUserCircle"></fa-icon>
-                <span class="nav-username mat-h2" test="username">{{ (userInfo !== null) ? (userInfo.preferred_username | titlecase ) : "Profile" }}</span>
+                <span class="nav-username mat-h2" test="username">{{ (userInfo !== null) ? (userInfo.name | titlecase ) : "Profile" }}</span>
             </div>
             <mat-divider></mat-divider>
             <button (click)="closeSidenav()" mat-button routerLink="/log" test="nav-entries">

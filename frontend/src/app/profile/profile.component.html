@@ -1,7 +1,7 @@
 <mat-toolbar fxLayout="row" fxLayoutAlign="space-between center" style="height: auto;">
     <div fxFlex="100" fxLayout="column">
         <fa-icon class="fa-user-circle-icon" [icon]="faUserCircle"></fa-icon>
-        <span class="nav-username mat-h2" test="username">{{ (userInfo !== null) ? (userInfo.preferred_username | titlecase ) : "Profile" }}</span>
+        <span class="nav-username mat-h2" test="username">{{ (userInfo !== null) ? (userInfo.name | titlecase ) : "Profile" }}</span>
     </div>
 </mat-toolbar>
 <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="24px" style="padding: 24px 24px 10px 24px;" fxLayoutAlign="center center">
@@ -10,14 +10,12 @@
             <div fxLayout="row">
                 <div fxFlex="50">
                     <mat-list>
-                        <mat-list-item class="mat-body-strong">Username</mat-list-item>
                         <mat-list-item class="mat-body-strong">Name</mat-list-item>
                         <mat-list-item class="mat-body-strong">E-mail</mat-list-item>
                     </mat-list>
                 </div>
                 <div fxFlex="50">
                     <mat-list>
-                        <mat-list-item *ngIf="userInfo">{{ userInfo.preferred_username }}</mat-list-item>
                         <mat-list-item *ngIf="userInfo">{{ userInfo.name }}</mat-list-item>
                         <mat-list-item *ngIf="userInfo" style="margin-right: 24px;">{{userInfo.email }}</mat-list-item>
                     </mat-list>

@@ -22,16 +22,20 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.setHeaderTitle();
-    this.profileService.userInfo.subscribe(userInfo => {
-      this.userInfo = userInfo;
-    })
+    this.getUserInfo();
   }
 
-  setHeaderTitle(){
+  public getUserInfo(): void {
+    this.profileService.userInfo.subscribe(userInfo => {
+      this.userInfo = userInfo;
+    });
+  }
+
+  public setHeaderTitle(){
     this.headerService.setHeaderTitle(this.headerTitle);
   }
 
-  signOut(){
+  public signOut(){
     this.profileService.logout();
   }
 

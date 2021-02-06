@@ -34,6 +34,41 @@ Cypress.Commands.add(
 )
 
 Cypress.Commands.add(
+    'getAccessToken', (username, password) => {
+        cy.request({
+            method: 'POST',
+            url: Cypress.env('auth_url') + Cypress.env('token_url'),
+            form: true,
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: {
+              client_id: 'fittrack-application',
+              username: username,
+              password: password,
+              grant_type: 'password'
+            }
+          }).then(response => {
+            cy.wrap(response.body.access_token).as('accessToken')
+          });
+    }
+)
+
+Cypress.Commands.add(
+    'getUserId', (accessToken) => {
+        cy.request({
+            method: 'GET',
+            url: Cypress.env('auth_url') + Cypress.env('userinfo_url'),
+            headers:{
+              'Authorization': 'Bearer ' + accessToken
+            }
+            }).then(response => {
+              cy.wrap(response.body.sub).as('userId')
+            });
+    }
+)
+
+Cypress.Commands.add(
     'refresh', () => {
         window.localStorage.setItem('plausible_ignore', true); // disable anlytics tracking
         cy.get('[test=username]').invoke('text').then(username => {

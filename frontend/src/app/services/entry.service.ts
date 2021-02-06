@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable, Subject } from 'rxjs';
 import { MatSnackBar } from '@angular/material';
@@ -8,7 +8,6 @@ import {Router} from "@angular/router";
 
 export interface Entry {
   id: number,
-  userId: string,
   weight: number,
   date: string,
   time?: string,
@@ -70,7 +69,21 @@ export class EntryService {
   }
 
   getEntries(pageNumber: number = 0, pageSize: number = 0): Observable<any>{
-    return this._http.get(environment.apiBaseUrl + '/entry/page?pageNumber=' + pageNumber + '&pageSize=' + pageSize);
+    const headerDict: any = {
+      'pageSize': String(pageSize),
+      'pageNumber': String(pageNumber),
+      'sortBy': 'date'
+    }
+    return this._http.get(environment.apiBaseUrl + '/entry/search', {headers: headerDict});
+  }
+
+  filterEntriesByYearAndWeek(pageNumber: number = 0, pageSize: number = 30, year: number = 0, week: number = 0): Observable<any>{
+    const headerDict: any = {
+      'pageSize': String(pageSize),
+      'pageNumber': String(pageNumber),
+      'sortBy': 'date'
+    }
+    return this._http.get(environment.apiBaseUrl + `/entry/search?year=${year}&week=${week}`, {headers: headerDict});
   }
 
   emitEntries(): void{

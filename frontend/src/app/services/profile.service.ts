@@ -3,7 +3,6 @@ import { KeycloakProfile } from 'keycloak-js';
 import { KeycloakService } from 'keycloak-angular';
 import { Observable, from, BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { WeeklyAverageService, WeeklyAverage } from './../services/weekly-average.service';
 import {MatRippleModule} from '@angular/material/core';
 import { HeaderService } from '../services/header.service';
+import { Entry, EntryService } from '../services/entry.service';
 
 @Component({
   selector: 'app-statistics',
@@ -23,7 +24,6 @@ export class StatisticsComponent implements OnInit {
   public displayedColumns: string[] = ['year', 'week', 'weightAverage', 'weightDifference', 'weightMeasurementCount'];
   private _weeklyAverageSub: Subscription;
   public data: WeeklyAverage[] = [];
-  // public dataSource = new TableVirtualScrollDataSource<WeeklyAverage>(this.data);
   public dataSource = new MatTableDataSource<WeeklyAverage>(this.data);
   
   ngOnInit(): void {
