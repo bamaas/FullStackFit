@@ -29,7 +29,11 @@ Cypress.Commands.add(
         cy.get('#username').type(username).should('have.value', username)
         cy.get('#password').type(password).should('have.value', password)
         cy.get('.submit').click();
-        cy.get('[test=username]').should('exist').contains(username.charAt(0).toUpperCase() + username.slice(1));
+        cy.getAccessToken(username, password).then(accessToken => {
+            cy.getUserInfo(accessToken).then(userInfo => {
+                cy.get('[test=username]').should('exist').contains(userInfo['name']);
+            });
+        })
     }
 )
 
@@ -55,7 +59,7 @@ Cypress.Commands.add(
 )
 
 Cypress.Commands.add(
-    'getUserId', (accessToken) => {
+    'getUserInfo', (accessToken) => {
         cy.request({
             method: 'GET',
             url: Cypress.env('auth_url') + Cypress.env('userinfo_url'),
@@ -63,7 +67,7 @@ Cypress.Commands.add(
               'Authorization': 'Bearer ' + accessToken
             }
             }).then(response => {
-              cy.wrap(response.body.sub).as('userId')
+              cy.wrap(response.body).as('userInfo')
             });
     }
 )
