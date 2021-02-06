@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { MatSnackBar } from '@angular/material';
 import { WeeklyAverageService } from './../services/weekly-average.service';
 import {Router} from "@angular/router";
@@ -51,6 +51,12 @@ export class EntryService {
   public entries: Entry[] = [];
   public lastPageReached: boolean = false;
 
+  public filterSet = new BehaviorSubject<boolean>(false);
+
+  public setFilter(value: boolean){
+    this.filterSet.next(value);
+  }
+
   // Low level
   getEntry(id: number): Observable<any>{
     return this._http.get(environment.apiBaseUrl + '/entry/' + id);
@@ -90,11 +96,27 @@ export class EntryService {
     this.entriesSubject.next(this.entries);
   }
 
+  filter(year: number, week: number){
+    this.filterEntriesByYearAndWeek(0, 1000, year, week).subscribe((entries: Entry[]) => {
+      this.entries = entries;
+      this.emitEntries();
+      this.setFilter(true);
+      this.router.navigate(['/log']);
+    });
+  }
+
   sortEntriesByDate(): void{
     this.entries.sort(function(a,b){
       // @ts-ignore
       return new Date(b.date) - new Date(a.date);
     });
+  }
+
+  resetFilter(pageSize: number): void{
+    this.lastPageReached = false;
+    this.entriesTableInitialized = false;
+    this.addEntryPageToTable(0, pageSize);
+    this.setFilter(false);
   }
 
   // workaround to fix duplicate entries when updating a entry on edit screen and not added any pages yet.

@@ -7,6 +7,7 @@ import { WeeklyAverageService, WeeklyAverage } from './../services/weekly-averag
 import {MatRippleModule} from '@angular/material/core';
 import { HeaderService } from '../services/header.service';
 import { Entry, EntryService } from '../services/entry.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-statistics',
@@ -17,7 +18,9 @@ export class StatisticsComponent implements OnInit {
 
   constructor(
     private _weeklyAverageService: WeeklyAverageService,
-    private headerService: HeaderService
+    private headerService: HeaderService,
+    private entryService: EntryService,
+    private router: Router
   ) {}
 
   public headerTitle: string = 'Statistics';
@@ -36,8 +39,16 @@ export class StatisticsComponent implements OnInit {
     this._weeklyAverageService.emit();
   }
 
-  setHeaderTitle(){
-    this.headerService.setHeaderTitle(this.headerTitle);
+  filter(year: number, week: number){
+    this.entryService.filterEntriesByYearAndWeek(0, 1000, year, week).subscribe(
+      (entries: Entry[]) => {
+        this.entryService.filter(year, week);
+      }
+    )
+  }
+
+  setHeaderTitle(headerTitle: string = this.headerTitle){
+    this.headerService.setHeaderTitle(headerTitle);
   }
 
   ngOnDestroy() {
