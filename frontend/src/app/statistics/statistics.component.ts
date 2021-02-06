@@ -19,8 +19,7 @@ export class StatisticsComponent implements OnInit {
   constructor(
     private _weeklyAverageService: WeeklyAverageService,
     private headerService: HeaderService,
-    private entryService: EntryService,
-    private router: Router
+    private entryService: EntryService
   ) {}
 
   public headerTitle: string = 'Statistics';
@@ -31,20 +30,20 @@ export class StatisticsComponent implements OnInit {
   
   ngOnInit(): void {
     this.setHeaderTitle();
+    this.getStatistics();
+  }
+
+  getStatistics(): void {
     this._weeklyAverageSub = this._weeklyAverageService.weeklyAverageObservable.subscribe(
       (weeklyAverages: WeeklyAverage[]) => {
         this.dataSource.data = [...weeklyAverages];
       }
     );
-    this._weeklyAverageService.emit();
+    this._weeklyAverageService.addWeeklyAveragesToSubject();
   }
 
   filter(year: number, week: number){
-    this.entryService.filterEntriesByYearAndWeek(0, 1000, year, week).subscribe(
-      (entries: Entry[]) => {
-        this.entryService.filter(year, week);
-      }
-    )
+    this.entryService.filter(year, week);
   }
 
   setHeaderTitle(headerTitle: string = this.headerTitle){

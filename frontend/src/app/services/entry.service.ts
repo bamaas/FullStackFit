@@ -3,7 +3,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { MatSnackBar } from '@angular/material';
-import { WeeklyAverageService } from './../services/weekly-average.service';
 import {Router} from "@angular/router";
 
 export interface Entry {
@@ -42,7 +41,6 @@ export class EntryService {
   constructor(
     private _http: HttpClient, 
     private _snackBar: MatSnackBar,
-    private _weeklyAverageService: WeeklyAverageService,
     private router: Router
   ){}
 
@@ -135,7 +133,6 @@ export class EntryService {
             this.lastPageReached = true;
           }
           this.emitEntries();
-          this._weeklyAverageService.addWeeklyAveragesToSubject();
           this.entriesTableInitialized = true;
         },
         error => {
@@ -158,7 +155,6 @@ export class EntryService {
         this.entries.push(entry);
         this.sortEntriesByDate()
         this.emitEntries();
-        this._weeklyAverageService.addWeeklyAveragesToSubject();
         this.emitEntryDetail(entry);
         this.router.navigate([`/log/${entry.id}`])
       }, 
@@ -189,7 +185,6 @@ export class EntryService {
         }
         this.sortEntriesByDate()
         this.emitEntries();
-        this._weeklyAverageService.addWeeklyAveragesToSubject();
         this.emitEntryDetail(entry);
       },
       error => {
