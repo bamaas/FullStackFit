@@ -34,7 +34,7 @@ export class EntriesComponent implements OnInit, OnDestroy {
   public rowHeight: number = 48;
   public itemsRenderedAtViewport: number;
   public nextPageNumber: number = 0;
-  public pageSize: number;
+  public pageSize: number = 30;
   public filterSet: boolean = false;
 
   // @ViewChild(MatSort, {static: true}) sort: MatSort;
@@ -98,33 +98,24 @@ export class EntriesComponent implements OnInit, OnDestroy {
   dataSource = new TableVirtualScrollDataSource<Entry>(this.data);
 
   ngAfterViewInit() {
-    let o1:Observable<boolean> = this.columnFilterWeightControl.valueChanges;
-    let o2:Observable<boolean> = this.columnFilterDateControl.valueChanges;
-    let o3:Observable<boolean> = this.columnFilterNoteControl.valueChanges;
-    let o4:Observable<boolean> = this.columnFilterActionsControl.valueChanges;
-    merge(o1, o2, o3, o4).subscribe( 
+    let o1:Observable<boolean> = this.columnFilterDateControl.valueChanges;
+    let o2:Observable<boolean> = this.columnFilterWeightControl.valueChanges;
+    let o3:Observable<boolean> = this.columnFilterWeightDifferenceControl.valueChanges;
+    let o4:Observable<boolean> = this.columnFilterNoteControl.valueChanges;
+    let o5:Observable<boolean> = this.columnFilterActionsControl.valueChanges;
+    merge(o1, o2, o3, o4, o5).subscribe( 
       v => {
-          this.columnDefinitions[0].show = this.columnFilterWeightControl.value;
-          this.columnDefinitions[1].show = this.columnFilterDateControl.value;
-          this.columnDefinitions[2].show = this.columnFilterNoteControl.value;
-          this.columnDefinitions[3].show = this.columnFilterActionsControl.value;
-          //  console.log(this.columnDefinitions);
+        this.columnDefinitions[0].show = this.columnFilterDateControl.value;  
+        this.columnDefinitions[1].show = this.columnFilterWeightControl.value;
+        this.columnDefinitions[2].show = this.columnFilterWeightDifferenceControl.value;
+        this.columnDefinitions[3].show = this.columnFilterNoteControl.value;
+        this.columnDefinitions[4].show = this.columnFilterActionsControl.value;
       }
     );
     this.tableBodyHeight = this.screenHeight - 64;    // this.tableBodyHeight = this.screenHeight - this._styleService.headerHeight;
     this.itemsRenderedAtViewport = Math.round((this.tableBodyHeight - 56) / this.rowHeight);
-    this.pageSize = this.itemsRenderedAtViewport * 2;
-   // this.dataSource.sort = this.sort;      //COMMENTED TO DISABLE SORTING AS THIS IS CAUSING ISSUES WITH PAGINATION. This is a new feature.
+    // this.pageSize = this.itemsRenderedAtViewport * 2;
     this.onScrollDown()
-    // this.dataSource.sortingDataAccessor = (item, property) => {
-    //   console.log(item)
-    //   console.log(property)
-    //   switch (property) {
-    //     case 'Date': return new Date(item.date);
-    //     default: return item[property];
-    //   }
-    // };
-    // Handles ExpressionChangedAfterItHasBeenCheckedError
     this._cdr.detectChanges(); 
    }
 
@@ -177,12 +168,14 @@ export class EntriesComponent implements OnInit, OnDestroy {
 
   public columnFilterFormGroup: FormGroup = new FormGroup({
     weight: new FormControl(true),
+    weightDifference: new FormControl(true),
     date: new FormControl(true),
     note: new FormControl(true),
     actions: new FormControl(true)
   });
 
   columnFilterWeightControl: AbstractControl = this.columnFilterFormGroup.get('weight');
+  columnFilterWeightDifferenceControl: AbstractControl = this.columnFilterFormGroup.get('weightDifference');
   columnFilterDateControl: AbstractControl = this.columnFilterFormGroup.get('date');
   columnFilterNoteControl: AbstractControl = this.columnFilterFormGroup.get('note');
   columnFilterActionsControl: AbstractControl = this.columnFilterFormGroup.get('actions');
@@ -190,6 +183,7 @@ export class EntriesComponent implements OnInit, OnDestroy {
   columnDefinitions = [
     { def: 'date', label: 'Date', show: this.columnFilterDateControl.value},
     { def: 'weight', label: 'Weight', show: this.columnFilterWeightControl.value},
+    { def: 'weightDifference', label: 'Difference', show: this.columnFilterWeightDifferenceControl.value},
     { def: 'note', label: 'Note', show: this.columnFilterNoteControl.value},
     { def: 'actions', label: 'Actions', show: this.columnFilterActionsControl.value}
   ]
