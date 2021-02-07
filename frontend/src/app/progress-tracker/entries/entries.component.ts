@@ -129,8 +129,10 @@ export class EntriesComponent implements OnInit, OnDestroy {
    }
 
   onScrollDown(): void{
-    this._entryService.addEntryPageToTable(this.nextPageNumber, this.pageSize);
-    this.nextPageNumber++;
+    if (!this.filterSet){
+      this._entryService.addEntryPageToTable(this.nextPageNumber, this.pageSize);
+      this.nextPageNumber++;
+    }
   } 
 
   @HostListener('window:resize', ['$event'])
