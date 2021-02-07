@@ -73,6 +73,20 @@ Cypress.Commands.add(
 )
 
 Cypress.Commands.add(
+    'getUserId', (accessToken) => {
+        cy.request({
+            method: 'GET',
+            url: Cypress.env('auth_url') + Cypress.env('userinfo_url'),
+            headers:{
+              'Authorization': 'Bearer ' + accessToken
+            }
+            }).then(response => {
+              cy.wrap(response.body.sub).as('userId')
+            });
+    }
+)
+
+Cypress.Commands.add(
     'refresh', () => {
         window.localStorage.setItem('plausible_ignore', true); // disable anlytics tracking
         cy.get('[test=username]').invoke('text').then(username => {
