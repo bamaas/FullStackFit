@@ -9,6 +9,7 @@ export interface Entry {
   id: number,
   weight: number,
   date: string,
+  weightDifference?: number
   time?: string,
   note: string,
   circumference: Circumference,
@@ -90,7 +91,22 @@ export class EntryService {
     return this._http.get(environment.apiBaseUrl + `/entry/search?year=${year}&week=${week}`, {headers: headerDict});
   }
 
+  calculateWeightDifference(): void{
+    let modifiedEntries: Entry[] = [];
+    this.entries.forEach((entry: Entry, index: number) => {
+      if (index+1 == this.entries.length){
+        entry.weightDifference = null;
+      } else {
+        const prevWeight: number = this.entries[index+1].weight;
+        entry.weightDifference = entry.weight - prevWeight;
+      }
+      modifiedEntries.push(entry);
+    });
+    this.entries = modifiedEntries;
+  }
+
   emitEntries(): void{
+    this.calculateWeightDifference();
     this.entriesSubject.next(this.entries);
   }
 

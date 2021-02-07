@@ -18,13 +18,18 @@ table {
 }
 
 .mat-column-date {
-  flex: 0 0 20% !important;
-  width: 20% !important;
+  flex: 0 0 22% !important;
+  width: 22% !important;
 }
 
 .mat-column-weight {
-  flex: 0 0 20% !important;
-  width: 20% !important;
+  flex: 0 0 10% !important;
+  width: 10% !important;
+}
+
+.mat-column-weightDifference {
+  flex: 0 0 10% !important;
+  width: 10% !important;
 }
 
 .mat-column-note {
@@ -33,8 +38,8 @@ table {
 }
 
 .mat-column-actions {
-  flex: 0 0 15% !important;
-  width: 15% !important;
+  flex: 0 0 13% !important;
+  width: 13% !important;
 }
 
 .table-row-hover{
