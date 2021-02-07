@@ -4,12 +4,12 @@ import net.kaczmarzyk.spring.data.jpa.domain.Equal;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.ui.ModelMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -28,9 +28,9 @@ public class EntryController {
         return entryService.getEntry(id);
     }
 
-    @PreAuthorize("#entry.userId == principal.name")
     @PostMapping("/entry")
-    public Entry addEntry(@RequestBody Entry entry) {
+    public Entry addEntry(@RequestBody Entry entry, Principal principal) {
+        entry.setUserId(principal.getName());
         return entryService.addEntry(entry);
     }
 
@@ -39,36 +39,35 @@ public class EntryController {
         entryService.deleteEntry(id);
     }
 
-    @PreAuthorize("#entry.userId == principal.name")
     @PutMapping("/entry")
-    public Entry putEntry(@RequestBody Entry entry){
+    public Entry putEntry(@RequestBody Entry entry, Principal principal){
+        entry.setUserId(principal.getName());
         return entryService.updateEntry(entry);
-    }
-
-    @GetMapping("/entry/page")
-    public List<Entry> getAllEntries(
-            @RequestParam(defaultValue = "0") Integer pageNumber,
-            @RequestParam(defaultValue = "30") Integer pageSize,
-            @RequestParam(defaultValue = "date") String sortBy
-    ){
-        return entryService.getEntriesPage(pageNumber, pageSize, sortBy);
     }
 
     @GetMapping("/entry/search")
     public ResponseEntity<?> search(
             @And({
-                    @Spec(path = "year", params = "year", spec = Equal.class),
-                    @Spec(path = "week", params = "week", spec = Equal.class),
+                    @Spec(path = "year", params = "year", defaultVal = "0", spec = Equal.class),
+                    @Spec(path = "week", params = "week", defaultVal = "0", spec = Equal.class),
             })
-            Specification<Entry> specification,
-            Sort sort,
+                    Specification<Entry> requestParametersSpecification,
             @RequestHeader Map<String, String> headers,
+            @RequestParam MultiValueMap<String, String> requestParameters,
             Principal principal
     ) {
-        if (!principal.getName().equals(headers.get("userid"))){
-            return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+        String userId = principal.getName();
+        Specification<Entry> specification = EntrySpecifications.isUser(userId);
+        if (requestParameters.size() > 0){
+            specification = specification.and(requestParametersSpecification);
         }
-        List<Entry> response = entryService.search(specification, sort);
+        String pageNumber = headers.get("pagenumber");
+        String pageSize = headers.get("pagesize");
+        String sortBy = headers.get("sortby");
+        pageNumber = pageNumber == null ? "0" : pageNumber;
+        pageSize = pageSize == null ? "30" : pageSize;
+        sortBy = sortBy == null ? "date" : sortBy;
+        List<Entry> response = entryService.seachEntryPage(specification, Integer.parseInt(pageNumber), Integer.parseInt(pageSize), sortBy);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

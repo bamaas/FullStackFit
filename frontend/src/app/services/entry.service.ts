@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { MatSnackBar } from '@angular/material';
-import { WeeklyAverageService } from './../services/weekly-average.service';
 import {Router} from "@angular/router";
 
 export interface Entry {
   id: number,
-  userId: string,
   weight: number,
   date: string,
   time?: string,
@@ -43,7 +41,6 @@ export class EntryService {
   constructor(
     private _http: HttpClient, 
     private _snackBar: MatSnackBar,
-    private _weeklyAverageService: WeeklyAverageService,
     private router: Router
   ){}
 
@@ -51,6 +48,12 @@ export class EntryService {
   public entriesObservable = this.entriesSubject.asObservable();
   public entries: Entry[] = [];
   public lastPageReached: boolean = false;
+
+  public filterSet = new BehaviorSubject<boolean>(false);
+
+  public setFilter(value: boolean){
+    this.filterSet.next(value);
+  }
 
   // Low level
   getEntry(id: number): Observable<any>{
@@ -70,11 +73,34 @@ export class EntryService {
   }
 
   getEntries(pageNumber: number = 0, pageSize: number = 0): Observable<any>{
-    return this._http.get(environment.apiBaseUrl + '/entry/page?pageNumber=' + pageNumber + '&pageSize=' + pageSize);
+    const headerDict: any = {
+      'pageSize': String(pageSize),
+      'pageNumber': String(pageNumber),
+      'sortBy': 'date'
+    }
+    return this._http.get(environment.apiBaseUrl + '/entry/search', {headers: headerDict});
+  }
+
+  filterEntriesByYearAndWeek(pageNumber: number = 0, pageSize: number = 30, year: number = 0, week: number = 0): Observable<any>{
+    const headerDict: any = {
+      'pageSize': String(pageSize),
+      'pageNumber': String(pageNumber),
+      'sortBy': 'date'
+    }
+    return this._http.get(environment.apiBaseUrl + `/entry/search?year=${year}&week=${week}`, {headers: headerDict});
   }
 
   emitEntries(): void{
     this.entriesSubject.next(this.entries);
+  }
+
+  filter(year: number, week: number){
+    this.filterEntriesByYearAndWeek(0, 1000, year, week).subscribe((entries: Entry[]) => {
+      this.entries = entries;
+      this.emitEntries();
+      this.setFilter(true);
+      this.router.navigate(['/log']);
+    });
   }
 
   sortEntriesByDate(): void{
@@ -82,6 +108,13 @@ export class EntryService {
       // @ts-ignore
       return new Date(b.date) - new Date(a.date);
     });
+  }
+
+  resetFilter(pageSize: number): void{
+    this.lastPageReached = false;
+    this.entriesTableInitialized = false;
+    this.addEntryPageToTable(0, pageSize);
+    this.setFilter(false);
   }
 
   // workaround to fix duplicate entries when updating a entry on edit screen and not added any pages yet.
@@ -100,7 +133,6 @@ export class EntryService {
             this.lastPageReached = true;
           }
           this.emitEntries();
-          this._weeklyAverageService.addWeeklyAveragesToSubject();
           this.entriesTableInitialized = true;
         },
         error => {
@@ -123,7 +155,6 @@ export class EntryService {
         this.entries.push(entry);
         this.sortEntriesByDate()
         this.emitEntries();
-        this._weeklyAverageService.addWeeklyAveragesToSubject();
         this.emitEntryDetail(entry);
         this.router.navigate([`/log/${entry.id}`])
       }, 
@@ -154,7 +185,6 @@ export class EntryService {
         }
         this.sortEntriesByDate()
         this.emitEntries();
-        this._weeklyAverageService.addWeeklyAveragesToSubject();
         this.emitEntryDetail(entry);
       },
       error => {

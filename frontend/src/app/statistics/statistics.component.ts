@@ -6,6 +6,8 @@ import { Subscription } from 'rxjs';
 import { WeeklyAverageService, WeeklyAverage } from './../services/weekly-average.service';
 import {MatRippleModule} from '@angular/material/core';
 import { HeaderService } from '../services/header.service';
+import { Entry, EntryService } from '../services/entry.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-statistics',
@@ -16,28 +18,36 @@ export class StatisticsComponent implements OnInit {
 
   constructor(
     private _weeklyAverageService: WeeklyAverageService,
-    private headerService: HeaderService
+    private headerService: HeaderService,
+    private entryService: EntryService
   ) {}
 
   public headerTitle: string = 'Statistics';
   public displayedColumns: string[] = ['year', 'week', 'weightAverage', 'weightDifference', 'weightMeasurementCount'];
   private _weeklyAverageSub: Subscription;
   public data: WeeklyAverage[] = [];
-  // public dataSource = new TableVirtualScrollDataSource<WeeklyAverage>(this.data);
   public dataSource = new MatTableDataSource<WeeklyAverage>(this.data);
   
   ngOnInit(): void {
     this.setHeaderTitle();
+    this.getStatistics();
+  }
+
+  getStatistics(): void {
     this._weeklyAverageSub = this._weeklyAverageService.weeklyAverageObservable.subscribe(
       (weeklyAverages: WeeklyAverage[]) => {
         this.dataSource.data = [...weeklyAverages];
       }
     );
-    this._weeklyAverageService.emit();
+    this._weeklyAverageService.addWeeklyAveragesToSubject();
   }
 
-  setHeaderTitle(){
-    this.headerService.setHeaderTitle(this.headerTitle);
+  filter(year: number, week: number){
+    this.entryService.filter(year, week);
+  }
+
+  setHeaderTitle(headerTitle: string = this.headerTitle){
+    this.headerService.setHeaderTitle(headerTitle);
   }
 
   ngOnDestroy() {

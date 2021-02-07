@@ -29,7 +29,62 @@ Cypress.Commands.add(
         cy.get('#username').type(username).should('have.value', username)
         cy.get('#password').type(password).should('have.value', password)
         cy.get('.submit').click();
-        cy.get('[test=username]').should('exist').contains(username.charAt(0).toUpperCase() + username.slice(1));
+        cy.getAccessToken(username, password).then(accessToken => {
+            cy.getUserInfo(accessToken).then(userInfo => {
+                let name = userInfo['name'];
+                name = name.charAt(0).toUpperCase() + name.slice(1)
+                cy.get('[test=username]').should('exist').contains(name);
+            });
+        })
+    }
+)
+
+Cypress.Commands.add(
+    'getAccessToken', (username, password) => {
+        cy.request({
+            method: 'POST',
+            url: Cypress.env('auth_url') + Cypress.env('token_url'),
+            form: true,
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: {
+              client_id: 'fittrack-application',
+              username: username,
+              password: password,
+              grant_type: 'password'
+            }
+          }).then(response => {
+            cy.wrap(response.body.access_token).as('accessToken')
+          });
+    }
+)
+
+Cypress.Commands.add(
+    'getUserInfo', (accessToken) => {
+        cy.request({
+            method: 'GET',
+            url: Cypress.env('auth_url') + Cypress.env('userinfo_url'),
+            headers:{
+              'Authorization': 'Bearer ' + accessToken
+            }
+            }).then(response => {
+              cy.wrap(response.body).as('userInfo')
+            });
+    }
+)
+
+Cypress.Commands.add(
+    'getUserId', (accessToken) => {
+        cy.request({
+            method: 'GET',
+            url: Cypress.env('auth_url') + Cypress.env('userinfo_url'),
+            headers:{
+              'Authorization': 'Bearer ' + accessToken
+            }
+            }).then(response => {
+              cy.wrap(response.body.sub).as('userId')
+            });
     }
 )
 

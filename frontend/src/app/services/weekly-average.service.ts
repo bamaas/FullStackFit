@@ -23,14 +23,14 @@ export class WeeklyAverageService {
   ){}
 
   public weeklyAverages: WeeklyAverage[] = [];
-  private weeklyAverageSubject = new Subject();
+  private weeklyAverageSubject = new Subject<WeeklyAverage[]>();
   public weeklyAverageObservable = this.weeklyAverageSubject.asObservable();
 
-  public getAllWeeklyAverages(): Observable<any>{
+  private getAllWeeklyAverages(): Observable<any>{
     return this._http.get(environment.apiBaseUrl + '/stats/avg/weight/all')
   }
 
-  public emit(): void{
+  private emit(): void{
     this.weeklyAverageSubject.next(this.weeklyAverages);
   }
 

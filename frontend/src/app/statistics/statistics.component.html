@@ -28,10 +28,9 @@
       <mat-header-cell *matHeaderCellDef>Measurements</mat-header-cell>
       <mat-cell *matCellDef="let weeklyAverage">{{ weeklyAverage.weightMeasurementCount}}</mat-cell>
     </ng-container>
-
       
       <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row-hover"></mat-row>
+      <mat-row *matRowDef="let weeklyAverage; columns: displayedColumns;" (click)="filter(weeklyAverage.year, weeklyAverage.week)" class="table-row-hover"></mat-row>
   </table>
   </div>
   </div>

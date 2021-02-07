@@ -8,7 +8,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import java.util.*;
 
@@ -40,19 +39,14 @@ public class EntryService {
         return entryRepository.save(entry);
     }
 
-    public List<Entry> getEntriesPage(Integer pageNumber, Integer pageSize, String sortBy) {
+    public List<Entry> seachEntryPage(Specification<Entry> spec, Integer pageNumber, Integer pageSize, String sortBy) {
         Pageable paging = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, sortBy));
-        Page<Entry> pagedResult = entryRepository.getEntriesPage(paging);
+        Page<Entry> pagedResult = entryRepository.findAll(spec, paging);
         if(pagedResult.hasContent()) {
             return pagedResult.getContent();
         } else {
             return new ArrayList<Entry>();
         }
-    }
-
-    public List<Entry> search(Specification<Entry> spec, Sort sort) {
-        return entryRepository.findAll(spec, sort);
-
     }
 
 }

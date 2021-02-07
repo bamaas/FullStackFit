@@ -28,16 +28,19 @@ export class EntriesComponent implements OnInit, OnDestroy {
   
   private mediaSub: Subscription;
   private _entriesSub: Subscription;
+  private filterSetSubcription: Subscription;
   public screenHeight: number;
   public tableBodyHeight: number; // initalized in ngAfterViewInit
+  public rowHeight: number = 48;
+  public itemsRenderedAtViewport: number;
+  public nextPageNumber: number = 0;
+  public pageSize: number;
+  public filterSet: boolean = false;
 
   // @ViewChild(MatSort, {static: true}) sort: MatSort;
   @ViewChild(MatTable) table: MatTable<any>;
   @ViewChild(CdkVirtualScrollViewport) virtualScroll: CdkVirtualScrollViewport;
-
-  
-  public rowHeight: number = 48;
-  public itemsRenderedAtViewport: number;
+  router: any;
 
   constructor(
     private snackBar: MatSnackBar,
@@ -52,6 +55,7 @@ export class EntriesComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.setHeaderTitle();
+    this.getIsFilterSet();
     this._entriesSub = this._entryService.entriesObservable.subscribe(
       (entries: Entry[]) => {
         // this.dataSource.data = entries;    Use this when enabled sorting
@@ -59,6 +63,7 @@ export class EntriesComponent implements OnInit, OnDestroy {
       }
     );
     this._entryService.emitEntries();
+
 
     this.mediaSub = this.mediaObserver.media$.subscribe(
       (change: MediaChange) => {
@@ -71,10 +76,23 @@ export class EntriesComponent implements OnInit, OnDestroy {
       this.onResize();
   }
 
+  getIsFilterSet(){
+    this.filterSetSubcription = this._entryService.filterSet.asObservable().subscribe(value => {
+      this.filterSet = value;
+    })
+  }
+
+  resetFilter(){
+    if (this.filterSet) {
+      this.nextPageNumber = 0;
+      this._entryService.resetFilter(this.pageSize);
+      this.nextPageNumber++;
+    }
+  }
+
   setHeaderTitle(){
     this.headerService.setHeaderTitle(this.headerTitle);
   }
-
 
   public data: Entry[] = [];
   dataSource = new TableVirtualScrollDataSource<Entry>(this.data);
@@ -109,15 +127,6 @@ export class EntriesComponent implements OnInit, OnDestroy {
     // Handles ExpressionChangedAfterItHasBeenCheckedError
     this._cdr.detectChanges(); 
    }
-  
-  public nextPageNumber: number = 0;
-  public maxPagesToRender: number = 3;
-  public renderedPageNumbers: number[] = [];
-  public reachedBottom: boolean = false;
-  public reachedTop: boolean = true;
-  public renderedPages: Array<any> = [];
-  public lastPageNumber: number;
-  public pageSize: number;
 
   onScrollDown(): void{
     this._entryService.addEntryPageToTable(this.nextPageNumber, this.pageSize);
@@ -191,6 +200,7 @@ export class EntriesComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.mediaSub.unsubscribe();
     this._entriesSub.unsubscribe();
+    this.filterSetSubcription.unsubscribe();
   }
 
 }

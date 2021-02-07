@@ -29,18 +29,15 @@ export class AppComponent implements OnInit, AfterViewInit{
 
   }
 
-  async ngOnInit(){
-    const keycloakInstance = this.profileService.keycloakInstance;
-
+  async ngOnInit(): Promise<void>{
     if (await this.keycloak.isLoggedIn()) {
       this.isLoggedIn = true;
-      keycloakInstance.loadUserInfo().then( (userinfo) => {
-        this.profileService.updateUserInfo(userinfo);
-      });
     } else {
       await this.profileService.login();
     }
-
+    const keycloakInstance = this.profileService.keycloakInstance;
+    const userInfo: any = await keycloakInstance.loadUserInfo();
+    this.profileService.updateUserInfo(userInfo);
     this.getUserProfile();
 
     /**

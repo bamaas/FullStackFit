@@ -27,7 +27,6 @@ export class EntryDetailComponent implements OnInit {
     private dialog: MatDialog,
     private bottomSheet: MatBottomSheet,
     private snackBar: MatSnackBar,
-    private location: Location,
     private router: Router,
     private headerService: HeaderService
   ) { } 
@@ -69,7 +68,7 @@ export class EntryDetailComponent implements OnInit {
           success => {
             this.entryService.removeEntryFromEntriesTable(id);
             this.weeklyAverageService.addWeeklyAveragesToSubject();
-            this.location.back();
+            this.navigateToEntriesPage();
           },
           error => {
               this.snackBar.open('Error occured while deleting entry.', 'Dismiss', {duration: 6000, panelClass: ['mat-toolbar', 'mat-basic']})
