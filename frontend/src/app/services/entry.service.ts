@@ -97,7 +97,6 @@ export class EntryService {
   filter(year: number, week: number){
     this.filterEntriesByYearAndWeek(0, 1000, year, week).subscribe((entries: Entry[]) => {
       this.entries = entries;
-      this.emitEntries();
       this.setFilter(true);
       this.router.navigate(['/log']);
     });
