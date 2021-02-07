@@ -98,7 +98,7 @@ export class EntryService {
         entry.weightDifference = null;
       } else {
         const prevWeight: number = this.entries[index+1].weight;
-        entry.weightDifference = entry.weight - prevWeight;
+        entry.weightDifference = Number((entry.weight - prevWeight).toFixed(1));
       }
       modifiedEntries.push(entry);
     });
