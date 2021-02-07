@@ -31,7 +31,9 @@ Cypress.Commands.add(
         cy.get('.submit').click();
         cy.getAccessToken(username, password).then(accessToken => {
             cy.getUserInfo(accessToken).then(userInfo => {
-                cy.get('[test=username]').should('exist').contains(userInfo['name']);
+                let name = userInfo['name'];
+                name = name.charAt(0).toUpperCase() + name.slice(1)
+                cy.get('[test=username]').should('exist').contains(name);
             });
         })
     }
