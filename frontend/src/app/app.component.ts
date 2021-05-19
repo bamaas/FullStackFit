@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnInit, ViewChild } from '@angular/core';
+import { Component, AfterViewInit, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
 import { KeycloakService } from 'keycloak-angular';
 import { AddEntryComponent } from './progress-tracker/entries/add-entry/add-entry.component';
@@ -6,6 +6,8 @@ import { ProfileService } from './services/profile.service';
 import { SidenavService } from './services/sidenav.service';
 import { MatSidenav } from '@angular/material';
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
+import * as Keycloak from 'keycloak-ionic';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -17,40 +19,51 @@ export class AppComponent implements OnInit, AfterViewInit{
   public isLoggedIn = false;
   public userInfo: any = null;
   public faUserCircle = faUserCircle;
+  
   @ViewChild('sidenav') public sidenav: MatSidenav;
 
+  public keycloak: Keycloak.KeycloakInstance;
+  public authSuccess: boolean;
+  public userProfile: Keycloak.KeycloakProfile;
+
   constructor(
-    private readonly keycloak: KeycloakService,
     private mediaObserver: MediaObserver,
     private profileService: ProfileService,
     private addEntryComponent: AddEntryComponent,
-    private sidenavService: SidenavService
+    private sidenavService: SidenavService,
+    private changeRef: ChangeDetectorRef
   ){
 
   }
 
   async ngOnInit(): Promise<void>{
-    if (await this.keycloak.isLoggedIn()) {
-      this.isLoggedIn = true;
-    } else {
-      await this.profileService.login();
-    }
-    const keycloakInstance = this.profileService.keycloakInstance;
-    const userInfo: any = await keycloakInstance.loadUserInfo();
-    this.profileService.updateUserInfo(userInfo);
-    this.getUserProfile();
 
-    /**
-     * Whenever the token expires and a refresh token is available, try to refresh the access token.
-     * Otherwise, redirect to login.
-    */
-    keycloakInstance.onTokenExpired = () => {
-      console.log('expired '+new Date());
-      if (keycloakInstance.refreshToken) {
-          this.keycloak.updateToken()
-      } else {
-          this.profileService.login();
-      }
+    this.keycloak = Keycloak({
+      url: environment.authBaseUrl,
+      realm: 'FitTrack',
+      clientId: 'fittrack-application'
+    });
+
+    this.keycloak.init({
+      adapter: 'capacitor-native',
+      responseMode: 'query',
+      redirectUri: 'angu://home'
+    });
+
+    console.log('Loggedin: ' + this.authSuccess);
+    if (!this.authSuccess) this.login();
+
+    this.keycloak.onAuthSuccess = () => {
+      console.log('login');
+      this.authSuccess = true;
+      this.changeRef.detectChanges();
+    };
+
+    this.keycloak.onAuthLogout = () => {
+      console.log('logout');
+      this.authSuccess = false;
+      this.userProfile = null;
+      this.changeRef.detectChanges();
     };
 
     this.mediaObserver.media$.subscribe(
@@ -58,14 +71,27 @@ export class AppComponent implements OnInit, AfterViewInit{
         console.log(change.mqAlias);
       }
     );
+
   }
+
+  login(): void {
+    this.keycloak.login();
+  }
+
+  loadProfile(): void {
+    this.keycloak.loadUserProfile().then(profile => {
+      this.userProfile = profile;
+      this.changeRef.detectChanges();
+    });
+  }
+
+  logout(): void {
+    this.keycloak.logout();
+  }
+  
 
   getUserProfile(): void{
     this.profileService.userInfo.subscribe(userInfo => {this.userInfo = userInfo})
-  }
-
-  public logout(): void {
-    this.profileService.logout();
   }
 
   addEntry(): void{

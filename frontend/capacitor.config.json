@@ -1,0 +1,7 @@
+{
+  "webDir": "www/angu",
+  "server": {
+    "url": "http://192.168.8.229:8100",
+    "cleartext": true
+  }
+}
