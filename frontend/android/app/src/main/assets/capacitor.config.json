@@ -1,0 +1,6 @@
+{
+	"appId": "nl.basmaas.fittrack",
+	"appName": "angu",
+	"webDir": "www/angu",
+	"bundledWebRuntime": false
+}

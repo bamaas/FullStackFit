@@ -30,21 +30,22 @@ import { environment } from '../environments/environment';
 import { EntryDetailComponent } from './progress-tracker/entries/entry-detail/entry-detail.component';
 import { SidenavService } from './services/sidenav.service';
 import { ProfileComponent } from './profile/profile.component';
+import { IonicModule } from '@ionic/angular';
 
-export function initializeKeycloak(keycloak: KeycloakService) {
-  return () =>
-    keycloak.init({
-      config: {
-        url: environment.authBaseUrl,
-        realm: 'FitTrack',
-        clientId: 'fittrack-application',
-      },
-      initOptions: {
-        onLoad: 'check-sso',
-        silentCheckSsoRedirectUri: window.location.origin + '/assets/silent-check-sso.html',
-      },
-    });
-}
+// export function initializeKeycloak(keycloak: KeycloakService) {
+//   return () =>
+//     keycloak.init({
+//       config: {
+//         url: environment.authBaseUrl,
+//         realm: 'FitTrack',
+//         clientId: 'fittrack-application',
+//       },
+//       initOptions: {
+//         onLoad: 'check-sso',
+//         silentCheckSsoRedirectUri: window.location.origin + '/assets/silent-check-sso.html',
+//       },
+//     });
+// }
 
 @NgModule({
   declarations: [
@@ -78,19 +79,20 @@ export function initializeKeycloak(keycloak: KeycloakService) {
     TableVirtualScrollModule,
     InfiniteScrollModule,
     NgxChartsModule,
-    KeycloakAngularModule
+    KeycloakAngularModule,
+    IonicModule.forRoot()
   ],
   providers: [ 
     KeycloakService,
     AddEntryComponent,
     FilterColumnsComponent,
     SidenavService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeKeycloak,
-      multi: true,
-      deps: [KeycloakService],
-    }
+    // {
+    //   provide: APP_INITIALIZER,
+    //   useFactory: initializeKeycloak,
+    //   multi: true,
+    //   deps: [KeycloakService],
+    // }
   ],
   bootstrap: [AppComponent],
   entryComponents: [AddEntrySheet, AlertDialogComponent]

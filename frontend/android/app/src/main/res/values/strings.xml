@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">angu</string>
+    <string name="title_activity_main">angu</string>
+    <string name="package_name">nl.basmaas.fittrack</string>
+    <string name="custom_url_scheme">nl.basmaas.fittrack</string>
+</resources>
