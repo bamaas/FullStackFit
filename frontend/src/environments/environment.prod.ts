@@ -8,12 +8,12 @@ let subDomains = {
 
 if ((window.location.origin).includes('test')){
   for (let subDomain in subDomains){
-    subDomain = subDomain + '-test';
+    subDomains[subDomain] = subDomain = subDomain + '-test';
   }
 }
 
 let apiBaseUrl: string = protocol + subDomains['backend'] + '.' + baseDomain;
-let authBaseUrl: string = protocol + subDomains['auth'] + '.' + baseDomain;
+let authBaseUrl: string = protocol + subDomains['auth'] + '.' + baseDomain + '/auth';
 let appBaseUrl: string = protocol + subDomains['frontend'] + '.' + baseDomain;
 
 export const environment = {

@@ -154,7 +154,7 @@ blocks:
               when: true
           commands:
             # change keycloak frontend url & credentials
-            - sed -i -e "s/fit\.basmaas\.nl/test\.basmaas\.nl/g" ./.kubernetes/deployment/iam.yaml
+            - sed -i -e "s/auth\.gymtrack\.nl/test-auth\.gymtrack\.nl/g" ./.kubernetes/deployment/iam.yaml
             - sed -i -e "s/keycloakuser/$KEYCLOAK_ADMIN_USERNAME_TEST/g" ./.kubernetes/deployment/iam.yaml
             - sed -i -e "s/keycloakpassword/$KEYCLOAK_ADMIN_PASSWORD_TEST/g" ./.kubernetes/deployment/iam.yaml
             # Database volume mount point
