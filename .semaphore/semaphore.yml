@@ -126,6 +126,14 @@ blocks:
             - make build s="iam"
             - docker tag fullstackfit_iam:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_iam.${IMAGE_TAG}
             - docker push ${DOCKER_USERNAME}/registry:fullstackfit_iam.${IMAGE_TAG}
+        - name: Landing
+          priority:
+            - value: 65
+              when: true
+          commands:
+            - make build s="landing"
+            - docker tag fullstackfit_landing:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_landing.${IMAGE_TAG}
+            - docker push ${DOCKER_USERNAME}/registry:fullstackfit_landing.${IMAGE_TAG}
   - name: Deploy to Kubernetes
     dependencies: ["Docker build"]
     task:
@@ -156,14 +164,16 @@ blocks:
             - sed -i -e "s/fullstackfit_backend:latest/registry:fullstackfit_backend.$IMAGE_TAG/g" ./.kubernetes/deployment/backend.yaml
             - sed -i -e "s/fullstackfit_liquibase:latest/registry:fullstackfit_liquibase.$IMAGE_TAG/g" ./.kubernetes/deployment/backend.yaml
             - sed -i -e "s/fullstackfit_frontend:latest/registry:fullstackfit_frontend.$IMAGE_TAG/g" ./.kubernetes/deployment/frontend.yaml
-            - sed -i -e "s/fullstackfit_reverseproxy:latest/registry:fullstackfit_reverseproxy.$IMAGE_TAG/g" ./.kubernetes/deployment/reverse-proxy.yaml
+            - sed -i -e "s/fullstackfit_frontend:latest/registry:fullstackfit_landing.$IMAGE_TAG/g" ./.kubernetes/deployment/landing.yaml
+            # - sed -i -e "s/fullstackfit_reverseproxy:latest/registry:fullstackfit_reverseproxy.$IMAGE_TAG/g" ./.kubernetes/deployment/reverse-proxy.yaml
             # - sed -i -e "s/fullstackfit_database:latest/registry:fullstackfit_database.$IMAGE_TAG/g" ./.kubernetes/statefulset/database.yaml
             - kubectl -n test apply -f ./.kubernetes/deployment --recursive --insecure-skip-tls-verify
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test database
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test backend
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test iam
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test frontend
-            - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test reverse-proxy
+            - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test landing
+            # - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test reverse-proxy
   - name: Test
     dependencies: ["Deploy to Kubernetes"]
     task:
@@ -173,6 +183,9 @@ blocks:
           - cache restore
           - cd test
           - kubectl -n test port-forward statefulset/database 5432:5432 --insecure-skip-tls-verify &
+          - export APP_URL='https://test-app.gymtrack.nl'
+          - export AUTH_URL='https://test-auth.gymtrack.nl'
+          - export API_URL='https://test-api.gymtrack.nl'
           - npm install
       epilogue:
         always:
@@ -185,19 +198,19 @@ blocks:
             - value: 80
               when: true
           commands:
-            - "VIEWPORT=desktop CYPRESS_BASE_URL='https://test.basmaas.nl' npx cypress run --spec 'cypress/integration/api/**' --env username=api@test.test,password=api,username_secondary=api-secondary@test.test,password_secondary=api-secondary,auth_url=https://test.basmaas.nl,backend_url=https://test.basmaas.nl/api --group API --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'API'"
+            - "VIEWPORT=desktop CYPRESS_BASE_URL='${APP_URL}' npx cypress run --spec 'cypress/integration/api/**' --env username=api@test.test,password=api,username_secondary=api-secondary@test.test,password_secondary=api-secondary,auth_url=${AUTH_URL},backend_url=${API_URL} --group API --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'API'"
         - name: E2E | Desktop
           priority:
             - value: 65
               when: true
           commands:
-            - "VIEWPORT=desktop CYPRESS_BASE_URL='https://test.basmaas.nl' npx cypress run --spec 'cypress/integration/e2e/**' --group 'E2E | Desktop' --env username=desktop-e2e@test.test,password=desktop-e2e,auth_url=https://test.basmaas.nl,backend_url=https://test.basmaas.nl/api --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'Desktop, E2E'"
+            - "VIEWPORT=desktop CYPRESS_BASE_URL='${APP_URL}' npx cypress run --spec 'cypress/integration/e2e/**' --group 'E2E | Desktop' --env username=desktop-e2e@test.test,password=desktop-e2e,auth_url=${AUTH_URL},backend_url=${API_URL} --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'Desktop, E2E'"
         - name: E2E | Mobile
           priority:
             - value: 65
               when: true
           commands:
-            - "VIEWPORT=mobile CYPRESS_BASE_URL='https://test.basmaas.nl' npx cypress run --spec 'cypress/integration/e2e/**' --group 'E2E | Mobile' --env username=mobile-e2e@test.test,password=mobile-e2e,auth_url=https://test.basmaas.nl,backend_url=https://test.basmaas.nl/api --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'Mobile,E2E'"
+            - "VIEWPORT=mobile CYPRESS_BASE_URL='${APP_URL}' npx cypress run --spec 'cypress/integration/e2e/**' --group 'E2E | Mobile' --env username=mobile-e2e@test.test,password=mobile-e2e,auth_url=${AUTH_URL},backend_url=${API_URL} --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'Mobile,E2E'"
       secrets:
         - name: kubectl
         - name: cypress
@@ -226,11 +239,11 @@ blocks:
               when: true
           commands:
           # Pull images from bamaas/registry
-          - echo ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_database.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_iam.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_liquibase.${IMAGE_TAG} | xargs -n 1 docker pull
+          - echo ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_database.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_iam.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_liquibase.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_landing.${IMAGE_TAG} | xargs -n 1 docker pull
           # Tag to :$IMAGE_TAG
-          - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_frontend:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_backend.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_backend:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_database.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_database:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_reverseproxy:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_iam.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_iam:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_liquibase.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_liquibase:$IMAGE_TAG | xargs -n 2 docker tag
+          - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_frontend:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_backend.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_backend:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_database.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_database:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_reverseproxy:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_iam.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_iam:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_liquibase.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_liquibase:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_landing.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_landing:$IMAGE_TAG | xargs -n 2 docker tag
           # Push :$IMAGE_TAG
-          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_backend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_reverseproxy:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_database:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_iam:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_liquibase:$IMAGE_TAG | xargs -n 1 docker push
+          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_backend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_reverseproxy:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_database:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_iam:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_liquibase:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_landing:$IMAGE_TAG | xargs -n 1 docker push
 promotions:
 - name: Deploy
   pipeline_file: deploy-prod.yml

@@ -18,6 +18,15 @@ services:
       - liquibase
       - database
 
+  landing:
+    container_name: fit_landing-b
+    image: "fullstackfit_landing:b.${IMAGE_TAG}"
+    build:
+      context: ./landing
+      dockerfile: Dockerfile
+    ports:
+      - 8000:80
+
   frontend:
     container_name: fit_frontend-dev
     image: fullstackfit_frontend:dev

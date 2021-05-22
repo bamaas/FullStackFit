@@ -8,7 +8,7 @@
     <meta name="robots" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=yes"/>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"/>
-    <script async defer data-domain="fit.basmaas.nl" src="https://analytics.basmaas.nl/js/plausible.js"></script>
+    <script async defer data-domain="fit.basmaas.nl" src="https://plausible.basmaas.nl/js/plausible.js"></script>
     <title><#nested "title"></title>
     <script>
         window.onload = function() {

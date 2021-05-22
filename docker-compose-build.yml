@@ -23,6 +23,20 @@ services:
       - iam
       - database
 
+  landing:
+    container_name: fit_landing-b
+    image: "fullstackfit_landing:b.${IMAGE_TAG}"
+    build:
+      context: ./landing
+      dockerfile: Dockerfile
+    ports:
+      - 8000:80
+    depends_on:
+      - frontend
+      - backend
+      - iam
+      - database
+
   frontend:
     container_name: fit_frontend-b
     image: "fullstackfit_frontend:b.${IMAGE_TAG}"
