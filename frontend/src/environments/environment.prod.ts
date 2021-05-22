@@ -1,20 +1,12 @@
-const protocol: string = 'https://';
-const baseDomain: string = 'gymtrack.nl';
-let subDomains = {
-  backend: 'api',
-  frontend: 'app',
-  auth: 'auth' 
-}
+let apiBaseUrl: string = 'https://api.gymtrack.nl'
+let authBaseUrl: string = 'https://auth.gymtrack.nl'
+let appBaseUrl: string = 'https://app.gymtrack.nl'
 
 if ((window.location.origin).includes('test')){
-  for (let subDomain in subDomains){
-    subDomains[subDomain] = subDomain = 'test-' + subDomain;
-  }
+  apiBaseUrl = 'https://test-api.gymtrack.nl'
+  authBaseUrl = 'https://test-auth.gymtrack.nl'
+  appBaseUrl = 'https://test-app.gymtrack.nl'
 }
-
-let apiBaseUrl: string = protocol + subDomains['backend'] + '.' + baseDomain;
-let authBaseUrl: string = protocol + subDomains['auth'] + '.' + baseDomain + '/auth';
-let appBaseUrl: string = protocol + subDomains['frontend'] + '.' + baseDomain;
 
 export const environment = {
   production: true,
