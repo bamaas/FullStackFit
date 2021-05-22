@@ -8,7 +8,7 @@ let subDomains = {
 
 if ((window.location.origin).includes('test')){
   for (let subDomain in subDomains){
-    subDomains[subDomain] = subDomain = subDomain + '-test';
+    subDomains[subDomain] = subDomain = 'test-' + subDomain;
   }
 }
 
