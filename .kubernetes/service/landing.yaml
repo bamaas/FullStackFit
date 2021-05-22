@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: landing
+spec:
+  ports:
+  - name: 80tcp-landing
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: landing
+  sessionAffinity: None
+  type: ClusterIP

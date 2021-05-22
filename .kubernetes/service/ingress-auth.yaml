@@ -19,16 +19,16 @@ metadata:
     manager: rancher
     operation: Update
     time: "2021-01-30T13:23:59Z"
-  name: landing
-  selfLink: /apis/extensions/v1beta1/namespaces/prod/ingresses/gymtrack.nl
+  name: auth
+  selfLink: /apis/extensions/v1beta1/namespaces/prod/ingresses/auth.gymtrack.nl
 spec:
   rules:
-  - host: gymtrack.nl
+  - host: auth.gymtrack.nl
     http:
       paths:
       - backend:
-          serviceName: landing
-          servicePort: 80
+          serviceName: iam
+          servicePort: 8080
         pathType: ImplementationSpecific
 status:
   loadBalancer: {}

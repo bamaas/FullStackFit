@@ -25,7 +25,7 @@ spec:
         - name: PROXY_ADDRESS_FORWARDING
           value: "true"
         - name: KEYCLOAK_FRONTEND_URL
-          value: "https://fit.basmaas.nl/auth"
+          value: "https://auth.gymtrack.nl/auth"
         - name: DB_VENDOR
           value: "postgres"
         - name: DB_USER

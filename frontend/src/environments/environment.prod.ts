@@ -1,6 +1,16 @@
+let apiBaseUrl: string = 'https://api.gymtrack.nl'
+let authBaseUrl: string = 'https://auth.gymtrack.nl'
+let appBaseUrl: string = 'https://app.gymtrack.nl'
+
+if ((window.location.origin).includes('test')){
+  apiBaseUrl = 'https://test-api.gymtrack.nl'
+  authBaseUrl = 'https://test-auth.gymtrack.nl/auth'
+  appBaseUrl = 'https://test-app.gymtrack.nl'
+}
+
 export const environment = {
   production: true,
-  apiBaseUrl: window.location.origin + '/api',
-  authBaseUrl: window.location.origin + '/auth',
-  redirectUrl: window.location.origin
+  apiBaseUrl: apiBaseUrl,
+  authBaseUrl: authBaseUrl,
+  redirectUrl: appBaseUrl
 };
