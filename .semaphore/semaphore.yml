@@ -111,10 +111,6 @@ blocks:
             - value: 65
               when: true
           commands:
-            - sed -i -e "s/https:\/\/doyoueventrack/https:\/\/test\.doyoueventrack/g" ./landing/public_html/index.html
-            - sed -i -e "s/auth\.doyoueventrack\.app/test-auth\.doyoueventrack\.app/g" ./landing/public_html/index.html
-            - sed -i -e "s/bro\.doyoueventrack\.app/test-bro\.doyoueventrack\.app/g" ./landing/public_html/index.html
-            - sed -i -e "s/api\.doyoueventrack\.app/test-api\.doyoueventrack\.app/g" ./landing/public_html/index.html
             - make build s="landing"
             - docker tag fullstackfit_landing:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_landing.${IMAGE_TAG}
             - docker push ${DOCKER_USERNAME}/registry:fullstackfit_landing.${IMAGE_TAG}

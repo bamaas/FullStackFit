@@ -4,6 +4,14 @@
  * ------------------------------------------------------------------- */ 
 
 (function($) {
+	
+	// set correct links
+	let registerButton = document.getElementById('register-button');
+	let loginButton = document.getElementById('login-button');
+	if ((window.location.origin).includes('test')){
+		registerButton.setAttribute('href', 'https://test-auth.doyoueventrack.app/auth/realms/FitTrack/protocol/openid-connect/registrations?client_id=fittrack-application&response_type=code&scope=openid email&redirect_uri=https://test-bro.doyoueventrack.app&kc_locale=nl')
+		loginButton.setAttribute('href', 'https://test-auth.doyoueventrack.app/auth/realms/FitTrack/protocol/openid-connect/auth?client_id=fittrack-application&response_type=code&scope=openid%20email&redirect_uri=https://test-bro.doyoueventrack.app&kc_locale=nl')
+	}
 
 	"use strict";
 
