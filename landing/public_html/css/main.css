@@ -1539,7 +1539,7 @@ h1.intro-header::before {
 }
 
 .home-social-list::before {
-  display: block;
+  display: none;
   content: "";
   width: 2px;
   height: 42px;

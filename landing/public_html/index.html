@@ -27,14 +27,13 @@
     <!-- script
    ================================================== -->
     <script src="js/modernizr.js"></script>
-    <script src="js/pace.min.js"></script>
 
     <!-- favicons
 	================================================== -->
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 
-    <script async defer data-domain="fit.basmaas.nl" src="https://plausible.basmaas.nl/js/plausible.js"></script>
+    <script async defer data-domain="gymtrack.nl" src="https://plausible.basmaas.nl/js/plausible.js"></script>
 
 </head>
 
@@ -49,16 +48,13 @@
 	    </div>
 	   	<nav id="header-nav-wrap">
 			<ul class="header-main-nav">
-				<!-- <li class="current"><a class="smoothscroll"  href="#home" title="home">Home</a></li> -->
                 <li><a href="https://bamaas.semaphoreci.com/projects/FullStackFit/" title="analytics">Builds</a></li>
                 <li><a href="https://stats.uptimerobot.com/zp8vnhRRwy" title="analytics">Uptime</a></li>
-				<li><a href="https://gymtrack.nl/analytics" title="analytics">Analytics</a></li>
+				<li><a href="analytics.html" title="analytics">Analytics</a></li>
                 <li><a href="https://github.com/bamaas/FullStackFit" title="analytics">Source Code</a></li>
                 <li><a href="https://dashboard.cypress.io/projects/hduft5/runs" title="analytics">Tests</a></li>
                 <li><a href="https://sonarcloud.io/dashboard?id=bamaas_FullStackFit" title="analytics">Sonar</a></li>
 			</ul>
-
-            <!-- <a href="https://gymtrack.nl/app" title="sign-up" class="button button-primary cta">Login</a> -->
 		</nav>
 		<a class="header-menu-toggle" href="#"><span>Menu</span></a>    	
    </header>
@@ -78,11 +74,11 @@
                         Track your performance
                     </h1>
                     <div class="buttons" data-aos="fade-up">
-                        <a id="register-button" href="https://auth.gymtrack.nl/auth/realms/FitTrack/protocol/openid-connect/registrations?client_id=fittrack-application&response_type=code&scope=openid email&redirect_uri=https://gymtrack.nl/app&kc_locale=nl" class="button button-primary">
+                        <a id="register-button" href="https://auth.gymtrack.nl/auth/realms/FitTrack/protocol/openid-connect/registrations?client_id=fittrack-application&response_type=code&scope=openid email&redirect_uri=https://app.gymtrack.nl&kc_locale=nl" class="button button-primary">
                             <span class="icon-user-add" aria-hidden="true"></span>
                             Register
                         </a>
-                        <a id="login-button" href="https://app.gymtrack.nl" class="button stroke">
+                        <a id="login-button" href="https://auth.gymtrack.nl/auth/realms/FitTrack/protocol/openid-connect/auth?client_id=fittrack-application&response_type=code&scope=openid%20email&redirect_uri=https://app.gymtrack.nl&kc_locale=nl" class="button stroke">
                             <span class="icon-play" aria-hidden="true"></span>
                             Login
                         </a>
@@ -108,13 +104,6 @@
             </li>
         </ul>
         <!-- end home-social-list -->
-
-        <div class="home-scrolldown">
-            <a href="#about" class="scroll-icon smoothscroll">
-                <!-- <span>Scroll Down</span> -->
-                <i class="icon-arrow-right" aria-hidden="true"></i>
-            </a>
-        </div>
 
     </section> <!-- end home -->  
 
@@ -296,10 +285,6 @@
       </div>
 
     </footer>
-
-    <div id="preloader"> 
-    	<div id="loader"></div>
-    </div>  
 
     <!-- Java Script
     ================================================== -->

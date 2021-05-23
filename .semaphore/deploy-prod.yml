@@ -20,9 +20,8 @@ blocks:
             - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/iam.yaml
             - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/backend.yaml
             - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/frontend.yaml
-            - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/reverse-proxy.yaml
             - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/statefulset/database.yaml
-            - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/statefulset/landing.yaml
+            - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/landing.yaml
             # set iam secrets
             - sed -i -e "s/keycloakuser/$KEYCLOAK_ADMIN_USERNAME_PROD/g" ./.kubernetes/deployment/iam.yaml
             - sed -i -e "s/keycloakpassword/$KEYCLOAK_ADMIN_PASSWORD_PROD/g" ./.kubernetes/deployment/iam.yaml
@@ -33,7 +32,6 @@ blocks:
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh prod iam
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh prod frontend
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh prod landing
-            # - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh prod reverse-proxy
       secrets:
         - name: kubectl
         - name: keycloak
@@ -78,10 +76,10 @@ blocks:
         - name: Tag latest
           commands:
           # Pull images
-          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_backend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_reverseproxy:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_database:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_iam:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_landing:$IMAGE_TAG | xargs -n 1 docker pull
+          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_backend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_database:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_iam:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_landing:$IMAGE_TAG | xargs -n 1 docker pull
           # Tag to :latest
-          - echo $DOCKER_USERNAME/fullstackfit_frontend:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/fullstackfit_backend:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/fullstackfit_database:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/fullstackfit_reverseproxy:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_reverseproxy:latest $DOCKER_USERNAME/fullstackfit_iam:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_iam:latest $DOCKER_USERNAME/fullstackfit_landing:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_landing:latest | xargs -n 2 docker tag
+          - echo $DOCKER_USERNAME/fullstackfit_frontend:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_frontend:latest $DOCKER_USERNAME/fullstackfit_backend:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_backend:latest $DOCKER_USERNAME/fullstackfit_database:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_database:latest $DOCKER_USERNAME/fullstackfit_iam:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_iam:latest $DOCKER_USERNAME/fullstackfit_landing:$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_landing:latest | xargs -n 2 docker tag
           # Push :latest to public registry
-          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:latest ${DOCKER_USERNAME}/fullstackfit_backend:latest ${DOCKER_USERNAME}/fullstackfit_reverseproxy:latest ${DOCKER_USERNAME}/fullstackfit_database:latest ${DOCKER_USERNAME}/fullstackfit_iam:latest ${DOCKER_USERNAME}/fullstackfit_landing:latest | xargs -n 1 docker push
+          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:latest ${DOCKER_USERNAME}/fullstackfit_backend:latest ${DOCKER_USERNAME}/fullstackfit_database:latest ${DOCKER_USERNAME}/fullstackfit_iam:latest ${DOCKER_USERNAME}/fullstackfit_landing:latest | xargs -n 1 docker push
       secrets:
         - name: docker
