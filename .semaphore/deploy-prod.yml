@@ -21,7 +21,7 @@ blocks:
             - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/backend.yaml
             - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/frontend.yaml
             - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/statefulset/database.yaml
-            - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/statefulset/landing.yaml
+            - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/landing.yaml
             # set iam secrets
             - sed -i -e "s/keycloakuser/$KEYCLOAK_ADMIN_USERNAME_PROD/g" ./.kubernetes/deployment/iam.yaml
             - sed -i -e "s/keycloakpassword/$KEYCLOAK_ADMIN_PASSWORD_PROD/g" ./.kubernetes/deployment/iam.yaml
