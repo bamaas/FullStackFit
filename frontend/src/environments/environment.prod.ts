@@ -1,5 +1,5 @@
 let apiBaseUrl: string = 'https://api.gymtrack.nl'
-let authBaseUrl: string = 'https://auth.gymtrack.nl'
+let authBaseUrl: string = 'https://auth.gymtrack.nl/auth'
 let appBaseUrl: string = 'https://app.gymtrack.nl'
 
 if ((window.location.origin).includes('test')){
