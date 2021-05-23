@@ -1,11 +1,11 @@
-let apiBaseUrl: string = 'https://api.gymtrack.nl'
-let authBaseUrl: string = 'https://auth.gymtrack.nl/auth'
-let appBaseUrl: string = 'https://app.gymtrack.nl'
+let apiBaseUrl: string = 'https://api.doyoueventrack.app'
+let authBaseUrl: string = 'https://auth.doyoueventrack.app/auth'
+let appBaseUrl: string = 'https://bro.doyoueventrack.app'
 
 if ((window.location.origin).includes('test')){
-  apiBaseUrl = 'https://test-api.gymtrack.nl'
-  authBaseUrl = 'https://test-auth.gymtrack.nl/auth'
-  appBaseUrl = 'https://test-app.gymtrack.nl'
+  apiBaseUrl = 'https://test-api.doyoueventrack.app'
+  authBaseUrl = 'https://test-auth.doyoueventrack.app/auth'
+  appBaseUrl = 'https://test-bro.doyoueventrack.app'
 }
 
 export const environment = {

@@ -118,7 +118,7 @@
             </div>
             <div class="col-eight">
                 <p class="lead" data-aos="fade-up">
-                    A gym tracker to monitor your massive gains. This project is started from a interest in learning to program and a lack of suitable app for my personal need. This project is fully open source and it's running on a personal server at my own home. There are no ads, no fees, but also no guarantees on availability.
+                    In my free time I like to be in the gym and move some weights. For years I keep track of my body weight in an Excel sheet. At the end of a week I calculate the average of that week and compare it with the previous week, so I can determine if I lost or gained weight. I thought it would be nice to build a web application to replace the Excel sheet.
                 </p>
             </div>                       
             
@@ -133,9 +133,12 @@
                     <span class="icon"><i class="icon-window"></i></span>            
 
                     <div class="service-content">	
+
                         <h3>Open Source</h3>
-                        <p>This project is fully open source and thus all the source code is visible at Github. It makes exclusive use of open source technologies, such as; Postgres, Angular, Spring Boot, Keycloak, Proxmox, Kubernetes, Rancher, Cypress...
+
+                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.
                         </p>
+                        
                     </div> 	         	 
 
                     </div> <!-- /bgrid -->
@@ -144,9 +147,10 @@
 
                         <span class="icon"><i class="icon-image"></i></span>                          
 
-                        <div class="service-content">	
+                    <div class="service-content">	
                         <h3>Respected privacy</h3>  
-                        <p>Your data is yours and will never be shared with a third party. All the data is stored on my own server at home. Off-shore backups are made to an Wasabi S3 bucket. 
+
+                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.
                         </p>
 
                         
@@ -161,7 +165,7 @@
                     <div class="service-content">
                         <h3>Mobile first</h3>
 
-                        <p>This app is built with a mobile first aproach. It should work flawlessly on every device, from mobile to desktop.
+                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.
                         </p> 
                             
                     </div> 	            	               
