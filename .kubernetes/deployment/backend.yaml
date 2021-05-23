@@ -59,6 +59,13 @@ spec:
       initContainers:
       - name: liquibase
         image: bamaas/fullstackfit_liquibase:latest
+      resources:
+        requests:
+          memory: "300Mi"
+          cpu: "5m"
+        limits:
+          memory: "500Mi"
+          cpu: "80m"
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

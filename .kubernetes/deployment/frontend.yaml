@@ -63,6 +63,13 @@ spec:
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         tty: true
+      resources:
+        requests:
+          memory: "5Mi"
+          cpu: "5m"
+        limits:
+          memory: "50Mi"
+          cpu: "10m"
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

@@ -16,6 +16,9 @@ blocks:
       jobs:
         - name: To production
           commands:
+            # deploy service files
+            - kubectl -n prod apply -f ./.kubernetes/service --recursive --insecure-skip-tls-verify
+            # deploy deployment files
             # change image tags from :latest -> :$IMAGE_TAG .
             - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/iam.yaml
             - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/backend.yaml
@@ -25,7 +28,6 @@ blocks:
             # set iam secrets
             - sed -i -e "s/keycloakuser/$KEYCLOAK_ADMIN_USERNAME_PROD/g" ./.kubernetes/deployment/iam.yaml
             - sed -i -e "s/keycloakpassword/$KEYCLOAK_ADMIN_PASSWORD_PROD/g" ./.kubernetes/deployment/iam.yaml
-            # deploy
             - kubectl -n prod apply -f ./.kubernetes/deployment --recursive --insecure-skip-tls-verify
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh prod database
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test backend

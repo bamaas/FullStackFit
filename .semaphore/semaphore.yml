@@ -137,6 +137,12 @@ blocks:
             - value: 65
               when: true
           commands:
+            # deploy service
+            - sed -i -e "s/auth\.doyoueventrack\.app/test-auth\.doyoueventrack\.app/g" ./.kubernetes/service/ingress-auth.yaml
+            - sed -i -e "s/api\.doyoueventrack\.app/test-api\.doyoueventrack\.app/g" ./.kubernetes/service/ingress-api.yaml
+            - sed -i -e "s/bro\.doyoueventrack\.app/test-bro\.doyoueventrack\.app/g" ./.kubernetes/service/ingress-app.yaml
+            - sed -i -e "s/doyoueventrack\.app/test\.doyoueventrack\.app/g" ./.kubernetes/service/ingress.yaml
+            - kubectl -n test apply -f ./.kubernetes/service --recursive --insecure-skip-tls-verify
             # change keycloak frontend url & credentials
             - sed -i -e "s/auth\.doyoueventrack\.app/test-auth\.doyoueventrack\.app/g" ./.kubernetes/deployment/iam.yaml
             - sed -i -e "s/keycloakuser/$KEYCLOAK_ADMIN_USERNAME_TEST/g" ./.kubernetes/deployment/iam.yaml
@@ -147,7 +153,9 @@ blocks:
             - sed -i -e "s/fullstackfit_liquibase:latest/registry:fullstackfit_liquibase.$IMAGE_TAG/g" ./.kubernetes/deployment/backend.yaml
             - sed -i -e "s/fullstackfit_frontend:latest/registry:fullstackfit_frontend.$IMAGE_TAG/g" ./.kubernetes/deployment/frontend.yaml
             - sed -i -e "s/fullstackfit_landing:latest/registry:fullstackfit_landing.$IMAGE_TAG/g" ./.kubernetes/deployment/landing.yaml
+            # deploy deployments
             - kubectl -n test apply -f ./.kubernetes/deployment --recursive --insecure-skip-tls-verify
+            # wait
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test database
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test backend
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test iam
