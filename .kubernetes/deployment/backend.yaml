@@ -30,7 +30,7 @@ spec:
           failureThreshold: 4
           initialDelaySeconds: 53
           periodSeconds: 5
-          successThreshold: 2
+          successThreshold: 1
           tcpSocket:
             port: 5000
           timeoutSeconds: 3
