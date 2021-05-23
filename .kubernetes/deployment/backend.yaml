@@ -27,13 +27,13 @@ spec:
       - image: bamaas/fullstackfit_backend:latest
         imagePullPolicy: Always
         livenessProbe:
-          failureThreshold: 3
-          initialDelaySeconds: 30
-          periodSeconds: 2
-          successThreshold: 1
+          failureThreshold: 4
+          initialDelaySeconds: 53
+          periodSeconds: 5
+          successThreshold: 2
           tcpSocket:
             port: 5000
-          timeoutSeconds: 2
+          timeoutSeconds: 3
         name: backend
         resources:
           requests:
@@ -47,13 +47,13 @@ spec:
           name: backendport
           protocol: TCP
         readinessProbe:
-          failureThreshold: 3
-          initialDelaySeconds: 30
-          periodSeconds: 2
+          failureThreshold: 4
+          initialDelaySeconds: 53
+          periodSeconds: 5
           successThreshold: 2
           tcpSocket:
             port: 5000
-          timeoutSeconds: 4
+          timeoutSeconds: 3
         securityContext:
           allowPrivilegeEscalation: false
           privileged: false
