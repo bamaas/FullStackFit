@@ -110,14 +110,6 @@ blocks:
             # - ng build --configuration="production" --no-progress
             # - cd ..
             # - make build s="frontend"
-        - name: Reverse proxy
-          priority:
-            - value: 65
-              when: true
-          commands:
-            - make build s="reverseproxy"
-            - docker tag fullstackfit_reverseproxy:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${IMAGE_TAG}
-            - docker push ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${IMAGE_TAG}
         - name: IAM
           priority:
             - value: 65
@@ -168,7 +160,6 @@ blocks:
             - sed -i -e "s/fullstackfit_liquibase:latest/registry:fullstackfit_liquibase.$IMAGE_TAG/g" ./.kubernetes/deployment/backend.yaml
             - sed -i -e "s/fullstackfit_frontend:latest/registry:fullstackfit_frontend.$IMAGE_TAG/g" ./.kubernetes/deployment/frontend.yaml
             - sed -i -e "s/fullstackfit_landing:latest/registry:fullstackfit_landing.$IMAGE_TAG/g" ./.kubernetes/deployment/landing.yaml
-            # - sed -i -e "s/fullstackfit_reverseproxy:latest/registry:fullstackfit_reverseproxy.$IMAGE_TAG/g" ./.kubernetes/deployment/reverse-proxy.yaml
             # - sed -i -e "s/fullstackfit_database:latest/registry:fullstackfit_database.$IMAGE_TAG/g" ./.kubernetes/statefulset/database.yaml
             - kubectl -n test apply -f ./.kubernetes/deployment --recursive --insecure-skip-tls-verify
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test database
@@ -176,7 +167,6 @@ blocks:
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test iam
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test frontend
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test landing
-            # - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test reverse-proxy
   - name: Test
     dependencies: ["Deploy to Kubernetes"]
     task:
@@ -239,11 +229,11 @@ blocks:
               when: true
           commands:
           # Pull images from bamaas/registry
-          - echo ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_reverseproxy.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_database.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_iam.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_liquibase.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_landing.${IMAGE_TAG} | xargs -n 1 docker pull
+          - echo ${DOCKER_USERNAME}/registry:fullstackfit_frontend.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_backend.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_database.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_iam.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_liquibase.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_landing.${IMAGE_TAG} | xargs -n 1 docker pull
           # Tag to :$IMAGE_TAG
-          - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_frontend:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_backend.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_backend:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_database.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_database:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_reverseproxy.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_reverseproxy:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_iam.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_iam:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_liquibase.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_liquibase:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_landing.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_landing:$IMAGE_TAG | xargs -n 2 docker tag
+          - echo $DOCKER_USERNAME/registry:fullstackfit_frontend.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_frontend:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_backend.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_backend:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_database.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_database:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_iam.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_iam:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_liquibase.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_liquibase:$IMAGE_TAG $DOCKER_USERNAME/registry:fullstackfit_landing.$IMAGE_TAG $DOCKER_USERNAME/fullstackfit_landing:$IMAGE_TAG | xargs -n 2 docker tag
           # Push :$IMAGE_TAG
-          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_backend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_reverseproxy:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_database:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_iam:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_liquibase:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_landing:$IMAGE_TAG | xargs -n 1 docker push
+          - echo ${DOCKER_USERNAME}/fullstackfit_frontend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_backend:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_database:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_iam:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_liquibase:$IMAGE_TAG ${DOCKER_USERNAME}/fullstackfit_landing:$IMAGE_TAG | xargs -n 1 docker push
 promotions:
 - name: Deploy
   pipeline_file: deploy-prod.yml

@@ -9,7 +9,7 @@
 
 	var cfg = {		
 		scrollDuration : 800, // smoothscroll duration
-		mailChimpURL   : 'https://facebook.us8.list-manage.com/subscribe/post?u=cdb7b577e41181934ed6a6a44&amp;id=e6957d85dc'  // mailchimp url
+		mailChimpURL   : ''  // mailchimp url
 	},	
 
 	$WIN = $(window);	
@@ -30,7 +30,7 @@
 			$('html, body').animate({ scrollTop: 0 }, 'normal');
 
          // will fade out the whole preloader DIV that covers the website.
-	      $("#preloader").delay(500).fadeOut('slow');
+	    //   $("#preloader").delay(500).fadeOut('slow');
 	  
 	  	});
 	};
@@ -168,10 +168,10 @@
 	var ssAOS = function() {
 
 		AOS.init( {
-      	offset: 200,
-      	duration: 600,
+      	offset: 0,
+      	duration: 0,
       	easing: 'ease-in-sine',
-      	delay: 300,
+      	delay: 0,
 			once: true,
 			disable: 'mobile'
     	});
