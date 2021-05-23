@@ -40,6 +40,13 @@ spec:
           successThreshold: 1
           timeoutSeconds: 2
         name: frontend
+        resources:
+          requests:
+            memory: "5Mi"
+            cpu: "5m"
+          limits:
+            memory: "50Mi"
+            cpu: "10m"
         ports:
         - containerPort: 4200
           name: 4200tcp327341
@@ -63,13 +70,6 @@ spec:
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         tty: true
-      resources:
-        requests:
-          memory: "5Mi"
-          cpu: "5m"
-        limits:
-          memory: "50Mi"
-          cpu: "10m"
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
