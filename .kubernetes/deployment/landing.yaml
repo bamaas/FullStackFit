@@ -35,6 +35,13 @@ spec:
             port: 80
           timeoutSeconds: 2
         name: landing
+        resources:
+          requests:
+            memory: "5Mi"
+            cpu: "5m"
+          limits:
+            memory: "50Mi"
+            cpu: "10m"
         ports:
         - containerPort: 80
           name: landing80tcp

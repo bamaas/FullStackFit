@@ -11,18 +11,6 @@ fail_fast:
   cancel:
     when: "true"
 blocks:
-  # - name: Unit test
-  #   dependencies: []
-  #   task:
-  #     prologue:
-  #       commands:
-  #         - checkout
-  #         - source ./.semaphore/scripts/export-git-env-vars.sh
-  #         - sem-version java 11
-  #     jobs:
-  #       - name: backend
-  #         commands: 
-  #           - mvn test -f ./backend
   - name: Code analysis
     dependencies: []
     task:
@@ -123,10 +111,11 @@ blocks:
             - value: 65
               when: true
           commands:
+            - sed -i -e "s/https:\/\/doyoueventrack/https:\/\/test\.doyoueventrack/g" ./landing/public_html/index.html
+            - sed -i -e "s/auth\.doyoueventrack\.app/test-auth\.doyoueventrack\.app/g" ./landing/public_html/index.html
+            - sed -i -e "s/bro\.doyoueventrack\.app/test-bro\.doyoueventrack\.app/g" ./landing/public_html/index.html
+            - sed -i -e "s/api\.doyoueventrack\.app/test-api\.doyoueventrack\.app/g" ./landing/public_html/index.html
             - make build s="landing"
-            - sed -i -e "s/auth\.gymtrack\.nl/test-auth\.gymtrack\.nl/g" ./landing/public_html/index.html
-            - sed -i -e "s/app\.gymtrack\.nl/test-app\.gymtrack\.nl/g" ./landing/public_html/index.html
-            - sed -i -e "s/api\.gymtrack\.nl/test-api\.gymtrack\.nl/g" ./landing/public_html/index.html
             - docker tag fullstackfit_landing:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_landing.${IMAGE_TAG}
             - docker push ${DOCKER_USERNAME}/registry:fullstackfit_landing.${IMAGE_TAG}
   - name: Deploy to Kubernetes
@@ -148,20 +137,25 @@ blocks:
             - value: 65
               when: true
           commands:
+            # deploy service
+            - sed -i -e "s/auth\.doyoueventrack\.app/test-auth\.doyoueventrack\.app/g" ./.kubernetes/service/ingress-auth.yaml
+            - sed -i -e "s/api\.doyoueventrack\.app/test-api\.doyoueventrack\.app/g" ./.kubernetes/service/ingress-api.yaml
+            - sed -i -e "s/bro\.doyoueventrack\.app/test-bro\.doyoueventrack\.app/g" ./.kubernetes/service/ingress-app.yaml
+            - sed -i -e "s/doyoueventrack\.app/test\.doyoueventrack\.app/g" ./.kubernetes/service/ingress.yaml
+            - kubectl -n test apply -f ./.kubernetes/service --recursive --insecure-skip-tls-verify
             # change keycloak frontend url & credentials
-            - sed -i -e "s/auth\.gymtrack\.nl/test-auth\.gymtrack\.nl/g" ./.kubernetes/deployment/iam.yaml
+            - sed -i -e "s/auth\.doyoueventrack\.app/test-auth\.doyoueventrack\.app/g" ./.kubernetes/deployment/iam.yaml
             - sed -i -e "s/keycloakuser/$KEYCLOAK_ADMIN_USERNAME_TEST/g" ./.kubernetes/deployment/iam.yaml
             - sed -i -e "s/keycloakpassword/$KEYCLOAK_ADMIN_PASSWORD_TEST/g" ./.kubernetes/deployment/iam.yaml
-            # Database volume mount point
-            # - sed -i -e "s/prod\/volumes/test\/volumes/g" ./.kubernetes/statefulset/database.yaml
             # change image tags from :latest -> :$IMAGE_TAG
             - sed -i -e "s/fullstackfit_iam:latest/registry:fullstackfit_iam.$IMAGE_TAG/g" ./.kubernetes/deployment/iam.yaml
             - sed -i -e "s/fullstackfit_backend:latest/registry:fullstackfit_backend.$IMAGE_TAG/g" ./.kubernetes/deployment/backend.yaml
             - sed -i -e "s/fullstackfit_liquibase:latest/registry:fullstackfit_liquibase.$IMAGE_TAG/g" ./.kubernetes/deployment/backend.yaml
             - sed -i -e "s/fullstackfit_frontend:latest/registry:fullstackfit_frontend.$IMAGE_TAG/g" ./.kubernetes/deployment/frontend.yaml
             - sed -i -e "s/fullstackfit_landing:latest/registry:fullstackfit_landing.$IMAGE_TAG/g" ./.kubernetes/deployment/landing.yaml
-            # - sed -i -e "s/fullstackfit_database:latest/registry:fullstackfit_database.$IMAGE_TAG/g" ./.kubernetes/statefulset/database.yaml
+            # deploy deployments
             - kubectl -n test apply -f ./.kubernetes/deployment --recursive --insecure-skip-tls-verify
+            # wait
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test database
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test backend
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test iam
@@ -188,19 +182,19 @@ blocks:
             - value: 80
               when: true
           commands:
-            - "VIEWPORT=desktop CYPRESS_BASE_URL='https://test-app.gymtrack.nl' npx cypress run --spec 'cypress/integration/api/**' --env username=api@test.test,password=api,username_secondary=api-secondary@test.test,password_secondary=api-secondary,auth_url=https://test-auth.gymtrack.nl,backend_url=https://test-api.gymtrack.nl --group API --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'API'"
+            - "VIEWPORT=desktop CYPRESS_BASE_URL='https://test-bro.doyoueventrack.app' npx cypress run --spec 'cypress/integration/api/**' --env username=api@test.test,password=api,username_secondary=api-secondary@test.test,password_secondary=api-secondary,auth_url=https://test-auth.doyoueventrack.app,backend_url=https://test-api.doyoueventrack.app --group API --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'API'"
         - name: E2E | Desktop
           priority:
             - value: 65
               when: true
           commands:
-            - "VIEWPORT=desktop CYPRESS_BASE_URL='https://test-app.gymtrack.nl' npx cypress run --spec 'cypress/integration/e2e/**' --group 'E2E | Desktop' --env username=desktop-e2e@test.test,password=desktop-e2e,auth_url=https://test-auth.gymtrack.nl,backend_url=https://test-api.gymtrack.nl --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'Desktop, E2E'"
+            - "VIEWPORT=desktop CYPRESS_BASE_URL='https://test-bro.doyoueventrack.app' npx cypress run --spec 'cypress/integration/e2e/**' --group 'E2E | Desktop' --env username=desktop-e2e@test.test,password=desktop-e2e,auth_url=https://test-auth.doyoueventrack.app,backend_url=https://test-api.doyoueventrack.app --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'Desktop, E2E'"
         - name: E2E | Mobile
           priority:
             - value: 65
               when: true
           commands:
-            - "VIEWPORT=mobile CYPRESS_BASE_URL='https://test-app.gymtrack.nl' npx cypress run --spec 'cypress/integration/e2e/**' --group 'E2E | Mobile' --env username=mobile-e2e@test.test,password=mobile-e2e,auth_url=https://test-auth.gymtrack.nl,backend_url=https://test-api.gymtrack.nl --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'Mobile,E2E'"
+            - "VIEWPORT=mobile CYPRESS_BASE_URL='https://test-bro.doyoueventrack.app' npx cypress run --spec 'cypress/integration/e2e/**' --group 'E2E | Mobile' --env username=mobile-e2e@test.test,password=mobile-e2e,auth_url=https://test-auth.doyoueventrack.app,backend_url=https://test-api.doyoueventrack.app --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'Mobile,E2E'"
       secrets:
         - name: kubectl
         - name: cypress

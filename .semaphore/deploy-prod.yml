@@ -16,6 +16,9 @@ blocks:
       jobs:
         - name: To production
           commands:
+            # deploy service files
+            - kubectl -n prod apply -f ./.kubernetes/service --recursive --insecure-skip-tls-verify
+            # deploy deployment files
             # change image tags from :latest -> :$IMAGE_TAG .
             - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/iam.yaml
             - sed -i -e "s/:latest/:$IMAGE_TAG/g" ./.kubernetes/deployment/backend.yaml
@@ -25,7 +28,6 @@ blocks:
             # set iam secrets
             - sed -i -e "s/keycloakuser/$KEYCLOAK_ADMIN_USERNAME_PROD/g" ./.kubernetes/deployment/iam.yaml
             - sed -i -e "s/keycloakpassword/$KEYCLOAK_ADMIN_PASSWORD_PROD/g" ./.kubernetes/deployment/iam.yaml
-            # deploy
             - kubectl -n prod apply -f ./.kubernetes/deployment --recursive --insecure-skip-tls-verify
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh prod database
             - bash ./.semaphore/scripts/wait-until-pod-is-ready.sh test backend
@@ -56,7 +58,7 @@ blocks:
       jobs:
         - name: On production
           commands:
-            - "VIEWPORT=mobile CYPRESS_INCLUDE_TAGS='smoke' CYPRESS_BASE_URL='https://app.gymtrack.nl' npx cypress run --spec 'cypress/integration/e2e/**' --env username=test,password=test,auth_url=https://app.gymtrack.nl,backend_url=https://api.gymtrack.nl --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'Production,Smoke'"
+            - "VIEWPORT=mobile CYPRESS_INCLUDE_TAGS='smoke' CYPRESS_BASE_URL='https://bro.doyoueventrack.app' npx cypress run --spec 'cypress/integration/e2e/**' --env username='test@test.test',password=test,auth_url=https://bro.doyoueventrack.app,backend_url=https://api.doyoueventrack.app --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'Production,Smoke'"
       secrets:
         - name: kubectl
         - name: cypress

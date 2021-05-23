@@ -1465,6 +1465,15 @@ h1.intro-header::before {
   margin-bottom: 2.4rem;
 }
 
+.logo-text {
+  font-family: "montserrat-regular", sans-serif;
+  font-size: 3rem;
+  letter-spacing: -.05rem;
+  line-height: 1.269;
+  color: #ffffff;
+  margin: 15px 0px auto 20px;
+}
+
 .home-content-left h1 {
   font-family: "montserrat-regular", sans-serif;
   font-size: 5.2rem;

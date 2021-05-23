@@ -20,10 +20,10 @@ metadata:
     operation: Update
     time: "2021-01-30T13:23:59Z"
   name: landing
-  selfLink: /apis/extensions/v1beta1/namespaces/prod/ingresses/gymtrack.nl
+  selfLink: /apis/extensions/v1beta1/namespaces/prod/ingresses/doyoueventrack.app
 spec:
   rules:
-  - host: gymtrack.nl
+  - host: doyoueventrack.app
     http:
       paths:
       - backend:

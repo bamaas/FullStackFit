@@ -25,7 +25,7 @@ spec:
         - name: PROXY_ADDRESS_FORWARDING
           value: "true"
         - name: KEYCLOAK_FRONTEND_URL
-          value: "https://auth.gymtrack.nl/auth"
+          value: "https://auth.doyoueventrack.app/auth"
         - name: DB_VENDOR
           value: "postgres"
         - name: DB_USER
@@ -49,3 +49,9 @@ spec:
           httpGet:
             path: /auth/realms/master
             port: 8080
+        resources:
+          requests:
+            memory: "200Mi"
+            cpu: "100m"
+          limits:
+            memory: "350Mi"

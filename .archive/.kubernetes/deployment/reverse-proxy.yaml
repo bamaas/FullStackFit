@@ -3,15 +3,15 @@ kind: Deployment
 metadata:
   generation: 1
   labels:
-    app: frontend
-  name: frontend
+    app: reverse-proxy
+  name: reverse-proxy
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: frontend
+      app: reverse-proxy
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -21,45 +21,31 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        app: frontend
+        app: reverse-proxy
     spec:
       containers:
-      - env:
-        - name: PORT
-          value: "4200"
-        image: bamaas/fullstackfit_frontend:latest
+      - image: bamaas/fullstackfit_reverseproxy:latest
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3
-          httpGet:
-            path: /
-            port: 4200
-            scheme: HTTP
           initialDelaySeconds: 20
           periodSeconds: 2
           successThreshold: 1
+          tcpSocket:
+            port: 80
           timeoutSeconds: 2
-        name: frontend
-        resources:
-          requests:
-            memory: "5Mi"
-            cpu: "5m"
-          limits:
-            memory: "50Mi"
-            cpu: "10m"
+        name: reverse-proxy
         ports:
-        - containerPort: 4200
-          name: 4200tcp327341
+        - containerPort: 80
+          name: proxy80tcp
           protocol: TCP
         readinessProbe:
           failureThreshold: 3
-          httpGet:
-            path: /
-            port: 4200
-            scheme: HTTP
           initialDelaySeconds: 20
           periodSeconds: 2
           successThreshold: 2
+          tcpSocket:
+            port: 80
           timeoutSeconds: 2
         securityContext:
           allowPrivilegeEscalation: false
