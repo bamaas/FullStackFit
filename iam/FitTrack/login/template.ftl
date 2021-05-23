@@ -43,7 +43,9 @@
             </div>
         </#if>
         <div>
+            <a href="/" style="text-decoration: none;">
                 <p class="application-name">Do You Even Track</p>
+            </a>
         </div>
         <#nested "form">
             <div id="copyright-container">
