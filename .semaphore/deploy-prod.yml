@@ -58,7 +58,7 @@ blocks:
       jobs:
         - name: On production
           commands:
-            - "VIEWPORT=mobile CYPRESS_INCLUDE_TAGS='smoke' CYPRESS_BASE_URL='https://bro.doyoueventrack.app' npx cypress run --spec 'cypress/integration/e2e/**' --env username=test,password=test,auth_url=https://bro.doyoueventrack.app,backend_url=https://api.doyoueventrack.app --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'Production,Smoke'"
+            - "VIEWPORT=mobile CYPRESS_INCLUDE_TAGS='smoke' CYPRESS_BASE_URL='https://bro.doyoueventrack.app' npx cypress run --spec 'cypress/integration/e2e/**' --env username='test@test.test',password=test,auth_url=https://bro.doyoueventrack.app,backend_url=https://api.doyoueventrack.app --browser chrome --headless --record --key ${CYPRESS_DASHBOARD_KEY} --tag 'Production,Smoke'"
       secrets:
         - name: kubectl
         - name: cypress

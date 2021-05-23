@@ -28,7 +28,7 @@ spec:
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3
-          initialDelaySeconds: 25
+          initialDelaySeconds: 30
           periodSeconds: 2
           successThreshold: 1
           tcpSocket:
@@ -38,22 +38,22 @@ spec:
         resources:
           requests:
             memory: "300Mi"
-            cpu: "5m"
+            cpu: "50m"
           limits:
             memory: "500Mi"
-            cpu: "80m"
+            cpu: "500m"
         ports:
         - containerPort: 5000
           name: backendport
           protocol: TCP
         readinessProbe:
           failureThreshold: 3
-          initialDelaySeconds: 25
+          initialDelaySeconds: 30
           periodSeconds: 2
           successThreshold: 2
           tcpSocket:
             port: 5000
-          timeoutSeconds: 2
+          timeoutSeconds: 4
         securityContext:
           allowPrivilegeEscalation: false
           privileged: false
