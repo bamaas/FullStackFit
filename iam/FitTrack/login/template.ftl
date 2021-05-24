@@ -20,6 +20,15 @@
                 var submitButtonWidth = String(document.getElementsByClassName('btn btn-primary btn-block btn-lg')[0].offsetWidth);
                 document.getElementById('username').style.width = submitButtonWidth + 'px';
             }
+            if ((window.location.href).includes('execution=VERIFY_EMAIL')){
+                document.getElementsByClassName('alert-warning')[0].setAttribute('style', ('height: 0px;'));
+                document.getElementsByClassName('message-text')[0].setAttribute('style', ('line-height: 1; top: 40px;'));
+                document.getElementsByClassName('instruction')[0].setAttribute('style', ('padding-top: 40px;'));
+            }
+            if ((window.location.origin).includes('test')){
+                let logo = document.getElementById('logo-ahref');
+                logo.setAttribute('href', 'https://test-auth.doyoueventrack.app/auth/realms/FitTrack/protocol/openid-connect/auth?client_id=fittrack-application&response_type=code&scope=openid%20email&redirect_uri=https://test-bro.doyoueventrack.app&kc_locale=nl')
+            }
         };
     </script>
     <#if properties.styles?has_content>
@@ -43,7 +52,7 @@
             </div>
         </#if>
         <div>
-            <a href="/" style="text-decoration: none;">
+            <a id="logo-ahref" href="https://auth.doyoueventrack.app/auth/realms/FitTrack/protocol/openid-connect/auth?client_id=fittrack-application&response_type=code&scope=openid%20email&redirect_uri=https://bro.doyoueventrack.app&kc_locale=nl" style="text-decoration: none;">
                 <p class="application-name">Do You Even Track</p>
             </a>
         </div>
