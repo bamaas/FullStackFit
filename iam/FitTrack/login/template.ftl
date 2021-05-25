@@ -12,7 +12,8 @@
     <title><#nested "title"></title>
     <script>
         window.onload = function() {
-            document.getElementById('username').placeholder = 'Email';
+            let usernameElement = document.getElementById('username');
+            if (usernameElement) usernameElement.placeholder = 'Email';
             if (document.getElementsByClassName('alert').length > 0){
                 document.getElementsByClassName('application-name')[0].style.marginBottom = '60px';
             }
