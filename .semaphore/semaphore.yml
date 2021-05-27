@@ -103,6 +103,8 @@ blocks:
             - value: 65
               when: true
           commands:
+            - sem-version java 11
+            - mvn package -Dmaven.compiler.executable=javac -Dmaven.test.skip=true -f ./iam/plugins/event_listener
             - make build s="iam"
             - docker tag fullstackfit_iam:b.${IMAGE_TAG} ${DOCKER_USERNAME}/registry:fullstackfit_iam.${IMAGE_TAG}
             - docker push ${DOCKER_USERNAME}/registry:fullstackfit_iam.${IMAGE_TAG}
