@@ -32,6 +32,6 @@ public class DoYouEvenTrackEventListenerProviderFactory implements EventListener
 
     @Override
     public String getId() {
-        return "sample_event_listener";
+        return "doyoueventrack_event_listener";
     }
 }

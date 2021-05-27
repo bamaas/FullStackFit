@@ -30,18 +30,19 @@ public class DoYouEvenTrackEventListenerProvider implements EventListenerProvide
     @Override
     public void onEvent(Event event) {
         System.out.println("Event Occurred:" + toString(event));
-        if (event.getType() != EventType.REGISTER) return;
-        RealmModel realm = session.realms().getRealm(event.getRealmId());
-        UserModel user = session.users().getUserById(event.getUserId(), realm);
-        try {
-            this.postSubscriberToListmonk(user.getFirstName() + user.getLastName(), user.getEmail());
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (event.getType() == EventType.REGISTER) {
+            RealmModel realm = session.realms().getRealm(event.getRealmId());
+            UserModel user = session.users().getUserById(event.getUserId(), realm);
+            try {
+                this.postSubscriberToListmonk(user.getEmail());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public void postSubscriberToListmonk(String name, String email) throws IOException{
-        System.out.println("Posting subscriber: " + name + "|" + email + " to listmonk.");
+    public void postSubscriberToListmonk(String email) throws IOException{
+        System.out.println("Posting subscriber: " + email + " to Listmonk.");
         URL url = new URL ("http://listmonk/api/subscribers");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("POST");
@@ -50,7 +51,7 @@ public class DoYouEvenTrackEventListenerProvider implements EventListenerProvide
         String encoded = Base64.getEncoder().encodeToString(("admin:admin").getBytes(StandardCharsets.UTF_8));
         connection.setRequestProperty("Authorization", "Basic "+encoded);
         connection.setDoOutput(true);
-        String jsonInputString = String.format("{\"name\": \"%s\", \"email\": \"%s\", \"status\": \"enabled\"}", name, email);
+        String jsonInputString = String.format("{\"name\": \"%s\", \"email\": \"%s\", \"lists\":[1], \"status\": \"enabled\"}", email, email);
 
         try(OutputStream os = connection.getOutputStream()) {
             byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
@@ -70,8 +71,8 @@ public class DoYouEvenTrackEventListenerProvider implements EventListenerProvide
     }
 
     @Override
-    public void onEvent(AdminEvent adminEvent, boolean b) {
-        System.out.println("Admin Event Occurred:" + toString(adminEvent));
+    public void onEvent(AdminEvent event, boolean b) {
+        System.out.println("Admin Event Occurred:" + toString(event));
     }
 
     @Override
