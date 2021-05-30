@@ -12,13 +12,6 @@
             <button (click)="closeSidenav()" mat-button routerLink="/statistics" test="nav-statistics">
                 <mat-icon>bar_chart</mat-icon><span>Statistics</span>
             </button>
-            <mat-divider></mat-divider>
-            <button mat-button>
-                <mat-icon style="font-size: 22px; padding-top: 2px;">share</mat-icon><span>Share</span>
-            </button>
-            <button mat-button (click)="navigateGithub()">
-                <mat-icon>code</mat-icon><span>Github</span>
-            </button>
         </div>
     </mat-sidenav>
     <mat-sidenav-content *ngIf="isLoggedIn">

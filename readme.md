@@ -5,10 +5,9 @@
 
 # Fulltackfit project - Bas Maas
 
-Prod deployed @ [fit.basmaas.nl](https://fit.basmaas.nl) (Running on Kubernetes @ My Home)
+Prod deployed @ [doyoueventrack.app](https://doyoueventrack.app) (Running on Kubernetes @ My Home)
 
-Test deployed @ [test.basmaas.nl](https://test.basmaas.nl) (Running on Kubernetes @ My Home)
-Demo user: test / test
+Test deployed @ [test.doyoueventrack.app](https://test.doyoueventrack.app) (Running on Kubernetes @ My Home)
 
 ### What is this application about?
 In my free time I like to be in the gym and move some weights. For years I keep track of my body weight in an Excel sheet. At the end of a week I calculate the average of that week and compare it with the previous week, so I can determine if I lost or gained weight. I thought it would be nice to build a web application to replace the Excel sheet.
