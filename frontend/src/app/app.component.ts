@@ -76,10 +76,6 @@ export class AppComponent implements OnInit, AfterViewInit{
     this.sidenavService.close();
   }
 
-  navigateGithub(){
-    window.open('https://github.com/bamaas/FullStackFit', '_blank');
-  }
-
   ngAfterViewInit(): void {
     this.sidenavService.setSidenav(this.sidenav);
   }
