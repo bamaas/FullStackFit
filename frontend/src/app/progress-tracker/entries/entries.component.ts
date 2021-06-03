@@ -114,7 +114,6 @@ export class EntriesComponent implements OnInit, OnDestroy {
     );
     this.tableBodyHeight = this.screenHeight - 64;    // this.tableBodyHeight = this.screenHeight - this._styleService.headerHeight;
     this.itemsRenderedAtViewport = Math.round((this.tableBodyHeight - 56) / this.rowHeight);
-    // this.pageSize = this.itemsRenderedAtViewport * 2;
     this.onScrollDown()
     this._cdr.detectChanges(); 
    }

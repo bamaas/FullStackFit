@@ -133,28 +133,29 @@ export class EntryService {
   }
 
   // workaround to fix duplicate entries when updating a entry on edit screen and not added any pages yet.
-  private entriesTableInitialized: boolean = false;   
+  private entriesTableInitialized: boolean = false;
+  private loadedPages: number[] = [];
   addEntryPageToTable(pageNumber: number, pageSize: number): void{
+    console.log('add entry page to table  ')
     if (!this.lastPageReached){
-      if (!this.entriesTableInitialized){
-        this.entries = [];
-      }
-      this.getEntries(pageNumber, pageSize).subscribe(
-        (entries: Entry[]) => {
-          entries.forEach(entry => {
-            this.entries.push(entry)
-          });
-          if (entries.length != pageSize){
-            this.lastPageReached = true;
+      if (!this.entriesTableInitialized) this.entries = [];
+      if (!this.loadedPages.includes(pageNumber)){
+        this.getEntries(pageNumber, pageSize).subscribe(
+          (entries: Entry[]) => {
+            entries.forEach(entry => {
+              this.entries.push(entry)
+            });
+            this.loadedPages.push(pageNumber);
+            if (entries.length != pageSize) this.lastPageReached = true;
+            this.emitEntries();
+            this.entriesTableInitialized = true;
+          },
+          error => {
+            this._snackBar.open('Error occured while getting entries.', 'Dismiss', {duration: 6000, panelClass: ['mat-toolbar', 'mat-basic']})
+            console.log(error)
           }
-          this.emitEntries();
-          this.entriesTableInitialized = true;
-        },
-        error => {
-          this._snackBar.open('Error occured while getting entries.', 'Dismiss', {duration: 6000, panelClass: ['mat-toolbar', 'mat-basic']})
-          console.log(error)
-        }
-      );
+        );
+      }
     }
   }
 

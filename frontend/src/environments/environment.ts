@@ -5,8 +5,10 @@
 export const environment = {
   production: false,
   // apiBaseUrl: window.location.origin + '/api',
-  authBaseUrl: 'http://localhost:8080/auth',
-  apiBaseUrl: 'http://localhost:5000',
+  // authBaseUrl: 'http://localhost:8080/auth',
+  authBaseUrl: 'https://test-auth.doyoueventrack.app/auth',
+  apiBaseUrl: 'https://test-api.doyoueventrack.app',
+  // apiBaseUrl: 'http://localhost:5000',
   redirectUrl: 'http://localhost:4200'
   // apiBaseUrl: 'https://fit.basmaas.nl/api'
 };
