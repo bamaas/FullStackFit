@@ -128,6 +128,7 @@ export class EntryService {
   resetFilter(pageSize: number): void{
     this.lastPageReached = false;
     this.entriesTableInitialized = false;
+    this.loadedPages = [];
     this.addEntryPageToTable(0, pageSize);
     this.setFilter(false);
   }
@@ -135,8 +136,7 @@ export class EntryService {
   // workaround to fix duplicate entries when updating a entry on edit screen and not added any pages yet.
   private entriesTableInitialized: boolean = false;
   private loadedPages: number[] = [];
-  addEntryPageToTable(pageNumber: number, pageSize: number): void{
-    console.log('add entry page to table  ')
+  addEntryPageToTable(pageNumber: number, pageSize: number): void {
     if (!this.lastPageReached){
       if (!this.entriesTableInitialized) this.entries = [];
       if (!this.loadedPages.includes(pageNumber)){
