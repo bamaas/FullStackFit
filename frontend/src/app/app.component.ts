@@ -6,6 +6,7 @@ import { ProfileService } from './services/profile.service';
 import { SidenavService } from './services/sidenav.service';
 import { MatSidenav } from '@angular/material';
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-root',
