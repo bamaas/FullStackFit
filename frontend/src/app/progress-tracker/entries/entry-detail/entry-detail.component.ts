@@ -8,6 +8,7 @@ import { MatBottomSheet, MatDialog, MatSnackBar } from '@angular/material';
 import { Location } from '@angular/common';
 import { WeeklyAverageService } from 'src/app/services/weekly-average.service';
 import { HeaderService } from 'src/app/services/header.service';
+import { SpinnerService } from 'src/app/services/spinner.service';
 
 @Component({
   selector: 'app-entry-detail',
@@ -28,7 +29,8 @@ export class EntryDetailComponent implements OnInit {
     private bottomSheet: MatBottomSheet,
     private snackBar: MatSnackBar,
     private router: Router,
-    private headerService: HeaderService
+    private headerService: HeaderService,
+    private spinnerService: SpinnerService
   ) { } 
 
   ngOnInit(): void {
@@ -37,6 +39,7 @@ export class EntryDetailComponent implements OnInit {
     this.entryService.getEntryDetail(this.id);
     this.entryService.entryDetailSubject.subscribe(entry => {
       this.entry = entry;
+      if (this.entry) this.spinnerService.showSpinner(false);
     })
   }
 
