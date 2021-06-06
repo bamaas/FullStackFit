@@ -3,6 +3,7 @@ import { ProfileService } from '../services/profile.service';
 import { HeaderService } from '../services/header.service';
 import { KeycloakProfile } from 'keycloak-js';
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
+import { SpinnerService } from '../services/spinner.service';
 
 @Component({
   selector: 'app-profile',
@@ -17,7 +18,8 @@ export class ProfileComponent implements OnInit {
 
   constructor(
     private profileService: ProfileService,
-    private headerService: HeaderService
+    private headerService: HeaderService,
+    private spinnerService: SpinnerService
   ) { }
 
   ngOnInit(): void {
@@ -28,6 +30,7 @@ export class ProfileComponent implements OnInit {
   public getUserInfo(): void {
     this.profileService.userInfo.subscribe(userInfo => {
       this.userInfo = userInfo;
+      if (this.userInfo) this.spinnerService.showSpinner(false);
     });
   }
 

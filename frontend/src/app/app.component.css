@@ -1,3 +1,14 @@
+#spinner{
+    position: fixed; 
+    display: flex;
+    align-items: center;
+    z-index: 99999;
+    height: 100%;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    background: #fff;
+}
 #fab-icon {
     z-index: 10;
     position: fixed;

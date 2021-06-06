@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable, Subject } from 'rxjs';
 import { MatSnackBar } from '@angular/material';
+import { SpinnerService } from './spinner.service';
 
 export interface WeeklyAverage {
   year: number,
@@ -19,7 +20,8 @@ export class WeeklyAverageService {
 
   constructor(
     private _http: HttpClient, 
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private spinnerService: SpinnerService
   ){}
 
   public weeklyAverages: WeeklyAverage[] = [];
@@ -56,6 +58,7 @@ export class WeeklyAverageService {
           });
         this.weeklyAverages = weeklyAverages;
         this.emit();
+        this.spinnerService.showSpinner(false);
       },
       error => {
         this._snackBar.open('Error occured while getting statistics.', 'Dismiss', {duration: 6000})

@@ -45,7 +45,6 @@ export class AppComponent implements OnInit, AfterViewInit{
     private sidenavService: SidenavService,
     private spinnerService: SpinnerService,
     private styleService: StyleService,
-    private router: Router
   ){
 
   }
@@ -81,10 +80,6 @@ export class AppComponent implements OnInit, AfterViewInit{
         console.log(change.mqAlias);
       }
     );
-
-    if (this.router.url !== '/'){
-      this.spinnerService.showSpinner(false);
-    }
   }
 
   getUserProfile(): void{
