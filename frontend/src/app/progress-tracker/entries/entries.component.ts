@@ -15,6 +15,8 @@ import {MatTable} from '@angular/material';
 import * as moment from 'moment';
 import { WeeklyAverageService } from 'src/app/services/weekly-average.service';
 import { HeaderService } from 'src/app/services/header.service';
+import { StyleService } from 'src/app/services/style.service';
+import { SpinnerService } from 'src/app/services/spinner.service';
 
 @Component({
   selector: 'app-entries',
@@ -50,12 +52,14 @@ export class EntriesComponent implements OnInit, OnDestroy {
     private _bottomSheet: MatBottomSheet,
     private mediaObserver: MediaObserver,
     private _cdr: ChangeDetectorRef,
-    private headerService: HeaderService
+    private headerService: HeaderService,
+    private styleService: StyleService
   ) {}
 
   ngOnInit() {
     this.setHeaderTitle();
     this.getIsFilterSet();
+    this.getScreenHeight();
     this._entriesSub = this._entryService.entriesObservable.subscribe(
       (entries: Entry[]) => {
         // this.dataSource.data = entries;    Use this when enabled sorting
@@ -73,7 +77,16 @@ export class EntriesComponent implements OnInit, OnDestroy {
           this.columnFilterNoteControl.setValue(true);
         }
       });
-      this.onResize();
+
+      this.tableBodyHeight = this.screenHeight - 64;    // this.tableBodyHeight = this.screenHeight - this._styleService.headerHeight;
+      this.itemsRenderedAtViewport = Math.round((this.tableBodyHeight - 56) / this.rowHeight);
+      this.onScrollDown();
+  }
+  
+  getScreenHeight(){
+    this.styleService.screenHeightObservable.subscribe(height => {
+      this.screenHeight = height;
+    })
   }
 
   getIsFilterSet(){
@@ -112,9 +125,6 @@ export class EntriesComponent implements OnInit, OnDestroy {
         this.columnDefinitions[4].show = this.columnFilterActionsControl.value;
       }
     );
-    this.tableBodyHeight = this.screenHeight - 64;    // this.tableBodyHeight = this.screenHeight - this._styleService.headerHeight;
-    this.itemsRenderedAtViewport = Math.round((this.tableBodyHeight - 56) / this.rowHeight);
-    this.onScrollDown()
     this._cdr.detectChanges(); 
    }
 
@@ -123,13 +133,7 @@ export class EntriesComponent implements OnInit, OnDestroy {
       this._entryService.addEntryPageToTable(this.nextPageNumber, this.pageSize);
       this.nextPageNumber++;
     }
-  } 
-
-  @HostListener('window:resize', ['$event'])
-    onResize(event?) {
-      this.screenHeight = window.innerHeight;
-      // this.tableBodyHeight = this.screenHeight - this._styleService.headerHeight; // this doesn't work for some reason. Need to retrigger something else.
-    }
+  }
 
     editEntry(entry: Entry): void{
       const time: string = moment(entry.date).format('HH:mm');
