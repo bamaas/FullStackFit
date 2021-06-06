@@ -4,6 +4,7 @@ import { environment } from '../../environments/environment';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { MatSnackBar } from '@angular/material';
 import {Router} from "@angular/router";
+import { SpinnerService } from './spinner.service';
 
 export interface Entry {
   id: number,
@@ -42,7 +43,8 @@ export class EntryService {
   constructor(
     private _http: HttpClient, 
     private _snackBar: MatSnackBar,
-    private router: Router
+    private router: Router,
+    private spinnerService: SpinnerService
   ){}
 
   public entriesSubject = new Subject();
@@ -149,6 +151,7 @@ export class EntryService {
             if (entries.length != pageSize) this.lastPageReached = true;
             this.emitEntries();
             this.entriesTableInitialized = true;
+            this.spinnerService.showSpinner(false);
           },
           error => {
             this._snackBar.open('Error occured while getting entries.', 'Dismiss', {duration: 6000, panelClass: ['mat-toolbar', 'mat-basic']})

@@ -14,12 +14,12 @@
             </button>
         </div>
     </mat-sidenav>
-    <mat-sidenav-content>
-        <div fxLayout="row" fxLayoutAlign="center center" style="height: 100%;" *ngIf="isLoggedIn == false">
+    <mat-sidenav-content [ngStyle]="{'overflow': (loading === true) ? 'hidden' : 'default'}">
+        <div fxLayout="column" fxLayoutAlign="center center" style="position: fixed; display: flex; align-items: center; z-index: 50;height: 100%; justify-content: center; flex-direction: column; width: 100%; background: #fff;" *ngIf="loading === true" [@fadeOut]>
             <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
         </div>
-        <div *ngIf="isLoggedIn" fxLayout="column" fxFlexFill>
-            <app-header style="position: sticky; top: 0; z-index: 1000;"></app-header>
+        <div fxLayout="column" fxFlexFill>
+            <app-header style="position: sticky; top: 0; z-index: 10;"></app-header>
             <router-outlet></router-outlet>
             <div id="fab-icon">
                 <div id="wrapper">
