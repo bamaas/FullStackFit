@@ -26,3 +26,8 @@ html, body {
 .cursor-pointer{
     cursor: pointer;
 }
+
+/* Fix for the timepicker to not be below the overlay */
+.cdk-overlay-container {
+    z-index: 999;
+}

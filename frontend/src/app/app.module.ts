@@ -30,6 +30,7 @@ import { environment } from '../environments/environment';
 import { EntryDetailComponent } from './progress-tracker/entries/entry-detail/entry-detail.component';
 import { SidenavService } from './services/sidenav.service';
 import { ProfileComponent } from './profile/profile.component';
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 
 export function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
@@ -78,7 +79,8 @@ export function initializeKeycloak(keycloak: KeycloakService) {
     TableVirtualScrollModule,
     InfiniteScrollModule,
     NgxChartsModule,
-    KeycloakAngularModule
+    KeycloakAngularModule,
+    NgxMaterialTimepickerModule.setLocale('nl-NL')
   ],
   providers: [ 
     KeycloakService,
