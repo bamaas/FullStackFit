@@ -14,15 +14,16 @@
                         <div fxFlex="50">
                             <mat-form-field appearance="fill" fxFlexFill>
                                 <mat-label>Date</mat-label>
-                                <input matInput [matDatepicker]="picker" (keyup.enter)="submit()" formControlName="date" id="add-entry-input-date" required>
-                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                                <mat-datepicker #picker touchUi></mat-datepicker>
+                                <input matInput [matDatepicker]="datepicker" (keyup.enter)="submit()" formControlName="date" id="add-entry-input-date" required>
+                                <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
+                                <mat-datepicker #datepicker touchUi></mat-datepicker>
                             </mat-form-field>
                         </div>
                         <div fxFlex="50">
                             <mat-form-field appearance="fill" fxFlexFill>
                                 <mat-label>Time</mat-label>
-                                <input matInput (keyup.enter)="submit()" formControlName="time" required>
+                                <input [ngxTimepicker]="timepicker" [format]="24" matInput (keyup.enter)="submit()" formControlName="time" required readonly>
+                                <ngx-material-timepicker #timepicker></ngx-material-timepicker>
                             </mat-form-field>
                         </div>
                     </div>

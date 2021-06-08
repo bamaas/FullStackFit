@@ -29,3 +29,24 @@ h6{
 ::ng-deep .mat-tab-body-content {
     overflow: hidden !important;
 }
+
+::ng-deep .timepicker-overlay[_ngcontent-vjh-c20], ::ng-deep .timepicker-backdrop-overlay[_ngcontent-vjh-c20]{
+    z-index: 1000;
+}
+
+::ng-deep ngx-material-timepicker-content{
+    --body-background-color: #fff;
+    --primary-font-family: 'Roboto',sans-serif;
+    --button-color: #3545a5 !important;
+    --dial-active-color: #fff;
+    --dial-inactive-color: rgba(255, 255, 255, .5);
+    --dial-background-color: #3545a5 !important;
+    --dial-editable-active-color: #3545a5 !important;
+    --dial-editable-background-color: #fff;
+    --clock-face-time-active-color: #fff;
+    --clock-face-time-inactive-color: #6c6c6c;
+    --clock-face-inner-time-inactive-color: #929292;
+    --clock-face-time-disabled-color: #c5c5c5;
+    --clock-face-background-color: #f0f0f0;
+    --clock-hand-color: #3545a5 !important;
+}
