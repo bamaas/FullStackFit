@@ -85,7 +85,7 @@ context('FitTrack', () => {
       cy.get('#add-entry-input-date').click();
       cy.xpath("//div[contains(@class, 'mat-calendar-body-cell-content') and text() = '15']").click();
       // time
-      cy.xpath("#add-entry-input-time").click();
+      cy.get("#add-entry-input-time").click();
       cy.xpath("//div[@class='clock-face']//span[text()=' 12 ']").click();
       cy.xpath("//button[@class='timepicker-button']//span[text()='Ok']").click();
       cy.get('#add-entry-input-note').type(note);
