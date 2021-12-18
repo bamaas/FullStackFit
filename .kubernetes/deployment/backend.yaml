@@ -24,7 +24,21 @@ spec:
         app: backend
     spec:
       containers:
-      - image: bamaas/fullstackfit_backend:latest
+      - name: backend
+        image: bamaas/fullstackfit_backend:latest
+        env:
+        - name: KEYCLOAK_AUTH_SERVER_URL
+          value: http://iam:8080/auth
+        - name: DATABASE_HOST
+          value: "database"
+        - name: DATABASE_PORT
+          value: "5432"
+        - name: DATABASE_DB
+          value: postgres
+        - name: DATABASE_USERNAME
+          value: postgres
+        - name: DATABASE_PASSWORD
+          value: postgres
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 4
@@ -34,7 +48,6 @@ spec:
           tcpSocket:
             port: 5000
           timeoutSeconds: 3
-        name: backend
         resources:
           requests:
             memory: "300Mi"
