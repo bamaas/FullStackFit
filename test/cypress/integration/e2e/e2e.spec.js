@@ -81,7 +81,13 @@ context('FitTrack', () => {
       const note  = Math.random().toString().substr(2, 8);
       cy.get('[test=add-entry]').click();
       cy.get('#add-entry-input-weight').type(weight);
-      cy.get('#add-entry-input-date').type('20-15-2020');
+      // date
+      cy.get('#add-entry-input-date').click();
+      cy.xpath("//div[contains(@class, 'mat-calendar-body-cell-content') and text() = '15']").click();
+      // time
+      cy.xpath("#add-entry-input-time").click();
+      cy.xpath("//div[@class='clock-face']//span[text()=' 12 ']").click();
+      cy.xpath("//button[@class='timepicker-button']//span[text()='Ok']").click();
       cy.get('#add-entry-input-note').type(note);
       cy.get('#add-entry-btn-add').click();
       cy.contains(weight).should('be.visible');

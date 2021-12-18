@@ -22,7 +22,7 @@
                         <div fxFlex="50">
                             <mat-form-field appearance="fill" fxFlexFill (click)="timepicker.open()">
                                     <mat-label>Time</mat-label>
-                                    <input [ngxTimepicker]="timepicker" [format]="24" matInput (keyup.enter)="submit()" formControlName="time" required readonly>
+                                    <input [ngxTimepicker]="timepicker" [format]="24" matInput (keyup.enter)="submit()" formControlName="time" required readonly id="add-entry-input-time">
                                     <mat-icon matSuffix style="cursor: pointer;">access_time</mat-icon>
                                     <ngx-material-timepicker #timepicker></ngx-material-timepicker>
                             </mat-form-field>
