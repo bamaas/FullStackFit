@@ -14,7 +14,19 @@ CREATE TABLE public.entry (
     year SMALLINT, 
     week SMALLINT, 
     user_id VARCHAR,
-    FOREIGN KEY (user_id) REFERENCES public.user(id)
+    FOREIGN KEY (user_id) REFERENCES public.user(id),
+    skinfold_chest SMALLINT,
+    skinfold_abdominal SMALLINT,
+    skinfold_biceps SMALLINT,
+    skinfold_triceps SMALLINT,
+    skinfold_thigh SMALLINT,
+    skinfold_calf SMALLINT,
+    circ_chest SMALLINT,
+    circ_arm SMALLINT,
+    circ_leg SMALLINT,
+    circ_calf SMALLINT,
+    circ_waist SMALLINT,
+    circ_neck SMALLINT
 );
 
 CREATE TABLE public.weekly_average (
